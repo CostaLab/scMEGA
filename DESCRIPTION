@@ -10,3 +10,7 @@ License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 URL: https://costalab.github.io/scMEGA/
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
