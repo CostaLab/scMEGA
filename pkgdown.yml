@@ -1,0 +1,10 @@
+pandoc: 2.7.3
+pkgdown: 2.0.3
+pkgdown_sha: ~
+articles:
+  vignette: vignette.html
+last_built: 2022-04-29T11:44Z
+urls:
+  reference: https://costalab.github.io/scMEGA/reference
+  article: https://costalab.github.io/scMEGA/articles
+
