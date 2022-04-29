@@ -2,3 +2,7 @@ url: https://costalab.github.io/scMEGA/
 template:
   bootstrap: 5
 
+template:
+  bootstrap: 5
+  bootswatch: cerulean
+
