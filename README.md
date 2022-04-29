@@ -1,2 +1,1 @@
-# scMEGA
-Single-cell multiomic enhancer-based gene regulatory network inference
+### scMEGA: Single-cell Multiomic Enhancer-based Gene regulAtory network inference
