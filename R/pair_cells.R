@@ -238,8 +238,10 @@ PairingCells <- function(obj.coembed, reduction = NULL, graph.name = NULL,
     return(all.pairs)
 }
 
-CreatePairedObject <- function(df.pair, obj.rna, obj.atac, use.assay1 = NULL, use.assay2 = NULL,
-                              sep = c("-", "-")){
+CreatePairedObject <- function(df.pair, obj.rna, obj.atac, 
+                               use.assay1 = NULL, 
+                               use.assay2 = NULL,
+                               sep = c("-", "-")){
     
     if(is.null(use.assay1)){
         stop("Please provide the name for assay from RNA object")
