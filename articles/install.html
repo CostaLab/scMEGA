@@ -79,16 +79,15 @@
 <p>You can install scMEGA via below commands:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Install devtools</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Installing package into '/home/runner/work/_temp/Library'</span>
-<span class="co">## (as 'lib' is unspecified)</span></code></pre>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Install scMEGA</span>
+<span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"devtools"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
+    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span>
+
+<span class="co"># Install scMEGA</span>
 <span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"CostaLab/scMEGA"</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## Using github PAT from envvar GITHUB_PAT</span></code></pre>
 <pre><code><span class="co">## Downloading GitHub repo CostaLab/scMEGA@HEAD</span></code></pre>
 <pre><code><span class="co">## </span>
-<span class="co">## * checking for file ‘/tmp/RtmpGc6laU/remotes35c312c5039/CostaLab-scMEGA-aa0ab98/DESCRIPTION’ ... OK</span>
+<span class="co">## * checking for file ‘/tmp/RtmpUy4mml/remotes35bc1949bdca/CostaLab-scMEGA-9fdfc2a/DESCRIPTION’ ... OK</span>
 <span class="co">## * preparing ‘scMEGA’:</span>
 <span class="co">## * checking DESCRIPTION meta-information ... OK</span>
 <span class="co">## * checking for LF line-endings in source and make files and shell scripts</span>
@@ -97,7 +96,7 @@
 <span class="co">## * building ‘scMEGA_0.1.0.tar.gz’</span></code></pre>
 <pre><code><span class="co">## Installing package into '/home/runner/work/_temp/Library'</span>
 <span class="co">## (as 'lib' is unspecified)</span></code></pre>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Check session information</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## R version 4.2.0 (2022-04-22)</span>
