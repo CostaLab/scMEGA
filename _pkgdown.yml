@@ -5,10 +5,26 @@ template:
     bootswatch: cosmo
 
 navbar:
-  title: scMEGA
-  left:
-    -   text: "Install"
+    title: scMEGA
+    left:
+      - text: "Install"
         href: "articles/install.html"
-    -   text: "News"
+      - text: "News"
         href: "news/index.html"
+    right:
+      - icon: fa-github
+        href: "https://github.com/CostaLab/scMEGA"
+
+home:
+  links:
+   - text: Browse source code
+     href: https://github.com/CostaLab/scMEGA
+   - text: Report a bug
+     href: https://github.com/CostaLab/scMEGA/issues
+  license:
+    - text: full license
+      href: "docs/LICENSE.html"
+    - text: MIT
+
+
 
