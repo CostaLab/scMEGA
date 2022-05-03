@@ -1,1 +1,1 @@
-## Package under development
+## **scMEGA 0.0.1**

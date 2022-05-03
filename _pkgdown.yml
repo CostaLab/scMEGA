@@ -1,4 +1,14 @@
 url: https://costalab.github.io/scMEGA/
 template:
-  bootstrap: 5
+  params:
+    bootstrap: 5
+    bootswatch: cosmo
+
+navbar:
+  title: scMEGA
+  left:
+    -   text: "Install"
+        href: "articles/install.html"
+    -   text: "News"
+        href: "news/index.html"
 
