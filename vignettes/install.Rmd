@@ -15,3 +15,9 @@ install.packages("devtools")
 # Install scMEGA
 devtools::install_github("CostaLab/scMEGA")
 ```
+
+
+```{r}
+# Check session information
+sessionInfo()
+```
