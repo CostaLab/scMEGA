@@ -1,0 +1,17 @@
+---
+title: "Installation"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+You can install scMEGA via below commands:
+```{r}
+# Install devtools
+install.packages("devtools")
+
+# Install scMEGA
+devtools::install_github("CostaLab/scMEGA")
+```
