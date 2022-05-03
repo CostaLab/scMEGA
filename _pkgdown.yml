@@ -11,6 +11,12 @@ navbar:
         href: "articles/install.html"
       - text: "News"
         href: "news/index.html"
+      - text: "Vignettes"
+        menu:
+          - text: "Infer GRN for cardiomyocyte"
+            href: "articles/GRN-cardiomyocyte.html"
+          - text: "Infer GRN for myofibroblast"
+            href: "articles/GRN-fibroblast.html"
     right:
       - icon: fa-github
         href: "https://github.com/CostaLab/scMEGA"
