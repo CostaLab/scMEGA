@@ -4,3 +4,11 @@ template:
     bootstrap: 5
     bootswatch: cosmo
 
+navbar:
+  title: scMEGA
+  left:
+    -   text: "Install"
+        href: "articles/install.html"
+    -   text: "News"
+        href: "news/index.html"
+
