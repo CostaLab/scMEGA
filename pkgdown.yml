@@ -3,7 +3,7 @@ pkgdown: 2.0.3
 pkgdown_sha: ~
 articles:
   install: install.html
-last_built: 2022-05-03T13:02Z
+last_built: 2022-05-03T13:07Z
 urls:
   reference: https://costalab.github.io/scMEGA/reference
   article: https://costalab.github.io/scMEGA/articles
