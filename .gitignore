@@ -3,3 +3,4 @@
 .RData
 .Ruserdata
 test
+vignettes/*.rds
