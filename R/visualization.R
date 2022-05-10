@@ -178,7 +178,6 @@ CompareCellProp <-
 #' smoothing window for creating inferred Arrow overlay on to embedding.
 #'
 #' @import dplyr
-#' @import cowplot
 #' @import ggplot2
 #'
 #' @return A ggplot object
@@ -253,8 +252,10 @@ TrajectoryPlot <- function(object = NULL,
 
   out <- do.call(ArchR::ggPoint, plotParams)
   out <- out +
-    theme_cowplot() + ggtitle(trajectory) +
-    xlab(colnames(df)[1]) + ylab(colnames(df)[2]) +
+    cowplot::theme_cowplot() +
+    ggtitle(trajectory) +
+    xlab(colnames(df)[1]) +
+    ylab(colnames(df)[2]) +
     theme(
       axis.text.x = element_blank(),
       axis.ticks.x = element_blank(),
