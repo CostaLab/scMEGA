@@ -1,5 +1,7 @@
 #' Plot cell proportion
 #'
+#' This function will generate a bar plot to visualize the cell proportion across
+#' different samples
 #' @param object Seurat object
 #' @param group.by Name of one metadata column to group the cells
 #' @param prop.in Name of one metadata column to compute the cell proportion
@@ -55,7 +57,8 @@ CellPropPlot <- function(object,
 
 }
 
-#' Compare the cell proportion between groups
+#' Compare the cell proportion
+#'
 #'
 #' @param object Seurat object
 #' @param group.by Name of one metadata column to group the cells, usually this refers to
@@ -67,6 +70,7 @@ CellPropPlot <- function(object,
 #' @param comparisons A list of length-2 vectors used to compare the proportion.
 #' This parameter is passed to the function stat_compare_means.
 #'
+#' @import ggpubr
 #' @return A ggplot object
 #' @export
 #'
@@ -113,7 +117,7 @@ CompareCellProp <-
 
     proportion <- "proportion"
 
-    if (!is.null(comparsions)) {
+    if (!is.null(comparisons)) {
       p <-
         ggplot(data = df, aes_string(x = sample.annotation, y = proportion)) +
         geom_boxplot2(aes_string(color = sample.annotation)) +

@@ -19,7 +19,8 @@ CellPropPlot(object, group.by = NULL, prop.in = NULL, cols = NULL)
 A ggplot object
 }
 \description{
-Plot cell proportion
+This function will generate a bar plot to visualize the cell proportion across
+different samples
 }
 \examples{
 library(Seurat)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/pair_cells.R
 \name{PairCells}
 \alias{PairCells}
-\title{Pair the cells between different modalities based on the coembedding space}
+\title{Pair the cells}
 \usage{
 PairCells(
   object,
@@ -41,7 +41,7 @@ PairCells(
 A data frame containing the cell pairs
 }
 \description{
-Pair the cells between different modalities based on the coembedding space
+Pair the cells
 }
 \examples{
 \dontrun{
