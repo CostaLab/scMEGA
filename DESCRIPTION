@@ -30,5 +30,6 @@ Imports:
     ggpubr,
     destiny,
     pracma,
-    igraph
+    igraph,
+    glue
 RoxygenNote: 7.1.2

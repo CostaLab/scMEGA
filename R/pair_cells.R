@@ -224,7 +224,7 @@ PairCells <- function(object,
       # Retrieve the subgraph
       sub.graph.nodes <- sub.graphs$membership == sub.graph.idx
       knn.sub.graph <-
-        induced_subgraph(knn.graph, which(sub.graph.nodes))
+        igraph::induced_subgraph(knn.graph, which(sub.graph.nodes))
 
       # Use down-sampling to make sure in this subgraph the number of ATAC and RNA cells are balanced
       subgraph_cells <- colnames(object)[sub.graph.nodes]
