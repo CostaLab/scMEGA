@@ -62,7 +62,7 @@ PeakToGene <- function(peak.mat, gene.mat, genome = "hg19",
     
     
     ## compute correlation
-    o$Correlation <- .rowCorCpp(as.integer(o$peak_idx), 
+    o$Correlation <- rowCorCpp(as.integer(o$peak_idx), 
                                as.integer(o$gene_idx), 
                                assay(seATAC), 
                                assay(seRNA))
