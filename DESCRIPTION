@@ -20,6 +20,7 @@ VignetteBuilder: knitr
 LinkingTo: Rcpp
 Imports: 
     Rcpp (>= 1.0.7),
+    ArchR,
     Seurat,
     dplyr,
     optmatch,
@@ -29,6 +30,5 @@ Imports:
     ggpubr,
     destiny,
     pracma,
-    igraph,
-    optmatch
+    igraph
 RoxygenNote: 7.1.2
