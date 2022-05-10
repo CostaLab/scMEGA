@@ -44,13 +44,14 @@ Returns a Seurat object containing a diffusion map representation
 \description{
 This function is a wrapper to run the diffusion map dimensional reduction
 technique via package destiny. Details on this package can be found here:
-https://bioconductor.org/packages/release/bioc/html/destiny.html.
+\url{https://bioconductor.org/packages/release/bioc/html/destiny.html}.
 }
 \examples{
 \dontrun{
 data("pbmc_small")
 # Run diffusion map on first 5 PCs
-pbmc_small <- RunDiffusionMap(object = pbmc_small, dims = 1:5)
+pbmc_small <- RunDiffusionMap(object = pbmc_small, reduction = "pca",
+dims = 1:20, k = 10)
 # Plot results
 DimPlot(object = pbmc_small, reduction = 'dm')
 }

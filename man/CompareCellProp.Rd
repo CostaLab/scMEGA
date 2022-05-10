@@ -2,7 +2,7 @@
 % Please edit documentation in R/visualization.R
 \name{CompareCellProp}
 \alias{CompareCellProp}
-\title{Compare the cell proportion between groups}
+\title{Compare the cell proportion}
 \usage{
 CompareCellProp(
   object,
@@ -34,7 +34,7 @@ This parameter is passed to the function stat_compare_means.}
 A ggplot object
 }
 \description{
-Compare the cell proportion between groups
+Compare the cell proportion
 }
 \examples{
 \dontrun{

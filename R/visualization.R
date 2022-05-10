@@ -144,21 +144,65 @@ CompareCellProp <-
 
   }
 
+#' Plot trajectory
+#'
+#' This function will generate a scatter plot to visualize the inferred trajectory.
+#' It was modified from the package ArchR \code{\link{plotTrajectory}}
+#' to use a Seurat object as input.
+#' For more details, check here \url{https://www.archrproject.com/reference/plotTrajectory.html}.
+#' @param object Seurat object
+#' @param trajectory Name of one metadata column to group the cells, usually this refers to
+#' the clustering results
+#' @param reduction Which dimension reduction is used to visualize the trajectory
+#' @param size A number indicating the size of the points to plot
+#' @param rastr Whether the plot should be rasterized
+#' @param quantCut If this is not NULL, a quantile cut is performed to threshold
+#' the top and bottom of the distribution of numerical values.
+#' This prevents skewed color scales caused by strong outliers.
+#' The format of this should be c(x,y) where x is the lower threshold and y is
+#' the upper threshold. For example, quantileCut = c(0.025,0.975) will take the
+#' 2.5th percentile and 97.5 percentile of values and set values below/above to
+#' the value of the 2.5th and 97.5th percentile values respectively.
+#' @param continuousSet The name of a continuous palette from ArchRPalettes
+#' for visualizing colorBy in the embedding if a continuous color set is desired.
+#' @param discreteSet The name of a discrete palette from ArchRPalettes for
+#' visualizing colorBy in the embedding if a discrete color set is desired.
+#' @param randomize A boolean value that indicates whether to randomize points
+#' prior to plotting to prevent cells from one cluster being present at the front of the plot.
+#' @param keepAxis A boolean value that indicates whether the x and y
+#' axis ticks and labels should be plotted.
+#' @param baseSize The base font size to use in the plot.
+#' @param addArrow A boolean value that indicates whether to add a smoothed
+#' arrow in the embedding based on the aligned trajectory.
+#' @param smoothWindow An integer value indicating the
+#' smoothing window for creating inferred Arrow overlay on to embedding.
+#'
+#' @return A ggplot object
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' p <- TrajectoryPlot(
+#'    object = obj,
+#'    reduction = "dm",
+#'    continuousSet = "blueYellow",
+#'    size = 1
+#' )
+#' }
 TrajectoryPlot <- function(object = NULL,
                            trajectory = "Trajectory",
                            reduction = NULL,
-                           name = "Trajectory",
+                           #name = "Trajectory",
                            size = 0.2,
                            rastr = FALSE,
                            quantCut = c(0.01, 0.99),
-                           quantHex = 0.5,
+                           #quantHex = 0.5,
                            continuousSet = NULL,
                            discreteSet = NULL,
                            randomize = TRUE,
                            keepAxis = FALSE,
                            baseSize = 6,
                            addArrow = FALSE,
-                           plotAs = NULL,
                            smoothWindow = 5) {
   dfT <- DataFrame(object@meta.data[, trajectory])
   rownames(dfT) <- colnames(object)
@@ -178,11 +222,13 @@ TrajectoryPlot <- function(object = NULL,
   plotParams$discrete <- ArchR:::.isDiscrete(plotParams$color)
   plotParams$continuousSet <- "horizonExtra"
   plotParams$discreteSet <- "stallion"
-  plotParams$title <-
-    paste(plotParams$title, " colored by\ncolData : ", name)
-  if (is.null(plotAs)) {
-    plotAs <- "hexplot"
-  }
+  plotParams$title <- trajectory
+  plotAs <- "points"
+#    paste(plotParams$title, " colored by\ncolData : ", name)
+#  if (is.null(plotAs)) {
+#    plotAs <- "hexplot"
+#  }
+
   plotParams$xlabel <- "DM1"
   plotParams$ylabel <- "DM2"
 
