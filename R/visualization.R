@@ -8,7 +8,6 @@
 #' @param cols Specific colors for plotting
 #' @import dplyr
 #' @import ggplot2
-#' @import cowplot
 #' @return A ggplot object
 #' @export
 #'
@@ -46,7 +45,7 @@ CellPropPlot <- function(object,
     geom_bar(stat = "identity") +
     xlab("") + ylab(proportion) +
     ggtitle(group.by) +
-    theme_cowplot() +
+    cowplot::theme_cowplot() +
     theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
   if (!is.null(cols)) {
@@ -70,7 +69,6 @@ CellPropPlot <- function(object,
 #' @param comparisons A list of length-2 vectors used to compare the proportion.
 #' This parameter is passed to the function stat_compare_means.
 #'
-#' @import ggpubr
 #' @return A ggplot object
 #' @export
 #'
@@ -122,7 +120,7 @@ CompareCellProp <-
         ggplot(data = df, aes_string(x = sample.annotation, y = proportion)) +
         geom_boxplot2(aes_string(color = sample.annotation)) +
         facet_wrap(as.formula(paste("~", group.by)), nrow = 1) +
-        stat_compare_means(comparisons = comparisons,
+        ggpubr::stat_compare_means(comparisons = comparisons,
                            method = method.test) +
         theme_cowplot() +
         xlab("") + ylab("") +
@@ -146,7 +144,7 @@ CompareCellProp <-
 
 #' Plot trajectory
 #'
-#' This function will generate a scatter plot to visualize the inferred trajectory.
+#' This function generates a scatter plot to visualize the inferred trajectory.
 #' It was modified from the package ArchR \code{\link{plotTrajectory}}
 #' to use a Seurat object as input.
 #' For more details, check here \url{https://www.archrproject.com/reference/plotTrajectory.html}.
@@ -245,14 +243,16 @@ TrajectoryPlot <- function(object = NULL,
 
 
   out <- do.call(ArchR::ggPoint, plotParams)
-  out <- out + theme(
-    axis.text.x = element_blank(),
-    axis.ticks.x = element_blank(),
-    axis.text.y = element_blank(),
-    axis.ticks.y = element_blank()
-  ) +
+  out <- out +
     theme_cowplot() + ggtitle(trajectory) +
-    xlab(colnames(df)[1]) + ylab(colnames(df)[2])
+    xlab(colnames(df)[1]) + ylab(colnames(df)[2]) +
+    theme(
+      axis.text.x = element_blank(),
+      axis.ticks.x = element_blank(),
+      axis.text.y = element_blank(),
+      axis.ticks.y = element_blank(),
+      plot.margin = margin(0, 0, 0, 0, "cm"),
+    )
 
 
   dfT$value <- plotParams$color

@@ -64,7 +64,7 @@ smoothing window for creating inferred Arrow overlay on to embedding.}
 A ggplot object
 }
 \description{
-This function will generate a scatter plot to visualize the inferred trajectory.
+This function generates a scatter plot to visualize the inferred trajectory.
 It was modified from the package ArchR \code{\link{plotTrajectory}}
 to use a Seurat object as input.
 For more details, check here \url{https://www.archrproject.com/reference/plotTrajectory.html}.
