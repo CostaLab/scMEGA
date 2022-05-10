@@ -68,6 +68,7 @@ CellPropPlot <- function(object,
 #' @param cols Specific colors for plotting
 #' @param comparisons A list of length-2 vectors used to compare the proportion.
 #' This parameter is passed to the function stat_compare_means.
+#'
 #' @import dplyr
 #' @import ggplot2
 #' @return A ggplot object
@@ -205,6 +206,7 @@ TrajectoryPlot <- function(object = NULL,
                            baseSize = 6,
                            addArrow = FALSE,
                            smoothWindow = 5) {
+
   dfT <- object@meta.data[, trajectory] %>%
     as.data.frame()
 
