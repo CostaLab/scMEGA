@@ -19,3 +19,5 @@ Imports:
     dplyr,
     optmatch,
     Signac
+Suggestions:
+    BSgenome.Hsapiens.UCSC.hg38
