@@ -6,18 +6,21 @@ Author: Zhijian Li
 Maintainer: Zhijian Li <lzj1769@gmail.com>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 URL: https://costalab.github.io/scMEGA/
+Depends:
+    R (>= 4.0.0),
+    methods
 Suggests: 
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+LinkingTo: Rcpp
 Imports: 
     Seurat,
     dplyr,
     optmatch,
     Signac
-Suggestions:
-    BSgenome.Hsapiens.UCSC.hg38
+RoxygenNote: 7.1.2
