@@ -127,10 +127,6 @@ CoembedData <-
 #' pairing in a given subgraph. Will skip subgraphs with fewer than these cells
 #' @param seed Random seed
 #' @param k k-NN parameter used for applying constraints on ATAC-RNA pairs
-#' @import Seurat
-#' @importFrom igraph graph_from_adjacency_matrix
-#' @importFrom igraph shortest.paths
-#' @importFrom pracma distmat
 #' @return A data frame containing the cell pairs
 #' @export
 #'
@@ -171,9 +167,9 @@ PairCells <- function(object,
   obj.2 <- object[, object@meta.data[[pair.by]] == ident2]
 
   embedding.atac <-
-    Embeddings(object = obj.1, reduction = reduction)
+    Seurat::Embeddings(object = obj.1, reduction = reduction)
   embedding.rna <-
-    Embeddings(object = obj.2, reduction = reduction)
+    Seurat::Embeddings(object = obj.2, reduction = reduction)
 
   embedding <- rbind(embedding.atac, embedding.rna)
   n.cells <- dim(embedding)[1]
@@ -189,7 +185,7 @@ PairCells <- function(object,
     message("Constructing KNN graph for computing geodesic distance ..")
 
     object <-
-      FindNeighbors(object,
+      Seurat::FindNeighbors(object,
                     reduction = reduction,
                     assay = assay,
                     verbose = FALSE)
@@ -199,17 +195,17 @@ PairCells <- function(object,
     #adj.matrix <- as.matrix(x = obj.coembed@graphs$RNA_nn)
     #adj.matrix <- adj.matrix + t(adj.matrix)
     knn.graph <-
-      graph_from_adjacency_matrix(adjmatrix = adjmatrix,
+      igraph::graph_from_adjacency_matrix(adjmatrix = adjmatrix,
                                   mode = "max",
                                   weighted = NULL)
 
     message("Computing graph-based geodesic distance ..")
     # Compute shortest paths between all cell pairs.
     # We checked that this returns a symmetric matrix
-    shortest.paths <- shortest.paths(knn.graph)
+    shortest.paths <- igraph::shortest.paths(knn.graph)
 
     # Find connected subgraphs
-    sub.graphs <- clusters(knn.graph)
+    sub.graphs <- igraph::clusters(knn.graph)
     message(glue(
       "# KNN subgraphs detected: {length(unique(sub.graphs$membership))}"
     ))
@@ -284,7 +280,7 @@ PairCells <- function(object,
 
       # We also calculate euclidean distance matrix
       subgraph_eucdist <-
-        distmat(embedding.atac.sub, embedding.rna.sub)
+        pracma::distmat(embedding.atac.sub, embedding.rna.sub)
 
       # Find KNN based on geodesic distances.
       message("Constructing KNN based on geodesic distance to reduce search pairing search space")
@@ -323,7 +319,7 @@ PairCells <- function(object,
 
       cell_matches <-
         suppressWarnings(
-          fullmatch(
+          optmatch::fullmatch(
             as.InfinitySparseMatrix(as.matrix(geodist_knn)),
             tol = tol,
             min.controls = 1 / max.multimatch,

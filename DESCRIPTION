@@ -27,5 +27,8 @@ Imports:
     ggplot2,
     cowplot,
     ggpubr,
-    destiny
+    destiny,
+    pracma,
+    igraph,
+    optmatch
 RoxygenNote: 7.1.2
