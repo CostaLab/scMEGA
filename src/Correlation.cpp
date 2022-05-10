@@ -4,9 +4,10 @@ using namespace Rcpp;
 using namespace std;
 
 // Adapted from https://github.com/AEBilgrau/correlateR/blob/master/src/auxiliary_functions.cpp
+//' @export
 // [[Rcpp::export]]
 Rcpp::NumericVector rowCorCpp(IntegerVector idxX, IntegerVector idxY, Rcpp::NumericMatrix X, Rcpp::NumericMatrix Y) {
-  
+
   if(X.ncol() != Y.ncol()){
     stop("Columns of Matrix X and Y must be equal length!");
   }
@@ -18,11 +19,11 @@ Rcpp::NumericVector rowCorCpp(IntegerVector idxX, IntegerVector idxY, Rcpp::Nume
   if(max(idxY) > Y.nrow()){
     stop("Idx Y greater than nrow of Matrix Y");
   }
-    
+
   // Transpose Matrices
   X = transpose(X);
   Y = transpose(Y);
-  
+
   const int nx = X.ncol();
   const int ny = Y.ncol();
 
@@ -51,7 +52,7 @@ Rcpp::NumericVector rowCorCpp(IntegerVector idxX, IntegerVector idxY, Rcpp::Nume
   Rcpp::NumericVector cor(n);
   for(int k = 0; k < n; k++){
     cor[k] = Rcpp::sum( X(Rcpp::_, idxX[k] - 1) * Y(Rcpp::_, idxY[k] - 1) ) * inv_sqrt_ss_X( idxX[k] - 1) * inv_sqrt_ss_Y( idxY[k] - 1);
-  } 
+  }
 
   return(cor);
 
