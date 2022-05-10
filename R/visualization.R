@@ -207,10 +207,14 @@ TrajectoryPlot <- function(object = NULL,
                            addArrow = FALSE,
                            smoothWindow = 5) {
 
-  dfT <- as.data.frame(object@meta.data[, trajectory])
+  dfT <- object@meta.data[, trajectory] %>%
+      as.data.frame()
+
   rownames(dfT) <- colnames(object)
   idxRemove <- which(is.na(dfT[, 1]))
-  df <- as.data.frame(object@reductions[[reduction]]@cell.embeddings[, 1:2])
+  df <- object@reductions[[reduction]]@cell.embeddings[, 1:2] %>%
+      as.data.frame()
+
   dfT <- cbind(df, dfT[rownames(df), ])
   colnames(dfT) <- c("DM1", "DM2", "PseudoTime")
 
