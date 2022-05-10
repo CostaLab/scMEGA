@@ -118,7 +118,7 @@ CompareCellProp <-
     if (!is.null(comparisons)) {
       p <-
         ggplot(data = df, aes_string(x = sample.annotation, y = proportion)) +
-        geom_boxplot2(aes_string(color = sample.annotation)) +
+        geom_boxplot(aes_string(color = sample.annotation)) +
         facet_wrap(as.formula(paste("~", group.by)), nrow = 1) +
         ggpubr::stat_compare_means(comparisons = comparisons,
                            method = method.test) +
@@ -130,7 +130,7 @@ CompareCellProp <-
     } else{
       p <-
         ggplot(data = df, aes_string(x = sample.annotation, y = proportion)) +
-        geom_boxplot2(aes_string(color = sample.annotation)) +
+        geom_boxplot(aes_string(color = sample.annotation)) +
         facet_wrap(as.formula(paste("~", group.by)), nrow = 1) +
         theme_cowplot() +
         xlab("") + ylab("") +

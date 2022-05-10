@@ -127,7 +127,10 @@ CoembedData <-
 #' pairing in a given subgraph. Will skip subgraphs with fewer than these cells
 #' @param seed Random seed
 #' @param k k-NN parameter used for applying constraints on ATAC-RNA pairs
-#'
+#' @import Seurat
+#' @importFrom igraph graph_from_adjacency_matrix
+#' @importFrom igraph shortest.paths
+#' @importFrom pracma distmat
 #' @return A data frame containing the cell pairs
 #' @export
 #'
@@ -180,7 +183,7 @@ PairCells <- function(object,
   rm(obj.2)
   gc()
 
-  message(glue("Pairing cells using {pair.mode} mode..."))
+  message(glue::glue("Pairing cells using {pair.mode} mode..."))
 
   if (pair.mode == "geodesic") {
     message("Constructing KNN graph for computing geodesic distance ..")
