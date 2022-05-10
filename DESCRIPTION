@@ -31,5 +31,6 @@ Imports:
     destiny,
     pracma,
     igraph,
-    glue
+    glue,
+    S4Vectors
 RoxygenNote: 7.1.2

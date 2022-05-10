@@ -24,6 +24,7 @@
 #' @param spar The sparsity to be used in the spline fit.
 #' @param seed Random seed
 #'
+#' @import S4Vectors
 #' @return Seurat object with inferred trajectory
 #' @export
 #'
@@ -74,9 +75,9 @@ AddTrajectory <-
     }
 
     if (is.null(dims)) {
-      data.use <- Embeddings(object, reduction = reduction)
+      data.use <- Seurat::Embeddings(object, reduction = reduction)
     } else{
-      data.use <- Embeddings(object, reduction = reduction)[, dims]
+      data.use <- Seurat::Embeddings(object, reduction = reduction)[, dims]
     }
 
     data.use <- data.use[rownames(df.group), , drop = FALSE]
