@@ -175,6 +175,7 @@ CompareCellProp <-
 #' @param smoothWindow An integer value indicating the
 #' smoothing window for creating inferred Arrow overlay on to embedding.
 #'
+#' @importFrom dplyr %>%
 #' @return A ggplot object
 #' @export
 #'
