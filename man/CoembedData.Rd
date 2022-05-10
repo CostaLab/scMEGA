@@ -2,7 +2,7 @@
 % Please edit documentation in R/pair_cells.R
 \name{CoembedData}
 \alias{CoembedData}
-\title{Integrate single-cell gene expression and chromatin accessibility data.}
+\title{Integrate data}
 \usage{
 CoembedData(
   obj.rna,
@@ -33,7 +33,11 @@ CoembedData(
 An integrated Seurat object
 }
 \description{
-Integrate single-cell gene expression and chromatin accessibility data.
+This function wraps a number of functions from the Seurat package.
+It integrates and projects the single-cell multi-omics (e.g., scRNA-seq
+and scATAC-seq) data into a common low-dimensional space via CCA approach.
+The details can be found:
+\url{https://satijalab.org/seurat/articles/atacseq_integration_vignette.html}
 }
 \examples{
 \dontrun{

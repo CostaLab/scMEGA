@@ -26,5 +26,6 @@ Imports:
     Signac,
     ggplot2,
     cowplot,
-    ggpubr
+    ggpubr,
+    destiny
 RoxygenNote: 7.1.2
