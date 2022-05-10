@@ -208,6 +208,8 @@ TrajectoryPlot <- function(object = NULL,
                            addArrow = FALSE,
                            smoothWindow = 5) {
 
+  require(dplyr)
+
   dfT <- object@meta.data[, trajectory] %>%
       as.data.frame()
 
