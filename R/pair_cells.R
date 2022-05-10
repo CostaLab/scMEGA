@@ -49,7 +49,7 @@ CoembedData <-
     message("Performing data integration using Seurat...")
 
     obj.atac[['GeneActivity']] <-
-      CreateAssayObject(counts = gene.activity[gene.use,])
+      CreateAssayObject(counts = gene.activity[gene.use, ])
     DefaultAssay(obj.atac) <- "GeneActivity"
 
     obj.atac <- obj.atac %>%
@@ -69,7 +69,7 @@ CoembedData <-
 
     # we here restrict the imputation to the selected genes
     refdata <-
-      GetAssayData(obj.rna, assay = reference.assay, slot = "data")[gene.use,]
+      GetAssayData(obj.rna, assay = reference.assay, slot = "data")[gene.use, ]
 
     # refdata (input) contains a scRNA-seq expression matrix for the scRNA-seq cells.
     # imputation (output) will contain an imputed scRNA-seq matrix for each of the ATAC cells
@@ -186,9 +186,9 @@ PairCells <- function(object,
 
     object <-
       Seurat::FindNeighbors(object,
-                    reduction = reduction,
-                    assay = assay,
-                    verbose = FALSE)
+                            reduction = reduction,
+                            assay = assay,
+                            verbose = FALSE)
 
     adjmatrix <- object@graphs$RNA_nn
     diag(adjmatrix) <- 0
@@ -196,8 +196,8 @@ PairCells <- function(object,
     #adj.matrix <- adj.matrix + t(adj.matrix)
     knn.graph <-
       igraph::graph_from_adjacency_matrix(adjmatrix = adjmatrix,
-                                  mode = "max",
-                                  weighted = NULL)
+                                          mode = "max",
+                                          weighted = NULL)
 
     message("Computing graph-based geodesic distance ..")
     # Compute shortest paths between all cell pairs.
@@ -236,18 +236,18 @@ PairCells <- function(object,
       message("Total RNA cells in subgraph: ", n_RNA)
 
       embedding.atac.sub <-
-        embedding.atac[sub.graph.nodes[1:dim(embedding.atac)[1]], ]
+        embedding.atac[sub.graph.nodes[1:dim(embedding.atac)[1]],]
       embedding.rna.sub <-
-        embedding.rna[sub.graph.nodes[(dim(embedding.atac)[1] + 1):n.cells],]
+        embedding.rna[sub.graph.nodes[(dim(embedding.atac)[1] + 1):n.cells], ]
 
       if (n_ATAC > n_RNA) {
         set.seed(seed)
         embedding.atac.sub <-
-          embedding.atac.sub[sample(1:n_ATAC, n_RNA, replace = FALSE), ]
+          embedding.atac.sub[sample(1:n_ATAC, n_RNA, replace = FALSE),]
       } else if (n_ATAC < n_RNA) {
         set.seed(seed)
         embedding.rna.sub <-
-          embedding.rna.sub[sample(1:n_RNA, n_ATAC, replace = FALSE), ]
+          embedding.rna.sub[sample(1:n_RNA, n_ATAC, replace = FALSE),]
       }
 
       if (is.null(nrow(embedding.atac.sub)) |
@@ -288,8 +288,8 @@ PairCells <- function(object,
 
       for (i in 1:subgraph_size) {
         # Find RNA cells in the KNN of each ATAC cell
-        geodist_threshold <- sort(subgraph_geodist[i,])[k_pairing]
-        knn_ind <- subgraph_geodist[i, ] < geodist_threshold
+        geodist_threshold <- sort(subgraph_geodist[i, ])[k_pairing]
+        knn_ind <- subgraph_geodist[i,] < geodist_threshold
         geodist_knn[i, knn_ind] <- subgraph_eucdist[i, knn_ind]
 
         # Find ATAC cells in the KNN of each RNA cell
@@ -320,7 +320,7 @@ PairCells <- function(object,
       cell_matches <-
         suppressWarnings(
           optmatch::fullmatch(
-            as.InfinitySparseMatrix(as.matrix(geodist_knn)),
+            optmatch::as.InfinitySparseMatrix(as.matrix(geodist_knn)),
             tol = tol,
             min.controls = 1 / max.multimatch,
             max.controls = max.multimatch
@@ -339,7 +339,7 @@ PairCells <- function(object,
   }
 
   # pairs are sometimes repreated, here we make the results unique
-  all.pairs <- all.pairs[!duplicated(all.pairs$ATAC),]
+  all.pairs <- all.pairs[!duplicated(all.pairs$ATAC), ]
   all.pairs$cell_name <- paste0("cell_", 1:nrow(all.pairs))
 
   return(all.pairs)
@@ -398,13 +398,14 @@ CreatePairedObject <- function(df.pair,
                                  assay = use.assay1)
 
   # create ATAC assay and add it to the object
-  obj.pair[[use.assay2]] <- CreateChromatinAssay(counts = atac.counts,
-                                                 sep = sep,
-                                                 min.cells = 10)
+  obj.pair[[use.assay2]] <-
+    CreateChromatinAssay(counts = atac.counts,
+                         sep = sep,
+                         min.cells = 10)
 
   for (reduction in names(object@reductions)) {
     embedding <-
-      Embeddings(object, reduction = reduction)[df.pair$RNA,]
+      Embeddings(object, reduction = reduction)[df.pair$RNA, ]
     rownames(embedding) <- df.pair$cell_name
     obj.pair[[reduction]] <-
       CreateDimReducObject(embeddings = embedding,
@@ -412,7 +413,7 @@ CreatePairedObject <- function(df.pair,
   }
 
   # add metadata, here we use the metadata from RNA assay
-  meta.data <- object@meta.data[df.pair$RNA,]
+  meta.data <- object@meta.data[df.pair$RNA, ]
   rownames(meta.data) <- df.pair$cell_name
 
   obj.pair <- AddMetaData(obj.pair, metadata = meta.data)
@@ -422,91 +423,101 @@ CreatePairedObject <- function(df.pair,
 }
 
 
+#' Get list of paired cells
+#'
+#' This function takes in the output of the \code{\link{fullmatch}} function and sort the
+#' results into a list of ATAC-RNA pairs.
+#' It was modified from \url{https://github.com/buenrostrolab/stimATAC_analyses_code/blob/master/R/optMatching_functions.R}
+#' @param cell_matches The output object of \code{\link{fullmatch}} in the package optmatch
+#' @param ATAC_barcodes  Barcode of ATAC cells, must match the order of IDs in cell_matches.
+#' @param RNA_barcodes Barcode of RNA cells, must match the order of IDs in cell_matches.
+#'
+#' @export
+#'
+#' @return A data frame containing the cell pairs
 GetPairList <- function(cell_matches,
-           # The output object of fullmatch or pairmatch in the package optmatch
-           ATAC_barcodes,
-           # Barcode of ATAC cells, must match the order of IDs in cell_matches.
-           #e.g. ATAC_1 in cell matches should correspond to the first element in ATAC_barcodes
-           RNA_barcodes # Barcode of RNA cells, must match the order of IDs in cell_matches.
-           #e.g. RNA_1 in cell matches should correspond to the first element in RNA_barcodes
-           )
-           {
-           cell_matches <- sort(cell_matches) # Sort to get ATAC, RNA tuples
+                        ATAC_barcodes,
+                        RNA_barcodes)
+{
+  cell_matches <- sort(cell_matches) # Sort to get ATAC, RNA tuples
 
-           if (length(cell_matches) == 0) {
-             stop(
-               "Matches could not be found .. Perhaps try adjusting the constraints to allow optimal matching to be solved?\n"
-             )
-           }
+  if (length(cell_matches) == 0) {
+    stop(
+      "Matches could not be found .. Perhaps try adjusting the constraints to allow optimal matching to be solved?\n"
+    )
+  }
 
 
-           if (any(is.na(cell_matches))) {
-             warning("NA pairs exist ..\n")
-           }
+  if (any(is.na(cell_matches))) {
+    warning("NA pairs exist ..\n")
+  }
 
-           # Currently the result list contain cells paired to multiple other cells
-           # If a cell is paired to k cells, we duplicate this cell k times to make k pairs
-           # Thus we generate a new list consisting pairs of 1 ATAC - 1 RNA cells
-           # We also make sure that in a pair, the first ID is ATAC and the second ID is RNA
-           matches <- character()
-           pair_ids <- unique(unname(cell_matches))
-           for (pair_id in 1:length(pair_ids)) {
-             new_match <-
-               names(cell_matches[unname(cell_matches) == pair_ids[pair_id]])
-             new_match_ATAC <-
-               new_match[splitAndFetch(new_match, "_", 1) == "ATAC"]
-             new_match_RNA <-
-               new_match[splitAndFetch(new_match, "_", 1) == "RNA"]
-             new_match <- vector()
-             if (length(new_match_ATAC) > length(new_match_RNA)) {
-               new_match[seq(1, 2 * length(new_match_ATAC), 2)] <- new_match_ATAC
-               new_match[seq(2, 2 * length(new_match_ATAC), 2)] <-
-                 rep(new_match_RNA, length(new_match_ATAC))
-             } else {
-               new_match[seq(1, 2 * length(new_match_RNA), 2)] <-
-                 rep(new_match_ATAC, length(new_match_RNA))
-               new_match[seq(2, 2 * length(new_match_RNA), 2)] <-
-                 new_match_RNA
-             }
-             matches <- c(matches, new_match)
-           }
+  # Currently the result list contain cells paired to multiple other cells
+  # If a cell is paired to k cells, we duplicate this cell k times to make k pairs
+  # Thus we generate a new list consisting pairs of 1 ATAC - 1 RNA cells
+  # We also make sure that in a pair, the first ID is ATAC and the second ID is RNA
+  matches <- character()
+  pair_ids <- unique(unname(cell_matches))
+  for (pair_id in 1:length(pair_ids)) {
+    new_match <-
+      names(cell_matches[unname(cell_matches) == pair_ids[pair_id]])
+    new_match_ATAC <-
+      new_match[splitAndFetch(new_match, "_", 1) == "ATAC"]
+    new_match_RNA <-
+      new_match[splitAndFetch(new_match, "_", 1) == "RNA"]
+    new_match <- vector()
+    if (length(new_match_ATAC) > length(new_match_RNA)) {
+      new_match[seq(1, 2 * length(new_match_ATAC), 2)] <- new_match_ATAC
+      new_match[seq(2, 2 * length(new_match_ATAC), 2)] <-
+        rep(new_match_RNA, length(new_match_ATAC))
+    } else {
+      new_match[seq(1, 2 * length(new_match_RNA), 2)] <-
+        rep(new_match_ATAC, length(new_match_RNA))
+      new_match[seq(2, 2 * length(new_match_RNA), 2)] <-
+        new_match_RNA
+    }
+    matches <- c(matches, new_match)
+  }
 
-           # Make sure pair groupings (factors) are adjacent
-           #stopifnot(all.equal(cell_matches[seq(1,length(cell_matches),2)],cell_matches[seq(2,length(cell_matches),2)],check.attributes=FALSE))
+  # Make sure pair groupings (factors) are adjacent
+  #stopifnot(all.equal(cell_matches[seq(1,length(cell_matches),2)],cell_matches[seq(2,length(cell_matches),2)],check.attributes=FALSE))
 
-           ATAC_IDs <-
-             matches[seq(1, length(matches), 2)] # Names of ATAC cells
-           RNA_IDs <- matches[seq(2, length(matches), 2)] # Names of RNA cells
+  ATAC_IDs <-
+    matches[seq(1, length(matches), 2)] # Names of ATAC cells
+  RNA_IDs <-
+    matches[seq(2, length(matches), 2)] # Names of RNA cells
 
-           # Checking if ATAC and RNA tuples are concordant
-           stopifnot(all(splitAndFetch(ATAC_IDs, "_", 1) %in% "ATAC"))
-           stopifnot(all(splitAndFetch(RNA_IDs, "_", 1) %in% "RNA"))
+  # Checking if ATAC and RNA tuples are concordant
+  stopifnot(all(splitAndFetch(ATAC_IDs, "_", 1) %in% "ATAC"))
+  stopifnot(all(splitAndFetch(RNA_IDs, "_", 1) %in% "RNA"))
 
-           # This is just to make sure 1-1, with the names we gave
-           # (can still comprise actual doublets from upsampling if any)
-           # stopifnot(all(unique(unique(ATACp))) & all(unique(RNAp)))
+  # This is just to make sure 1-1, with the names we gave
+  # (can still comprise actual doublets from upsampling if any)
+  # stopifnot(all(unique(unique(ATACp))) & all(unique(RNAp)))
 
-           # Get corresponding index relative to input matrix order
-           ATAC_inds <- as.numeric(splitAndFetch(ATAC_IDs, "_", 2))
-           RNA_inds <- as.numeric(splitAndFetch(RNA_IDs, "_", 2))
+  # Get corresponding index relative to input matrix order
+  ATAC_inds <- as.numeric(splitAndFetch(ATAC_IDs, "_", 2))
+  RNA_inds <- as.numeric(splitAndFetch(RNA_IDs, "_", 2))
 
-           matches_mat <-
-             matrix(c(ATAC_inds, RNA_inds), ncol = 2, byrow = FALSE) # ATAC col1, RNA col2
+  matches_mat <-
+    matrix(c(ATAC_inds, RNA_inds), ncol = 2, byrow = FALSE) # ATAC col1, RNA col2
 
-           message("Assembling pair list ..")
-           # Make data frame of matches
+  message("Assembling pair list ..")
+  # Make data frame of matches
 
-           pair_df <- data.frame("ATAC" = ATAC_inds,
-                                 "RNA" = RNA_inds)
+  pair_df <- data.frame("ATAC" = ATAC_inds,
+                        "RNA" = RNA_inds)
 
-           pair_df <- pair_df %>% arrange(ATAC)
+  pair_df <- pair_df %>% arrange(ATAC)
 
-           # Convert to labels if they exist
-           pair_df$ATAC <- ATAC_barcodes[pair_df$ATAC] # ATAC cell labels
-           pair_df$RNA <- RNA_barcodes[pair_df$RNA] # RNA cell labels
+  # Convert to labels if they exist
+  pair_df$ATAC <-
+    ATAC_barcodes[pair_df$ATAC] # ATAC cell labels
+  pair_df$RNA <-
+    RNA_barcodes[pair_df$RNA] # RNA cell labels
 
-           pair_df
-           }
+  pair_df
+}
 
 splitAndFetch <- function(vec,
                           delim,
