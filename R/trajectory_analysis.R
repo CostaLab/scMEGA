@@ -24,7 +24,6 @@
 #' @param spar The sparsity to be used in the spline fit.
 #' @param seed Random seed
 #'
-#' @import S4Vectors
 #' @return Seurat object with inferred trajectory
 #' @export
 #'
@@ -66,7 +65,9 @@ AddTrajectory <-
       stop("Please prodive the dimensional reduction!")
     }
 
-    df.group <- DataFrame(object@meta.data[, group.by])
+#    df.group <- DataFrame(object@meta.data[, group.by])
+    df.group <- object@meta.data[, group.by] %>%
+        as.data.frame()
     rownames(df.group) <- colnames(object)
     df.group <- df.group[df.group[, 1] %in% trajectory, , drop = F]
 
@@ -179,7 +180,7 @@ AddTrajectory <-
     #Filter Outlier Cells to Trajectory for High Resolution
     idxKeep <-
       which(knnDist[, 1] <= quantile(knnDist[, 1], post.filter.quantile))
-    dfTrajectory <- DataFrame(
+    dfTrajectory <- data.frame(
       row.names = rownames(data.use),
       Distance = knnDist[, 1],
       DistanceIdx = knnIdx[, 1] + knnDiff * knnDistQ
