@@ -249,7 +249,6 @@ TrajectoryPlot <- function(object = NULL,
   plotParams$randomize <- randomize
   plotParams$color <- as.vector(plotParams$color)
 
-
   out <- do.call(ArchR::ggPoint, plotParams)
   out <- out +
     theme_cowplot() + ggtitle(trajectory) +
