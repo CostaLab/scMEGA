@@ -314,7 +314,7 @@ PairCells <- function(object,
         " RNA cells"
       ))
 
-      message("Determing pairs through optimized bipartite matching ..\n")
+      message("Determing pairs through optimized bipartite matching ..")
       options("optmatch_max_problem_size" = Inf)
 
       cell_matches <-

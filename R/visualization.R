@@ -121,7 +121,7 @@ CompareCellProp <-
         geom_boxplot(aes_string(color = sample.annotation)) +
         facet_wrap(as.formula(paste("~", group.by)), nrow = 1) +
         ggpubr::stat_compare_means(comparisons = comparisons,
-                           method = method.test) +
+                                   method = method.test) +
         theme_cowplot() +
         xlab("") + ylab("") +
         theme(axis.text.x = element_blank(),
@@ -202,12 +202,15 @@ TrajectoryPlot <- function(object = NULL,
                            baseSize = 6,
                            addArrow = FALSE,
                            smoothWindow = 5) {
-  dfT <- DataFrame(object@meta.data[, trajectory])
+  dfT <- object@meta.data[, trajectory] %>%
+    as.data.frame()
+
   rownames(dfT) <- colnames(object)
   idxRemove <- which(is.na(dfT[, 1]))
-  df <-
-    DataFrame(object@reductions[[reduction]]@cell.embeddings[, 1:2])
-  dfT <- cbind(df, dfT[rownames(df),])
+  df <- object@reductions[[reduction]]@cell.embeddings[, 1:2] %>%
+    as.data.frame()
+
+  dfT <- cbind(df, dfT[rownames(df), ])
   colnames(dfT) <- c("DM1", "DM2", "PseudoTime")
 
 
@@ -222,10 +225,10 @@ TrajectoryPlot <- function(object = NULL,
   plotParams$discreteSet <- "stallion"
   plotParams$title <- trajectory
   plotAs <- "points"
-#    paste(plotParams$title, " colored by\ncolData : ", name)
-#  if (is.null(plotAs)) {
-#    plotAs <- "hexplot"
-#  }
+  #    paste(plotParams$title, " colored by\ncolData : ", name)
+  #  if (is.null(plotAs)) {
+  #    plotAs <- "hexplot"
+  #  }
 
   plotParams$xlabel <- "DM1"
   plotParams$ylabel <- "DM2"
@@ -256,8 +259,8 @@ TrajectoryPlot <- function(object = NULL,
 
 
   dfT$value <- plotParams$color
-  dfT <- dfT[order(dfT$PseudoTime), ]
-  dfT <- dfT[!is.na(dfT$PseudoTime), ]
+  dfT <- dfT[order(dfT$PseudoTime),]
+  dfT <- dfT[!is.na(dfT$PseudoTime),]
 
   colnames(dfT) <- c("x", "y", "PseudoTime", "value")
   dfT <- as.data.frame(dfT)
@@ -336,7 +339,7 @@ TrajectoryHeatmap <- function(trajectory,
   rSNA <- rowSums(is.na(mat))
   if (sum(rSNA > 0) > 0) {
     message("Removing rows with NA values...")
-    mat <- mat[rSNA == 0, ]#Remove NA Rows
+    mat <- mat[rSNA == 0,]#Remove NA Rows
   }
 
   varQ <- ArchR:::.getQuantiles(matrixStats::rowVars(mat))
@@ -344,7 +347,7 @@ TrajectoryHeatmap <- function(trajectory,
   orderedVar <- FALSE
 
   if (is.null(rowOrder)) {
-    mat <- mat[order(varQ, decreasing = TRUE), ]
+    mat <- mat[order(varQ, decreasing = TRUE),]
     orderedVar <- TRUE
     if (is.null(varCutOff) & is.null(maxFeatures)) {
       n <- nrow(mat)
@@ -356,7 +359,7 @@ TrajectoryHeatmap <- function(trajectory,
       n <- min((1 - varCutOff) * nrow(mat), maxFeatures)
     }
     n <- min(n, nrow(mat))
-    mat <- mat[head(seq_len(nrow(mat)), n),]
+    mat <- mat[head(seq_len(nrow(mat)), n), ]
   }
 
 
@@ -391,7 +394,7 @@ TrajectoryHeatmap <- function(trajectory,
   }
 
   ht <- ArchR:::.ArchRHeatmap(
-    mat = mat[idx, ],
+    mat = mat[idx,],
     scale = FALSE,
     limits = c(min(mat), max(mat)),
     color = pal,
@@ -399,14 +402,14 @@ TrajectoryHeatmap <- function(trajectory,
     clusterRows = FALSE,
     labelRows = labelRows,
     labelCols = FALSE,
-    customRowLabel = match(idxLabel, rownames(mat[idx,])),
+    customRowLabel = match(idxLabel, rownames(mat[idx, ])),
     showColDendrogram = TRUE,
     name = name,
     draw = FALSE
   )
 
   if (returnMatrix) {
-    return(mat[idx, ])
+    return(mat[idx,])
   } else{
     return(ht)
   }
