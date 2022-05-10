@@ -4,3 +4,6 @@
 .Ruserdata
 test
 vignettes/*.rds
+vignettes/.ipynb_checkpoints/
+.ipynb_checkpoints/
+R/.ipynb_checkpoints/
