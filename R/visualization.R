@@ -284,6 +284,40 @@ TrajectoryPlot <- function(object = NULL,
 }
 
 
+#' Plot trajectory heatmap
+#'
+#' This function generates a heatmap to visualize the data along inferred trajectory.
+#' It was modified from the package ArchR \code{\link{plotTrajectoryHeatmap}}.
+#' For more details, check here \url{https://www.archrproject.com/reference/plotTrajectoryHeatmap.html}.
+#'
+#'
+#' @param trajectory A SummarizedExperiment object that results from calling \code{\link{GetTrajectory}}
+#' @param varCutOff The "Variance Quantile Cutoff" to be used for identifying
+#' the top variable features across the given trajectory.
+#' Only features with a variance above the provided quantile will be retained.
+#' @param maxFeatures The maximum number of features, ordered by variance,
+#' to consider from useMatrix when generating a trajectory
+#' @param scaleRows A boolean value that indicates whether row-wise z-scores
+#' should be computed on the matrix
+#' @param rowOrder If wanting to set the order of rows to be plotted, the
+#' indices (integer or character correpsonding to rownmaes) can be provided here.
+#' @param limits A numeric vector of two numbers that represent the lower and
+#' upper limits of the heatmap color scheme.
+#' @param labelRows A boolean value that indicates whether all rows should be
+#' labeled on the side of the heatmap.
+#' @param pal A custom continuous palette used to override the default
+#' continuous palette for the heatmap.
+#' @param labelMarkers A character vector listing the rownames that should be
+#' labeled on the side of the heatmap.
+#' @param labelTop A number indicating how many of the top N features,
+#' based on variance of the matrix
+#' @param name Name of the matrix
+#' @param returnMatrix A boolean value that indicates whether the final heatmap
+#' matrix should be returned in lieu of plotting the actual heatmap.
+#'
+#' @return a heatmap
+#' @export
+#'
 TrajectoryHeatmap <- function(trajectory,
                               varCutOff = 0.9,
                               maxFeatures = 25000,

@@ -206,7 +206,7 @@ PairCells <- function(object,
 
     # Find connected subgraphs
     sub.graphs <- igraph::clusters(knn.graph)
-    message(glue(
+    message(glue::glue(
       "# KNN subgraphs detected: {length(unique(sub.graphs$membership))}"
     ))
 
