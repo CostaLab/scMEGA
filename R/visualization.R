@@ -68,7 +68,8 @@ CellPropPlot <- function(object,
 #' @param cols Specific colors for plotting
 #' @param comparisons A list of length-2 vectors used to compare the proportion.
 #' This parameter is passed to the function stat_compare_means.
-#'
+#' @import dplyr
+#' @import ggplot2
 #' @return A ggplot object
 #' @export
 #'
@@ -122,7 +123,7 @@ CompareCellProp <-
         facet_wrap(as.formula(paste("~", group.by)), nrow = 1) +
         ggpubr::stat_compare_means(comparisons = comparisons,
                                    method = method.test) +
-        theme_cowplot() +
+        cowplot::theme_cowplot() +
         xlab("") + ylab("") +
         theme(axis.text.x = element_blank(),
               legend.title = element_blank())
@@ -132,7 +133,7 @@ CompareCellProp <-
         ggplot(data = df, aes_string(x = sample.annotation, y = proportion)) +
         geom_boxplot(aes_string(color = sample.annotation)) +
         facet_wrap(as.formula(paste("~", group.by)), nrow = 1) +
-        theme_cowplot() +
+        cowplot::theme_cowplot() +
         xlab("") + ylab("") +
         theme(axis.text.x = element_blank(),
               legend.title = element_blank())
@@ -175,7 +176,8 @@ CompareCellProp <-
 #' @param smoothWindow An integer value indicating the
 #' smoothing window for creating inferred Arrow overlay on to embedding.
 #'
-#' @importFrom dplyr %>%
+#' @import dplyr
+#' @import ggplot2
 #' @return A ggplot object
 #' @export
 #'
