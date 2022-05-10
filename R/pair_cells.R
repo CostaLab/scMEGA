@@ -1,4 +1,4 @@
-CoembeddingData <- function(obj.rna, obj.atac, gene.activity, reference.assay = "RNA",
+CoembedData <- function(obj.rna, obj.atac, gene.activity, reference.assay = "RNA",
                        reduction = "cca", weight.reduction = NULL, verbose = TRUE){
     ## make sure there are the same number of cells in atac and gene activity data
     if(ncol(obj.atac) != ncol(gene.activity)){
@@ -14,8 +14,8 @@ CoembeddingData <- function(obj.rna, obj.atac, gene.activity, reference.assay = 
 
     message("Performing data integration using Seurat...")
     
-    obj.atac[['RNA']] <- CreateAssayObject(counts = gene.activity[gene.use, ])
-    DefaultAssay(obj.atac) <- "RNA"
+    obj.atac[['GeneActivity']] <- CreateAssayObject(counts = gene.activity[gene.use, ])
+    DefaultAssay(obj.atac) <- "GeneActivity"
     
     obj.atac <- obj.atac %>%
         NormalizeData(verbose = verbose) %>%
@@ -26,7 +26,7 @@ CoembeddingData <- function(obj.rna, obj.atac, gene.activity, reference.assay = 
                                           query = obj.atac,
                                           features = gene.use,
                                           reference.assay = reference.assay,
-                                          query.assay = "RNA",
+                                          query.assay = "GeneActivity",
                                           reduction = reduction,
                                            verbose = verbose)
     
@@ -35,25 +35,24 @@ CoembeddingData <- function(obj.rna, obj.atac, gene.activity, reference.assay = 
 
     # refdata (input) contains a scRNA-seq expression matrix for the scRNA-seq cells. 
     # imputation (output) will contain an imputed scRNA-seq matrix for each of the ATAC cells
-    imputation <- TransferData(anchorset = transfer.anchors,
+    obj.atac[["RNA"]] <- TransferData(anchorset = transfer.anchors,
                                refdata = refdata,
                                weight.reduction = obj.atac[[weight.reduction]],
                                dims = 1:30)
 
-    obj.imputation <- CreateSeuratObject(counts = imputation, assay = "RNA")
-    DefaultAssay(obj.imputation) <- "RNA"
+    DefaultAssay(obj.atac) <- "RNA"
     
-    meta.data.use <- intersect(colnames(obj.atac@meta.data),
-                              colnames(obj.rna@meta.data))
+    # meta.data.use <- intersect(colnames(obj.atac@meta.data),
+    #                           colnames(obj.rna@meta.data))
     
-    obj.imputation <- AddMetaData(obj.imputation, obj.atac@meta.data[, meta.data.use])
-    obj.rna@meta.data <- obj.rna@meta.data[, meta.data.use]
+    # obj.imputation <- AddMetaData(obj.imputation, obj.atac@meta.data[, meta.data.use])
+    # obj.rna@meta.data <- obj.rna@meta.data[, meta.data.use]
     
     obj.rna$tech <- "RNA"
-    obj.imputation$tech <- "ATAC"
+    obj.atac$tech <- "ATAC"
     
     # merge the objects
-    coembed <- merge(x = obj.imputation, y = obj.rna)
+    coembed <- merge(x = obj.atac, y = obj.rna)
 
     #Finally, we run PCA and UMAP on this combined object, to visualize the co-embedding of both datasets
     message("Coemebdding the data...")
@@ -67,9 +66,9 @@ CoembeddingData <- function(obj.rna, obj.atac, gene.activity, reference.assay = 
 }
 
 
-PairingCells <- function(obj.coembed, reduction = NULL, graph.name = NULL,
-                         paired.by = NULL,
-                         assay = "RNA", mode = "geodesic",
+PairCells <- function(object, reduction = NULL, pair.by = NULL, 
+                      ident1 = "ATAC", ident2 = "RNA", assay = "RNA",
+                      graph.name = NULL, pair.mode = "geodesic",
                          tol = 0.0001, search.range = 0.2, max.multimatch = 5, 
                          min_subgraph_size = 50,seed = 42,
                         k = 300, n.cores = 30){
@@ -78,30 +77,35 @@ PairingCells <- function(obj.coembed, reduction = NULL, graph.name = NULL,
         stop("Please specify dimensional reduction to use for the pairing cells!")
     }
     
-    message("Getting dimensional reduction data for pairing cells...")
-    obj.atac <- subset(obj.coembed, tech == "ATAC")
-    obj.rna <- subset(obj.coembed, tech == "RNA")
+    if(is.null(pair.by)){
+        stop("Please specify how to split the data for pairing!")
+    }
     
-    embedding.atac <- Embeddings(object = obj.atac, reduction = reduction)
-    embedding.rna <- Embeddings(object = obj.rna, reduction = reduction)
+
+    message("Getting dimensional reduction data for pairing cells...")
+    obj.1 <- object[, object@meta.data[[pair.by]] == ident1]
+    obj.2 <- object[, object@meta.data[[pair.by]] == ident2]
+    
+    embedding.atac <- Embeddings(object = obj.1, reduction = reduction)
+    embedding.rna <- Embeddings(object = obj.2, reduction = reduction)
     
     embedding <- rbind(embedding.atac, embedding.rna)
     n.cells <- dim(embedding)[1]
     
     # release memory
-    rm(obj.atac)
-    rm(obj.rna)
+    rm(obj.1)
+    rm(obj.2)
     gc()
     
-    message(glue("Pairing cells using {mode} mode..."))
+    message(glue("Pairing cells using {pair.mode} mode..."))
     
-    if (mode == "geodesic"){
+    if (pair.mode == "geodesic"){
         message("Constructing KNN graph for computing geodesic distance ..")
         
-        obj.coembed <- FindNeighbors(obj.coembed, reduction = reduction, assay = "RNA",
-                                    verbose = FALSE)
+        object <- FindNeighbors(object, reduction = reduction, assay = "RNA",
+                                verbose = FALSE)
         
-        adjmatrix <- obj.coembed@graphs$RNA_nn
+        adjmatrix <- object@graphs$RNA_nn
         diag(adjmatrix) <- 0
         #adj.matrix <- as.matrix(x = obj.coembed@graphs$RNA_nn)
         #adj.matrix <- adj.matrix + t(adj.matrix)
@@ -118,7 +122,7 @@ PairingCells <- function(obj.coembed, reduction = NULL, graph.name = NULL,
         sub.graphs <- clusters(knn.graph)
         message(glue("# KNN subgraphs detected: {length(unique(sub.graphs$membership))}"))
         
-        obj.coembed$subgraph <- sub.graphs$membership
+        object$subgraph <- sub.graphs$membership
 
         all.pairs <- NULL
 
@@ -134,7 +138,7 @@ PairingCells <- function(obj.coembed, reduction = NULL, graph.name = NULL,
           knn.sub.graph <- induced_subgraph(knn.graph, which(sub.graph.nodes))
 
           # Use down-sampling to make sure in this subgraph the number of ATAC and RNA cells are balanced
-          subgraph_cells <- colnames(obj.coembed)[sub.graph.nodes]
+          subgraph_cells <- colnames(object)[sub.graph.nodes]
           n_ATAC <- sum(subgraph_cells %in% rownames(embedding.atac))
           n_RNA <- sum(subgraph_cells %in% rownames(embedding.rna))
 
@@ -229,16 +233,14 @@ PairingCells <- function(obj.coembed, reduction = NULL, graph.name = NULL,
   }
     
     # pairs are sometimes repreated, here we make the results unique
-#    all.pairs <- unique(all.pairs)
-    
-    #print(length(unique(all.pairs)))
     all.pairs <- all.pairs[!duplicated(all.pairs$ATAC), ]
     all.pairs$cell_name <- paste0("cell_", 1:nrow(all.pairs))
     
     return(all.pairs)
 }
 
-CreatePairedObject <- function(df.pair, obj.rna, obj.atac, 
+CreatePairedObject <- function(df.pair, 
+                               object,
                                use.assay1 = NULL, 
                                use.assay2 = NULL,
                                sep = c("-", "-")){
@@ -251,57 +253,40 @@ CreatePairedObject <- function(df.pair, obj.rna, obj.atac,
         stop("Please provide the name for assay from ATAC object")
     }
     
-    message("Merging the count data...")
-    rna.counts <- GetAssayData(obj.rna, assay = use.assay1, slot = "counts")[, df.pair$RNA]
-    atac.counts <- GetAssayData(obj.atac, assay = use.assay2, slot = "counts")[, df.pair$ATAC]
+    message("Merging objects...")
+    rna.counts <- GetAssayData(object, assay = use.assay1, slot = "counts")[, df.pair$RNA]
+    atac.counts <- GetAssayData(object, assay = use.assay2, slot = "counts")[, df.pair$ATAC]
 
-    rna.data <- GetAssayData(obj.rna, assay = use.assay1, slot = "data")[, df.pair$RNA]
-    atac.data <- GetAssayData(obj.atac, assay = use.assay2, slot = "data")[, df.pair$ATAC]
-    
     colnames(rna.counts) <- df.pair$cell_name
-    colnames(rna.data) <- df.pair$cell_name
-    
     colnames(atac.counts) <- df.pair$cell_name
-    colnames(atac.data) <- df.pair$cell_name
     
     # create a Seurat object containing the RNA adata
-    obj <- CreateSeuratObject(
+    obj.pair <- CreateSeuratObject(
       counts = rna.counts,
-        data = rna.data,
       assay = use.assay1
     )
 
     # create ATAC assay and add it to the object
-    obj[[use.assay2]] <- CreateChromatinAssay(
-      counts = atac.counts,
-      sep = sep,
+    obj.pair[[use.assay2]] <- CreateChromatinAssay(
+        counts = atac.counts,
+        sep = sep,
         min.cells = 10
     )
 
-    message("Merging the dimension reductions...")
-    DefaultAssay(obj) <- use.assay1
-    for(reduction in names(obj.rna@reductions)){
-        embedding <- Embeddings(obj.rna, reduction = reduction)[df.pair$RNA, ]
+    for(reduction in names(object@reductions)){
+        embedding <- Embeddings(object, reduction = reduction)[df.pair$RNA, ]
         rownames(embedding) <- df.pair$cell_name
-        obj[[glue("{reduction}_{use.assay1}")]] <- CreateDimReducObject(embeddings = embedding,  
-                                                                       assay = DefaultAssay(obj))
-    }
-    
-    DefaultAssay(obj) <- use.assay2
-    for(reduction in names(obj.atac@reductions)){
-        embedding <- Embeddings(obj.atac, reduction = reduction)[df.pair$ATAC, ]
-        rownames(embedding) <- df.pair$cell_name
-        obj[[glue("{reduction}_{use.assay2}")]] <- CreateDimReducObject(embeddings = embedding,  
-                                                                       assay = DefaultAssay(obj))
+        obj.pair[[reduction]] <- CreateDimReducObject(embeddings = embedding,  
+                                                 assay = DefaultAssay(obj.pair))
     }
       
     # add metadata, here we use the metadata from RNA assay
-    meta.data <- obj.rna@meta.data[df.pair$RNA, ]
+    meta.data <- object@meta.data[df.pair$RNA, ]
     rownames(meta.data) <- df.pair$cell_name
 
-    obj <- AddMetaData(obj, metadata = meta.data)
+    obj.pair <- AddMetaData(obj.pair, metadata = meta.data)
     
-    return(obj)
+    return(obj.pair)
 
 }
 
