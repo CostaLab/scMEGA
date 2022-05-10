@@ -208,7 +208,8 @@ TrajectoryPlot <- function(object = NULL,
                            addArrow = FALSE,
                            smoothWindow = 5) {
 
-  require(dplyr)
+  # explicitly load dplyr package for ArchR
+  require(dplyr, quietly = TRUE)
 
   dfT <- object@meta.data[, trajectory] %>%
       as.data.frame()
