@@ -14,14 +14,60 @@ PeakToGene <- function(peak.mat, gene.mat, genome = "hg19",
         gene_anno <- geneAnnoMm10
     }
 
-    groupMatRNA <- plotTrajectoryHeatmap(trajGEX,
-                        varCutOff = 0.9,
-                        pal = paletteContinuous(set = "horizonExtra"),
-                        limits = c(-2, 2),
-                           returnMatrix = TRUE)
+        ## create object for RNA data
+    genes <- gene_anno$genes
+    gene.use <- intersect(elementMetadata(genes)[, "symbol"], rownames(gene.mat))
+
+    genes <- genes[elementMetadata(genes)[, "symbol"] %in% gene.use]
+    gene.mat <- gene.mat[gene.use, ]
+
+    gene_start <- ifelse(genes@strand == "+", 
+                 genes@ranges@start, 
+                 genes@ranges@start + genes@ranges@width - 1)
+
+    genes <- GRanges(genes@seqnames, 
+                       ranges = IRanges(gene_start, 
+                               width = 1), 
+                         name = genes$symbol, 
+            gene_id = genes$gene_id,
+                        strand = genes@strand)
+
+    seRNA <- SummarizedExperiment(assays = SimpleList(RNA = gene.mat), 
+                                  rowRanges = genes)
     
-    seRNA <- SummarizedExperiment(assays = SimpleList(RNA = groupMatRNA), 
-                              rowRanges = geneStart)
+    ## create object for ATAC data
+    df_peak <- stringr::str_split_fixed(rownames(groupMatATAC), "-", 3)
+
+    peakSet <- GRanges(df_peak[, 1], 
+                       IRanges(start = as.numeric(df_peak[, 2]),
+                               end = as.numeric(df_peak[, 3])))
+
+    seATAC <- SummarizedExperiment(assays = SimpleList(ATAC = peak.mat),
+                                  rowRanges = peakSet)
+    
+    ## find putative peak-to-gene
+    o <- DataFrame(findOverlaps(resize(seRNA, 2 * max.dist + 1, "center"),
+                                resize(rowRanges(seATAC), 1, "center"),
+                                ignore.strand = TRUE))
+    o$distance <- IRanges::distance(rowRanges(seRNA)[o[, 1]], 
+                           rowRanges(seATAC)[o[, 2]])
+    colnames(o) <- c("gene_idx", "peak_idx", "distance")
+
+    df <- rowRanges(seATAC)[o$peak_idx, ]
+
+    o$gene <- rowData(seRNA)[o$gene_idx, ]$name
+    o$peak <- paste0(df@seqnames, "_",
+                     as.data.frame(df@ranges)$start, "_",
+                     as.data.frame(df@ranges)$end)
+    
+    
+    ## compute correlation
+    o$Correlation <- .rowCorCpp(as.integer(o$peak_idx), 
+                               as.integer(o$gene_idx), 
+                               assay(seATAC), 
+                               assay(seRNA))
+    
+    return(o)
     
 
 }
