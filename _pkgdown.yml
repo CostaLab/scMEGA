@@ -17,6 +17,8 @@ navbar:
             href: "articles/GRN-cardiomyocyte.html"
           - text: "Infer GRN for myofibroblast"
             href: "articles/GRN-fibroblast.html"
+      - text: "Reference"
+        href: "reference/index.html"
     right:
       - icon: fa-github
         href: "https://github.com/CostaLab/scMEGA"

@@ -19,8 +19,12 @@ Suggests:
 VignetteBuilder: knitr
 LinkingTo: Rcpp
 Imports: 
+    Rcpp (>= 1.0.7),
     Seurat,
     dplyr,
     optmatch,
-    Signac
+    Signac,
+    ggplot2,
+    cowplot,
+    ggpubr
 RoxygenNote: 7.1.2
