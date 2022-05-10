@@ -178,7 +178,9 @@ CompareCellProp <-
 #' smoothing window for creating inferred Arrow overlay on to embedding.
 #'
 #' @import dplyr
+#' @import cowplot
 #' @import ggplot2
+#'
 #' @return A ggplot object
 #' @export
 #'
@@ -258,7 +260,7 @@ TrajectoryPlot <- function(object = NULL,
       axis.ticks.x = element_blank(),
       axis.text.y = element_blank(),
       axis.ticks.y = element_blank(),
-      plot.margin = margin(0, 0, 0, 0, "cm"),
+      plot.margin = margin(0, 0, 0, 0, "cm")
     )
 
 
