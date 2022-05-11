@@ -145,8 +145,8 @@ CompareCellProp <-
   }
 
 
-CorPlot <- function(df_cor){
-  p <- ggplot(data = df_cor, aes(x = reorder(tfs, -correlation), y = correlation)) +
+CorrelationPlot <- function(df){
+  p <- ggplot(data = df, aes(x = reorder(tfs, -correlation), y = correlation)) +
     geom_point() +
     ggrepel::geom_text_repel(aes(label = tfs),
                              max.overlaps = 100) +
@@ -157,6 +157,45 @@ CorPlot <- function(df_cor){
           axis.text.x = element_blank())
 
   return(p)
+
+}
+
+CorrelationHeatmap <- function(trajMM, trajRNA, df_cor){
+    trajMM2 <- trajMM[df_cor$tfs, ]
+    trajRNA2 <- trajRNA[df_cor$tfs, ]
+    
+    trajCombined <- trajMM2
+    
+    assay(trajCombined, withDimnames=FALSE) <- t(apply(assay(trajRNA2), 1, scale)) + 
+        t(apply(assay(trajMM2), 1, scale))
+
+    combinedMat <- TrajectoryHeatmap(trajCombined,
+                                             returnMat = TRUE,
+                                             varCutOff = 0)
+
+    rowOrder <- match(rownames(combinedMat), rownames(trajMM2))
+    
+    ht1 <- TrajectoryHeatmap(trajMM2,
+                                 pal = paletteContinuous(set = "solarExtra"),
+                                 varCutOff = 0,
+                                 rowOrder = rowOrder,
+                                 limits = c(-2, 2),
+                                 labelRows = TRUE,
+                                labelTop = 100,
+                        name = "TF activity")
+
+    ht2 <- TrajectoryHeatmap(trajRNA2,
+                                     pal = paletteContinuous(set = "horizonExtra"),
+                                     varCutOff = 0,
+                                     rowOrder = rowOrder,
+                                     limits = c(-2, 2),
+                                     labelRows = TRUE,
+                                    labelTop = 100,
+                                name = "Gene expression")
+    
+    ht <- ht1 + ht2
+    
+    return(ht)
 
 }
 
