@@ -65,9 +65,9 @@ AddTrajectory <-
       stop("Please prodive the dimensional reduction!")
     }
 
-#    df.group <- DataFrame(object@meta.data[, group.by])
+    #    df.group <- DataFrame(object@meta.data[, group.by])
     df.group <- object@meta.data[, group.by] %>%
-        as.data.frame()
+      as.data.frame()
     rownames(df.group) <- colnames(object)
     df.group <- df.group[df.group[, 1] %in% trajectory, , drop = F]
 
@@ -78,7 +78,8 @@ AddTrajectory <-
     if (is.null(dims)) {
       data.use <- Seurat::Embeddings(object, reduction = reduction)
     } else{
-      data.use <- Seurat::Embeddings(object, reduction = reduction)[, dims]
+      data.use <-
+        Seurat::Embeddings(object, reduction = reduction)[, dims]
     }
 
     data.use <- data.use[rownames(df.group), , drop = FALSE]
@@ -174,7 +175,7 @@ AddTrajectory <-
     #Estimate place along trajectory
     knnIdx <- knnObj[[1]]
     knnDist <- knnObj[[2]]
-    knnDiff <- ifelse(knnIdx[, 2] > knnIdx[, 3], 1, -1)
+    knnDiff <- ifelse(knnIdx[, 2] > knnIdx[, 3], 1,-1)
     knnDistQ <- ArchR:::.getQuantiles(knnDist[, 1])
 
     #Filter Outlier Cells to Trajectory for High Resolution
@@ -281,7 +282,7 @@ GetTrajectory <- function(object = NULL,
 
   message("Creating Trajectory Group Matrix..")
   data.use <- GetAssayData(object, assay = assay, slot = slot)
-    
+
   groupMat <- lapply(1:length(groupList), function(x) {
     cell_names <- groupList[[x]]
     mat <- Matrix::rowMeans(data.use[, cell_names])
@@ -371,11 +372,11 @@ GetCorrelation <- function(trajectory1,
     message(glue::glue("Find {length(features.use)} shared features!"))
   }
 
-  mat1 <- mat1[features.use, ]
-  mat2 <- mat2[features.use, ]
+  mat1 <- mat1[features.use,]
+  mat2 <- mat2[features.use,]
 
   df_cor <- lapply(1:length(features.use), function(x) {
-    cor.res <- suppressWarnings(cor.test(mat1[x, ], mat2[x, ]))
+    cor.res <- suppressWarnings(cor.test(mat1[x,], mat2[x,]))
     p.value <- cor.res$p.value
     estimate <- cor.res$estimate[[1]]
     df <- data.frame(estimate, p.value)

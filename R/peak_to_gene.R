@@ -37,7 +37,7 @@ PeakToGene <- function(peak.mat,
     intersect(elementMetadata(genes)[, "symbol"], rownames(gene.mat))
 
   genes <- genes[elementMetadata(genes)[, "symbol"] %in% gene.use]
-  gene.mat <- gene.mat[gene.use,]
+  gene.mat <- gene.mat[gene.use, ]
 
   gene_start <- ifelse(genes@strand == "+",
                        genes@ranges@start,
@@ -79,9 +79,9 @@ PeakToGene <- function(peak.mat,
                                   rowRanges(seATAC)[o[, 2]])
   colnames(o) <- c("gene_idx", "peak_idx", "distance")
 
-  df <- rowRanges(seATAC)[o$peak_idx,]
+  df <- rowRanges(seATAC)[o$peak_idx, ]
 
-  o$gene <- rowData(seRNA)[o$gene_idx,]$name
+  o$gene <- rowData(seRNA)[o$gene_idx, ]$name
   o$peak <- paste0(
     df@seqnames,
     "-",
@@ -105,7 +105,7 @@ PeakToGene <- function(peak.mat,
 
   o$Pval <- 2 * pt(-abs(o$TStat), ncol(seATAC) - 2)
   o$FDR <- p.adjust(o$Pval, method = "fdr")
-  o <- o[!is.na(o$FDR),]
+  o <- o[!is.na(o$FDR), ]
 
   return(o)
 

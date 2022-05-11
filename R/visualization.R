@@ -157,7 +157,7 @@ CompareCellProp <-
 #'
 CorrelationPlot <- function(df) {
   p <-
-    ggplot(data = df, aes(x = reorder(tfs,-correlation), y = correlation)) +
+    ggplot(data = df, aes(x = reorder(tfs, -correlation), y = correlation)) +
     geom_point() +
     ggrepel::geom_text_repel(aes(label = tfs),
                              max.overlaps = 100) +
@@ -208,10 +208,11 @@ CorrelationHeatmap <- function(trajectory1,
     trajectory1,
     pal = paletteContinuous(set = "solarExtra"),
     varCutOff = 0,
+    maxFeatures = nrow(trajectory1),
     rowOrder = rowOrder,
     limits = c(-2, 2),
     labelRows = TRUE,
-    labelTop = 100,
+    labelTop = 50,
     name = name1
   )
 
@@ -219,10 +220,11 @@ CorrelationHeatmap <- function(trajectory1,
     trajectory2,
     pal = paletteContinuous(set = "horizonExtra"),
     varCutOff = 0,
+    maxFeatures = nrow(trajectory2),
     rowOrder = rowOrder,
     limits = c(-2, 2),
     labelRows = TRUE,
-    labelTop = 100,
+    labelTop = 50,
     name = name2
   )
 
@@ -304,7 +306,7 @@ TrajectoryPlot <- function(object = NULL,
   df <- object@reductions[[reduction]]@cell.embeddings[, 1:2] %>%
     as.data.frame()
 
-  dfT <- cbind(df, dfT[rownames(df),])
+  dfT <- cbind(df, dfT[rownames(df), ])
   colnames(dfT) <- c("DM1", "DM2", "PseudoTime")
 
 
@@ -354,8 +356,8 @@ TrajectoryPlot <- function(object = NULL,
 
 
   dfT$value <- plotParams$color
-  dfT <- dfT[order(dfT$PseudoTime), ]
-  dfT <- dfT[!is.na(dfT$PseudoTime), ]
+  dfT <- dfT[order(dfT$PseudoTime),]
+  dfT <- dfT[!is.na(dfT$PseudoTime),]
 
   colnames(dfT) <- c("x", "y", "PseudoTime", "value")
   dfT <- as.data.frame(dfT)
@@ -434,7 +436,7 @@ TrajectoryHeatmap <- function(trajectory,
   rSNA <- rowSums(is.na(mat))
   if (sum(rSNA > 0) > 0) {
     message("Removing rows with NA values...")
-    mat <- mat[rSNA == 0, ]#Remove NA Rows
+    mat <- mat[rSNA == 0,]#Remove NA Rows
   }
 
   varQ <- ArchR:::.getQuantiles(matrixStats::rowVars(mat))
@@ -442,7 +444,7 @@ TrajectoryHeatmap <- function(trajectory,
   orderedVar <- FALSE
 
   if (is.null(rowOrder)) {
-    mat <- mat[order(varQ, decreasing = TRUE), ]
+    mat <- mat[order(varQ, decreasing = TRUE),]
     orderedVar <- TRUE
     if (is.null(varCutOff) & is.null(maxFeatures)) {
       n <- nrow(mat)
@@ -454,7 +456,7 @@ TrajectoryHeatmap <- function(trajectory,
       n <- min((1 - varCutOff) * nrow(mat), maxFeatures)
     }
     n <- min(n, nrow(mat))
-    mat <- mat[head(seq_len(nrow(mat)), n),]
+    mat <- mat[head(seq_len(nrow(mat)), n), ]
   }
 
 
@@ -489,7 +491,7 @@ TrajectoryHeatmap <- function(trajectory,
   }
 
   ht <- ArchR:::.ArchRHeatmap(
-    mat = mat[idx, ],
+    mat = mat[idx,],
     scale = FALSE,
     limits = c(min(mat), max(mat)),
     color = pal,
@@ -497,14 +499,14 @@ TrajectoryHeatmap <- function(trajectory,
     clusterRows = FALSE,
     labelRows = labelRows,
     labelCols = FALSE,
-    customRowLabel = match(idxLabel, rownames(mat[idx,])),
+    customRowLabel = match(idxLabel, rownames(mat[idx, ])),
     showColDendrogram = TRUE,
     name = name,
     draw = FALSE
   )
 
   if (returnMatrix) {
-    return(mat[idx, ])
+    return(mat[idx,])
   } else{
     return(ht)
   }

@@ -49,7 +49,7 @@ CoembedData <-
     message("Performing data integration using Seurat...")
 
     obj.atac[['GeneActivity']] <-
-      CreateAssayObject(counts = gene.activity[gene.use, ])
+      CreateAssayObject(counts = gene.activity[gene.use,])
     DefaultAssay(obj.atac) <- "GeneActivity"
 
     obj.atac <- obj.atac %>%
@@ -69,7 +69,7 @@ CoembedData <-
 
     # we here restrict the imputation to the selected genes
     refdata <-
-      GetAssayData(obj.rna, assay = reference.assay, slot = "data")[gene.use, ]
+      GetAssayData(obj.rna, assay = reference.assay, slot = "data")[gene.use,]
 
     # refdata (input) contains a scRNA-seq expression matrix for the scRNA-seq cells.
     # imputation (output) will contain an imputed scRNA-seq matrix for each of the ATAC cells
@@ -206,9 +206,11 @@ PairCells <- function(object,
 
     # Find connected subgraphs
     sub.graphs <- igraph::clusters(knn.graph)
-    message(glue::glue(
-      "# KNN subgraphs detected: {length(unique(sub.graphs$membership))}"
-    ))
+    message(
+      glue::glue(
+        "# KNN subgraphs detected: {length(unique(sub.graphs$membership))}"
+      )
+    )
 
     object$subgraph <- sub.graphs$membership
 
@@ -236,18 +238,18 @@ PairCells <- function(object,
       message("Total RNA cells in subgraph: ", n_RNA)
 
       embedding.atac.sub <-
-        embedding.atac[sub.graph.nodes[1:dim(embedding.atac)[1]],]
+        embedding.atac[sub.graph.nodes[1:dim(embedding.atac)[1]], ]
       embedding.rna.sub <-
-        embedding.rna[sub.graph.nodes[(dim(embedding.atac)[1] + 1):n.cells], ]
+        embedding.rna[sub.graph.nodes[(dim(embedding.atac)[1] + 1):n.cells],]
 
       if (n_ATAC > n_RNA) {
         set.seed(seed)
         embedding.atac.sub <-
-          embedding.atac.sub[sample(1:n_ATAC, n_RNA, replace = FALSE),]
+          embedding.atac.sub[sample(1:n_ATAC, n_RNA, replace = FALSE), ]
       } else if (n_ATAC < n_RNA) {
         set.seed(seed)
         embedding.rna.sub <-
-          embedding.rna.sub[sample(1:n_RNA, n_ATAC, replace = FALSE),]
+          embedding.rna.sub[sample(1:n_RNA, n_ATAC, replace = FALSE), ]
       }
 
       if (is.null(nrow(embedding.atac.sub)) |
@@ -288,8 +290,8 @@ PairCells <- function(object,
 
       for (i in 1:subgraph_size) {
         # Find RNA cells in the KNN of each ATAC cell
-        geodist_threshold <- sort(subgraph_geodist[i, ])[k_pairing]
-        knn_ind <- subgraph_geodist[i,] < geodist_threshold
+        geodist_threshold <- sort(subgraph_geodist[i,])[k_pairing]
+        knn_ind <- subgraph_geodist[i, ] < geodist_threshold
         geodist_knn[i, knn_ind] <- subgraph_eucdist[i, knn_ind]
 
         # Find ATAC cells in the KNN of each RNA cell
@@ -339,7 +341,7 @@ PairCells <- function(object,
   }
 
   # pairs are sometimes repreated, here we make the results unique
-  all.pairs <- all.pairs[!duplicated(all.pairs$ATAC), ]
+  all.pairs <- all.pairs[!duplicated(all.pairs$ATAC),]
   all.pairs$cell_name <- paste0("cell_", 1:nrow(all.pairs))
 
   return(all.pairs)
@@ -405,7 +407,7 @@ CreatePairedObject <- function(df.pair,
 
   for (reduction in names(object@reductions)) {
     embedding <-
-      Embeddings(object, reduction = reduction)[df.pair$RNA, ]
+      Embeddings(object, reduction = reduction)[df.pair$RNA,]
     rownames(embedding) <- df.pair$cell_name
     obj.pair[[reduction]] <-
       CreateDimReducObject(embeddings = embedding,
@@ -413,7 +415,7 @@ CreatePairedObject <- function(df.pair,
   }
 
   # add metadata, here we use the metadata from RNA assay
-  meta.data <- object@meta.data[df.pair$RNA, ]
+  meta.data <- object@meta.data[df.pair$RNA,]
   rownames(meta.data) <- df.pair$cell_name
 
   obj.pair <- AddMetaData(obj.pair, metadata = meta.data)
