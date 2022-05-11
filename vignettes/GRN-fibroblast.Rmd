@@ -68,7 +68,7 @@ First, we need to project the data into a common low-dimensional space. This is 
 ```{r, fig.height = 5, fig.width = 12, fig.align = "center"}
 obj.coembed <- CoembedData(obj.rna, obj.atac, gene.activity, 
                            weight.reduction = "harmony", 
-                           verbose = TRUE)
+                           verbose = FALSE)
 ```
 
 We next visualize the snRNA-seq and snATAC-seq in this shared space. The cells are coloded by
@@ -160,7 +160,7 @@ p <- CellPropPlot(obj.coembed,
 p
 ```
 
-Next, we identify the markers for each cluster and visualize the top 5.
+Next, we identify the markers for each cluster and visualize the top 3.
 ```{r, fig.height = 5, fig.width = 15, fig.align = "center"}
 all.markers <- FindAllMarkers(obj.coembed, 
                               only.pos = TRUE, 
@@ -174,7 +174,102 @@ p <- DotPlot(obj.coembed, features = unique(df$gene)) + RotatedAxis()
 
 print(p)
 ```
+The above dot plot demonstrates the top 3 markers per cluster and we can easily classify cluster
+3 and 7 as myofibroblasts. In addtion, two clusters (i.e., cluster 2 and 5) are markerd by RYR2, a well known marker gene for cardiomyocyte, likely due to the background noise. It is worth pointing out that in another study [Cells of the adult human heart](https://www.nature.com/articles/s41586-020-2797-4) a simialr fibroblast sub-population (marked by another cardiomyocyte-specific gene TNNT2) was also identified. Based on these, we decide to remove these two clusters.
 
+```{r, fig.height = 5, fig.width = 5, fig.align = "center"}
+Idents(obj.coembed) <- "RNA_snn_res.0.9"
+coembed.sub <- subset(obj.coembed, idents = c(2, 5), invert = TRUE)
+coembed.sub
+
+cols.clusters <- ArchR::paletteDiscrete(coembed.sub@meta.data[, "RNA_snn_res.0.9"])
+
+p <- DimPlot(coembed.sub, group.by = "RNA_snn_res.0.9", label = TRUE,
+             reduction = "umap_harmony", shuffle = TRUE, cols = cols) +
+    xlab("UMAP1") + ylab("UMAP2")
+
+p
+```
+
+We then re-do the UMAP embedding and clustering with a lower resolution.
+
+```{r, fig.height = 5, fig.width = 5, fig.align = "center"}
+coembed.sub <- RunUMAP(coembed.sub, 
+                       dims = 1:30, 
+                       reduction = 'harmony',
+                       reduction.name = "umap_harmony",
+                       reduction.key = 'umap_harmony_',
+                       verbose = FALSE,
+                       min.dist = 0.4)
+
+## re-clustering
+coembed.sub <- FindNeighbors(coembed.sub, reduction = "harmony", dims = 1:30)
+coembed.sub <- FindClusters(coembed.sub, resolution = 0.2, verbose = FALSE)
+
+cols <- ArchR::paletteDiscrete(coembed.sub@meta.data[, "RNA_snn_res.0.2"])
+    
+p <- DimPlot(coembed.sub, group.by = "RNA_snn_res.0.2", label = TRUE,
+             reduction = "umap_harmony", shuffle = TRUE) +
+    scale_color_manual(values = cols) +
+    xlab("UMAP1") + ylab("UMAP2")
+    
+p                
+```
+
+Marker genes are identified based on new clustering results.
+
+```{r, fig.height = 5, fig.width = 15, fig.align = "center"}
+all.markers <- FindAllMarkers(obj.coembed, 
+                              only.pos = TRUE, 
+                              min.pct = 0.25, logfc.threshold = 0.5)
+
+df <- all.markers %>%
+    group_by(cluster) %>%
+    slice_max(n = 10, order_by = avg_log2FC)
+
+p <- DotPlot(coembed.sub, features = unique(df$gene)) + RotatedAxis()
+
+print(p)
+```
+
+We can plot the snRNA-seq and snATAC-seq separately
+
+```{r, fig.height = 5, fig.width = 10, fig.align = "center"}
+p <- DimPlot(coembed.sub, group.by = "RNA_snn_res.0.2", label = TRUE,
+             reduction = "umap_harmony", shuffle = TRUE, split.by = "tech", 
+             cols = cols) +
+    xlab("UMAP1") + ylab("UMAP2")
+
+p
+```
+
+Visualize the cell proportion of each sub-population across all patients
+```{r, fig.height = 6, fig.width = 10, fig.align = "center"}
+p <- CellPropPlot(coembed.sub, 
+                   group.by = "RNA_snn_res.0.2", 
+                   prop.in = "patient_region_id", 
+                   cols = cols)
+
+p
+```
+
+Since we have annotated all patients into three major groups, i.e., myogenic, ischmeic, and fibrotic.
+we can also perform statistical test to check if any sub-popualtion are enriched in any of the above group. This can be down by the function _CompareCellProp_.
+
+```{r, fig.height = 6, fig.width = 10, fig.align = "center"}
+coembed.sub$patient_group <- factor(coembed.sub$patient_group, 
+                                    levels = c("myogenic", "ischemic", "fibrotic"))
+
+p <- CompareCellProp(object = coembed.sub, 
+                     group.by = "RNA_snn_res.0.2", 
+                     prop.in = "patient_region_id", 
+                      sample.annotation = "patient_group",
+                    comparisons = list(c("myogenic", "ischemic"),
+                                       c("ischemic", "fibrotic"),
+                                       c("myogenic", "fibrotic")))
+
+p
+```
 
 ## Trajectory identification
 ## TFs and genes selection
