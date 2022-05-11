@@ -3,6 +3,6 @@
 
 #' @export
 rowCorCpp <- function(idxX, idxY, X, Y) {
-    .Call('_scMEGA_rowCorCpp', PACKAGE = 'scMEGA', idxX, idxY, X, Y)
+    .Call(`_scMEGA_rowCorCpp`, idxX, idxY, X, Y)
 }
 

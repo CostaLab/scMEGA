@@ -198,8 +198,8 @@ CorrelationHeatmap <- function(trajectory1, trajectory2, df_cor){
         t(apply(assay(trajMM2), 1, scale))
 
     combinedMat <- TrajectoryHeatmap(trajCombined,
-                                             returnMat = TRUE,
-                                             varCutOff = 0)
+                                     returnMatrix = TRUE,
+                                     varCutOff = 0)
 
     rowOrder <- match(rownames(combinedMat), rownames(trajMM2))
 

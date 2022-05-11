@@ -7,8 +7,12 @@
 #' @param genome Which genome to use. Currently available are: hg19, hg38, mm9,
 #' and mm10
 #' @param max.dist The maximum distance between a peak and a gene
-#'
+## usethis namespace: start
+#' @useDynLib scMEGA, .registration = TRUE
+## usethis namespace: end
+## usethis namespace: start
 #' @importFrom Rcpp sourceCpp
+## usethis namespace: end
 #' @return A data frame containing all peak-to-gene links
 #' @export
 #'
