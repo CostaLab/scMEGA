@@ -13,96 +13,128 @@
 #' @return A data frame containing all peak-to-gene links
 #' @export
 #'
-PeakToGene <- function(peak.mat, gene.mat, genome = "hg19",
-                      max.dist = 250000){
-    if(!(genome %in% c("hg19", "hg38", "mm9", "mm10"))){
-        stop("Available genome are: hg19, hg38, mm9, and mm10!")
-    }
+PeakToGene <- function(peak.mat,
+                       gene.mat,
+                       genome = "hg19",
+                       max.dist = 250000) {
+  if (!(genome %in% c("hg19", "hg38", "mm9", "mm10"))) {
+    stop("Available genome are: hg19, hg38, mm9, and mm10!")
+  }
 
-    if(genome == "hg19"){
-        gene_anno <- geneAnnoHg19
-    } else if(genome == "hg38"){
-        gene_anno <- geneAnnoHg38
-    } else if(genome == "mm9"){
-        gene_anno <- geneAnnoMm9
-    } else if(genome == "mm10"){
-        gene_anno <- geneAnnoMm10
-    }
+  if (genome == "hg19") {
+    gene_anno <- geneAnnoHg19
+  } else if (genome == "hg38") {
+    gene_anno <- geneAnnoHg38
+  } else if (genome == "mm9") {
+    gene_anno <- geneAnnoMm9
+  } else if (genome == "mm10") {
+    gene_anno <- geneAnnoMm10
+  }
 
-        ## create object for RNA data
-    genes <- gene_anno$genes
-    gene.use <- intersect(elementMetadata(genes)[, "symbol"], rownames(gene.mat))
+  ## create object for RNA data
+  genes <- gene_anno$genes
+  gene.use <-
+    intersect(elementMetadata(genes)[, "symbol"], rownames(gene.mat))
 
-    genes <- genes[elementMetadata(genes)[, "symbol"] %in% gene.use]
-    gene.mat <- gene.mat[gene.use, ]
+  genes <- genes[elementMetadata(genes)[, "symbol"] %in% gene.use]
+  gene.mat <- gene.mat[gene.use,]
 
-    gene_start <- ifelse(genes@strand == "+",
-                 genes@ranges@start,
-                 genes@ranges@start + genes@ranges@width - 1)
+  gene_start <- ifelse(genes@strand == "+",
+                       genes@ranges@start,
+                       genes@ranges@start + genes@ranges@width - 1)
 
-    genes <- GRanges(genes@seqnames,
-                       ranges = IRanges(gene_start,
-                               width = 1),
-                         name = genes$symbol,
-            gene_id = genes$gene_id,
-                        strand = genes@strand)
+  genes <- GRanges(
+    genes@seqnames,
+    ranges = IRanges(gene_start,
+                     width = 1),
+    name = genes$symbol,
+    gene_id = genes$gene_id,
+    strand = genes@strand
+  )
 
-    seRNA <- SummarizedExperiment(assays = SimpleList(RNA = gene.mat),
-                                  rowRanges = genes)
+  seRNA <-
+    SummarizedExperiment(assays = SimpleList(RNA = gene.mat),
+                         rowRanges = genes)
 
-    ## create object for ATAC data
-    df_peak <- stringr::str_split_fixed(rownames(groupMatATAC), "-", 3)
+  ## create object for ATAC data
+  df_peak <-
+    stringr::str_split_fixed(rownames(groupMatATAC), "-", 3)
 
-    peakSet <- GRanges(df_peak[, 1],
-                       IRanges(start = as.numeric(df_peak[, 2]),
-                               end = as.numeric(df_peak[, 3])))
+  peakSet <- GRanges(df_peak[, 1],
+                     IRanges(start = as.numeric(df_peak[, 2]),
+                             end = as.numeric(df_peak[, 3])))
 
-    seATAC <- SummarizedExperiment(assays = SimpleList(ATAC = peak.mat),
-                                  rowRanges = peakSet)
+  seATAC <-
+    SummarizedExperiment(assays = SimpleList(ATAC = peak.mat),
+                         rowRanges = peakSet)
 
-    ## find putative peak-to-gene
-    o <- DataFrame(findOverlaps(resize(seRNA, 2 * max.dist + 1, "center"),
-                                resize(rowRanges(seATAC), 1, "center"),
-                                ignore.strand = TRUE))
-    o$distance <- IRanges::distance(rowRanges(seRNA)[o[, 1]],
-                           rowRanges(seATAC)[o[, 2]])
-    colnames(o) <- c("gene_idx", "peak_idx", "distance")
+  ## find putative peak-to-gene
+  o <-
+    DataFrame(findOverlaps(
+      resize(seRNA, 2 * max.dist + 1, "center"),
+      resize(rowRanges(seATAC), 1, "center"),
+      ignore.strand = TRUE
+    ))
+  o$distance <- IRanges::distance(rowRanges(seRNA)[o[, 1]],
+                                  rowRanges(seATAC)[o[, 2]])
+  colnames(o) <- c("gene_idx", "peak_idx", "distance")
 
-    df <- rowRanges(seATAC)[o$peak_idx, ]
+  df <- rowRanges(seATAC)[o$peak_idx,]
 
-    o$gene <- rowData(seRNA)[o$gene_idx, ]$name
-    o$peak <- paste0(df@seqnames, "_",
-                     as.data.frame(df@ranges)$start, "_",
-                     as.data.frame(df@ranges)$end)
+  o$gene <- rowData(seRNA)[o$gene_idx,]$name
+  o$peak <- paste0(
+    df@seqnames,
+    "_",
+    as.data.frame(df@ranges)$start,
+    "_",
+    as.data.frame(df@ranges)$end
+  )
 
 
-    ## compute correlation
-    o$Correlation <- rowCorCpp(as.integer(o$peak_idx),
-                               as.integer(o$gene_idx),
-                               assay(seATAC),
-                               assay(seRNA))
+  ## compute correlation
+  o$Correlation <- rowCorCpp(as.integer(o$peak_idx),
+                             as.integer(o$gene_idx),
+                             assay(seATAC),
+                             assay(seRNA))
 
-    o$VarAssayA <- ArchR:::.getQuantiles(matrixStats::rowVars(assay(seATAC)))[o$peak_idx]
-    o$VarAssayB <- ArchR:::.getQuantiles(matrixStats::rowVars(assay(seRNA)))[o$gene_idx]
-    o$TStat <- (o$Correlation / sqrt((pmax(1-o$Correlation^2, 0.00000000000000001, na.rm = TRUE))/(ncol(seATAC)-2))) #T-statistic P-value
+  o$VarAssayA <-
+    ArchR:::.getQuantiles(matrixStats::rowVars(assay(seATAC)))[o$peak_idx]
+  o$VarAssayB <-
+    ArchR:::.getQuantiles(matrixStats::rowVars(assay(seRNA)))[o$gene_idx]
+  o$TStat <-
+    (o$Correlation / sqrt((
+      pmax(1 - o$Correlation ^ 2, 0.00000000000000001, na.rm = TRUE)
+    ) / (ncol(seATAC) - 2))) #T-statistic P-value
 
-    o$Pval <- 2 * pt(-abs(o$TStat), ncol(seATAC) - 2)
-    o$FDR <- p.adjust(o$Pval, method = "fdr")
-    out <- o[, c("peak_idx", "gene_idx", "Correlation", "FDR", "VarAssayA", 
-            "VarAssayB", "distance")]
-    colnames(out) <- c("peak_idx", "gene_idx", "Correlation", "FDR", 
-            "VarQATAC", "VarQRNA", "Distance")
-    mcols(peakSet) <- NULL
-    names(peakSet) <- NULL
-    metadata(out)$peakSet <- peakSet
-    metadata(out)$geneSet <- geneStart
+  o$Pval <- 2 * pt(-abs(o$TStat), ncol(seATAC) - 2)
+  o$FDR <- p.adjust(o$Pval, method = "fdr")
+  # out <-
+  #   o[, c("peak_idx",
+  #         "gene_idx",
+  #         "Correlation",
+  #         "FDR",
+  #         "VarAssayA",
+  #         "VarAssayB",
+  #         "distance")]
+  # colnames(out) <-
+  #   c("peak_idx",
+  #     "gene_idx",
+  #     "Correlation",
+  #     "FDR",
+  #     "VarQATAC",
+  #     "VarQRNA",
+  #     "Distance")
+  # mcols(peakSet) <- NULL
+  # names(peakSet) <- NULL
+  # metadata(out)$peakSet <- peakSet
+  # metadata(out)$geneSet <- geneStart
+  #
+  # out$gene <- o$gene
+  # out$peak <- o$peak
+  #
+  # out <- out[!is.na(out$FDR),]
 
-    out$gene <- o$gene
-    out$peak <- o$peak
-
-    out <- out[!is.na(out$FDR), ]
-    
-    return(o)
+  return(o)
 
 
 }
