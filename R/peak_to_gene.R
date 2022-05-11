@@ -84,9 +84,9 @@ PeakToGene <- function(peak.mat,
   o$gene <- rowData(seRNA)[o$gene_idx,]$name
   o$peak <- paste0(
     df@seqnames,
-    "_",
+    "-",
     as.data.frame(df@ranges)$start,
-    "_",
+    "-",
     as.data.frame(df@ranges)$end
   )
 
