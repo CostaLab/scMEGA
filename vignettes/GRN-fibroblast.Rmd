@@ -193,7 +193,7 @@ p
 
 We then re-do the UMAP embedding and clustering with a lower resolution.
 
-```{r, fig.height = 5, fig.width = 5, fig.align = "center"}
+```{r, fig.height = 5, fig.width = 6, fig.align = "center"}
 coembed.sub <- RunUMAP(coembed.sub, 
                        dims = 1:30, 
                        reduction = 'harmony',
@@ -219,7 +219,7 @@ p
 Marker genes are identified based on new clustering results.
 
 ```{r, fig.height = 5, fig.width = 15, fig.align = "center"}
-all.markers <- FindAllMarkers(obj.coembed, 
+all.markers <- FindAllMarkers(coembed.sub, 
                               only.pos = TRUE, 
                               min.pct = 0.25, logfc.threshold = 0.5)
 
@@ -256,7 +256,7 @@ p
 Since we have annotated all patients into three major groups, i.e., myogenic, ischmeic, and fibrotic.
 we can also perform statistical test to check if any sub-popualtion are enriched in any of the above group. This can be done by the function _CompareCellProp_.
 
-```{r, fig.height = 4, fig.width = 8, fig.align = "center"}
+```{r, fig.height = 5, fig.width = 10, fig.align = "center"}
 coembed.sub$patient_group <- factor(coembed.sub$patient_group, 
                                     levels = c("myogenic", "ischemic", "fibrotic"))
 
