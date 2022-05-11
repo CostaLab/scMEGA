@@ -14,4 +14,6 @@
 source ~/.bashrc
 conda activate r-4.1
 
+
+R -e "devtools::document()"
 R -e "pkgdown::build_site(preview = FALSE)"
