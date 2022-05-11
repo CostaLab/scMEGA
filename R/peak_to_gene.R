@@ -70,7 +70,7 @@ PeakToGene <- function(peak.mat,
 
   ## find putative peak-to-gene
   o <-
-    DataFrame(findOverlaps(
+    data.frame(findOverlaps(
       resize(seRNA, 2 * max.dist + 1, "center"),
       resize(rowRanges(seATAC), 1, "center"),
       ignore.strand = TRUE
@@ -97,10 +97,7 @@ PeakToGene <- function(peak.mat,
                              assay(seATAC),
                              assay(seRNA))
 
-  o$VarAssayA <-
-    ArchR:::.getQuantiles(matrixStats::rowVars(assay(seATAC)))[o$peak_idx]
-  o$VarAssayB <-
-    ArchR:::.getQuantiles(matrixStats::rowVars(assay(seRNA)))[o$gene_idx]
+  ## compute p-value
   o$TStat <-
     (o$Correlation / sqrt((
       pmax(1 - o$Correlation ^ 2, 0.00000000000000001, na.rm = TRUE)
@@ -108,33 +105,8 @@ PeakToGene <- function(peak.mat,
 
   o$Pval <- 2 * pt(-abs(o$TStat), ncol(seATAC) - 2)
   o$FDR <- p.adjust(o$Pval, method = "fdr")
-  # out <-
-  #   o[, c("peak_idx",
-  #         "gene_idx",
-  #         "Correlation",
-  #         "FDR",
-  #         "VarAssayA",
-  #         "VarAssayB",
-  #         "distance")]
-  # colnames(out) <-
-  #   c("peak_idx",
-  #     "gene_idx",
-  #     "Correlation",
-  #     "FDR",
-  #     "VarQATAC",
-  #     "VarQRNA",
-  #     "Distance")
-  # mcols(peakSet) <- NULL
-  # names(peakSet) <- NULL
-  # metadata(out)$peakSet <- peakSet
-  # metadata(out)$geneSet <- geneStart
-  #
-  # out$gene <- o$gene
-  # out$peak <- o$peak
-  #
-  # out <- out[!is.na(out$FDR),]
+  o <- o[!is.na(o$FDR),]
 
   return(o)
-
 
 }
