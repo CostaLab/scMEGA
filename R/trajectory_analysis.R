@@ -284,9 +284,6 @@ GetTrajectory <- function(object = NULL,
     
   groupMat <- lapply(1:length(groupList), function(x) {
     cell_names <- groupList[[x]]
-      
-    print(head(data.use[, cell_names]))
-      
     mat <- Matrix::rowMeans(data.use[, cell_names])
 
   }) %>% Reduce(cbind, .)
