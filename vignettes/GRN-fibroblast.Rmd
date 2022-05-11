@@ -61,6 +61,19 @@ In this step, we match the cells between these two modalities. In other words, f
 ### Co-embedding
 First, we need to project the data into a common low-dimensional space. This is done by using the CCA method from [Seurat](https://satijalab.org/seurat/). More specifically, we wrapped several functions from Seurat into a single function _CoembedData_.
 
+```{r, fig.height = 5, fig.width = 12, fig.align = "center"}
+obj.coembed <- CoembedData(obj.rna, obj.atac, gene.activity, 
+                           weight.reduction = "harmony", 
+                           verbose = TRUE)
+```
+
+We can visualize the snRNA-seq and snATAC-seq in a shared space then:
+```{r, fig.height = 5, fig.width = 12, fig.align = "center"}
+obj.coembed <- CoembedData(obj.rna, obj.atac, gene.activity, 
+                           weight.reduction = "harmony", 
+                           verbose = TRUE)
+```
+
 ## Trajectory identification
 ## TFs and genes selection
 ## Gene regulatory network inference and visualization
