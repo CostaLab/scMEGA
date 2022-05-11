@@ -144,6 +144,23 @@ CompareCellProp <-
 
   }
 
+
+CorPlot <- function(df_cor){
+  p <- ggplot(data = df_cor, aes(x = reorder(tfs, -correlation), y = correlation)) +
+    geom_point() +
+    ggrepel::geom_text_repel(aes(label = tfs),
+                             max.overlaps = 100) +
+    xlab("TFs") + ylab("Correlation") +
+    ggtitle(glue::glue("Number of TFs: {nrow(df_cor)}")) +
+    theme_cowplot() +
+    theme(axis.ticks.x = element_blank(),
+          axis.text.x = element_blank())
+
+  return(p)
+
+}
+
+
 #' Plot trajectory
 #'
 #' This function generates a scatter plot to visualize the inferred trajectory.
