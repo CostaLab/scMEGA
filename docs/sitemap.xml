@@ -46,7 +46,16 @@
     <loc>https://costalab.github.io/scMEGA/reference/CompareCellProp.html</loc>
   </url>
   <url>
+    <loc>https://costalab.github.io/scMEGA/reference/CorrelationHeatmap.html</loc>
+  </url>
+  <url>
+    <loc>https://costalab.github.io/scMEGA/reference/CorrelationPlot.html</loc>
+  </url>
+  <url>
     <loc>https://costalab.github.io/scMEGA/reference/CreatePairedObject.html</loc>
+  </url>
+  <url>
+    <loc>https://costalab.github.io/scMEGA/reference/GetCorrelation.html</loc>
   </url>
   <url>
     <loc>https://costalab.github.io/scMEGA/reference/GetPairList.html</loc>
@@ -56,6 +65,9 @@
   </url>
   <url>
     <loc>https://costalab.github.io/scMEGA/reference/PairCells.html</loc>
+  </url>
+  <url>
+    <loc>https://costalab.github.io/scMEGA/reference/PeakToGene.html</loc>
   </url>
   <url>
     <loc>https://costalab.github.io/scMEGA/reference/RunDiffusionMap.html</loc>

@@ -19,7 +19,7 @@ Suggests:
 VignetteBuilder: knitr
 LinkingTo: Rcpp
 Imports: 
-    Rcpp (>= 1.0.7),
+    Rcpp,
     ArchR,
     Seurat,
     dplyr,
