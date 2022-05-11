@@ -527,3 +527,9 @@ TrajectoryHeatmap <- function(trajectory,
     return(ht)
   }
 }
+
+
+GRNHeatmap <- function(df_cor, ){
+
+
+}

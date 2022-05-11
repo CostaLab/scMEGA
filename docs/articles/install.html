@@ -46,7 +46,7 @@
   <a href="../news/index.html">News</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Vignettes
      
     <span class="caret"></span>
@@ -103,51 +103,51 @@
 <span class="co"># Install scMEGA</span>
 <span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"CostaLab/scMEGA"</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## Downloading GitHub repo CostaLab/scMEGA@HEAD</span></code></pre>
-<pre><code><span class="co">## xfun (0.30 -&gt; 0.31) [CRAN]</span></code></pre>
-<pre><code><span class="co">## Skipping 7 packages not available: BiocGenerics, S4Vectors, Rsamtools, IRanges, GenomicRanges, GenomeInfoDb, destiny</span></code></pre>
-<pre><code><span class="co">## Installing 1 packages: xfun</span></code></pre>
-<pre><code><span class="co">## Installing package into '/private/var/folders/75/g5lhn91d62bgnv_gd4x0fc240000gn/T/Rtmpp7HS3K/temp_libpathe8e92c7096bd'</span>
-<span class="co">## (as 'lib' is unspecified)</span></code></pre>
-<pre><code><span class="co">## * checking for file ‘/private/var/folders/75/g5lhn91d62bgnv_gd4x0fc240000gn/T/RtmphoDjDC/remotesea5f4dd5d149/CostaLab-scMEGA-354f7b6/DESCRIPTION’ ... OK</span>
+<pre><code><span class="co">## Skipping 6 packages not available: BiocGenerics, S4Vectors, Rsamtools, IRanges, GenomicRanges, GenomeInfoDb</span></code></pre>
+<pre><code><span class="co">## Skipping 1 packages ahead of CRAN: xfun</span></code></pre>
+<pre><code><span class="co">## * checking for file ‘/tmp/RtmpcQzohC/remotes548505b34deb6/CostaLab-scMEGA-f61d010/DESCRIPTION’ ... OK</span>
 <span class="co">## * preparing ‘scMEGA’:</span>
 <span class="co">## * checking DESCRIPTION meta-information ... OK</span>
 <span class="co">## * cleaning src</span>
 <span class="co">## * checking for LF line-endings in source and make files and shell scripts</span>
 <span class="co">## * checking for empty or unneeded directories</span>
 <span class="co">## * building ‘scMEGA_0.1.0.tar.gz’</span></code></pre>
-<pre><code><span class="co">## Installing package into '/private/var/folders/75/g5lhn91d62bgnv_gd4x0fc240000gn/T/Rtmpp7HS3K/temp_libpathe8e92c7096bd'</span>
+<pre><code><span class="co">## Installing package into '/tmp/RtmpqJpYt9/temp_libpath38b734c11b272'</span>
 <span class="co">## (as 'lib' is unspecified)</span></code></pre>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Check session information</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## R version 4.2.0 (2022-04-22)</span>
-<span class="co">## Platform: aarch64-apple-darwin21.3.0 (64-bit)</span>
-<span class="co">## Running under: macOS Monterey 12.3.1</span>
+<pre><code><span class="co">## R version 4.1.1 (2021-08-10)</span>
+<span class="co">## Platform: x86_64-conda-linux-gnu (64-bit)</span>
+<span class="co">## Running under: Rocky Linux 8.5 (Green Obsidian)</span>
 <span class="co">## </span>
 <span class="co">## Matrix products: default</span>
-<span class="co">## BLAS:   /opt/homebrew/Cellar/openblas/0.3.20/lib/libopenblasp-r0.3.20.dylib</span>
-<span class="co">## LAPACK: /opt/homebrew/Cellar/r/4.2.0/lib/R/lib/libRlapack.dylib</span>
+<span class="co">## BLAS/LAPACK: /home/rs619065/miniconda3/envs/r-4.1/lib/libopenblasp-r0.3.18.so</span>
 <span class="co">## </span>
 <span class="co">## locale:</span>
-<span class="co">## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8</span>
+<span class="co">##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span>
+<span class="co">##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    </span>
+<span class="co">##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   </span>
+<span class="co">##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 </span>
+<span class="co">##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            </span>
+<span class="co">## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       </span>
 <span class="co">## </span>
 <span class="co">## attached base packages:</span>
 <span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span>
 <span class="co">## </span>
 <span class="co">## loaded via a namespace (and not attached):</span>
-<span class="co">##  [1] bslib_0.3.1       compiler_4.2.0    jquerylib_0.1.4   remotes_2.4.2    </span>
-<span class="co">##  [5] prettyunits_1.1.1 tools_4.2.0       testthat_3.1.4    digest_0.6.29    </span>
+<span class="co">##  [1] bslib_0.3.1       compiler_4.1.1    jquerylib_0.1.4   prettyunits_1.1.1</span>
+<span class="co">##  [5] remotes_2.4.2     tools_4.1.1       testthat_3.1.4    digest_0.6.29    </span>
 <span class="co">##  [9] pkgbuild_1.3.1    pkgload_1.2.4     lifecycle_1.0.1   jsonlite_1.8.0   </span>
 <span class="co">## [13] evaluate_0.15     memoise_2.0.1     rlang_1.0.2       cli_3.3.0        </span>
-<span class="co">## [17] rstudioapi_0.13   curl_4.3.2        yaml_2.3.5        pkgdown_2.0.3    </span>
-<span class="co">## [21] xfun_0.30         fastmap_1.1.0     withr_2.5.0       stringr_1.4.0    </span>
-<span class="co">## [25] knitr_1.39        desc_1.4.1        fs_1.5.2          sass_0.4.1       </span>
-<span class="co">## [29] systemfonts_1.0.4 devtools_2.4.3    rprojroot_2.0.3   glue_1.6.2       </span>
-<span class="co">## [33] R6_2.5.1          textshaping_0.3.6 processx_3.5.3    rmarkdown_2.14   </span>
-<span class="co">## [37] sessioninfo_1.2.2 purrr_0.3.4       callr_3.7.0       magrittr_2.0.3   </span>
-<span class="co">## [41] usethis_2.1.5     ps_1.7.0          htmltools_0.5.2   ellipsis_0.3.2   </span>
-<span class="co">## [45] ragg_1.2.2        stringi_1.7.6     cachem_1.0.6      crayon_1.5.1     </span>
-<span class="co">## [49] brio_1.1.3</span></code></pre>
+<span class="co">## [17] curl_4.3.2        yaml_2.3.5        pkgdown_2.0.3     xfun_0.31        </span>
+<span class="co">## [21] fastmap_1.1.0     withr_2.5.0       stringr_1.4.0     knitr_1.39       </span>
+<span class="co">## [25] desc_1.4.1        fs_1.5.2          sass_0.4.1        systemfonts_1.0.4</span>
+<span class="co">## [29] devtools_2.4.3    rprojroot_2.0.3   glue_1.6.2        R6_2.5.1         </span>
+<span class="co">## [33] textshaping_0.3.6 processx_3.5.3    rmarkdown_2.11    sessioninfo_1.2.2</span>
+<span class="co">## [37] purrr_0.3.4       callr_3.7.0       magrittr_2.0.3    usethis_2.1.5    </span>
+<span class="co">## [41] ps_1.7.0          htmltools_0.5.2   ellipsis_0.3.2    ragg_1.2.2       </span>
+<span class="co">## [45] stringi_1.7.6     cachem_1.0.6      crayon_1.5.1      brio_1.1.3</span></code></pre>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

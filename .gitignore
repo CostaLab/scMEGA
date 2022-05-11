@@ -2,8 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-test
-test_V2
 vignettes/*.rds
 vignettes/.ipynb_checkpoints/
 .ipynb_checkpoints/
