@@ -287,7 +287,7 @@ GetTrajectory <- function(object = NULL,
       
     print(head(data.use[, cell_names]))
       
-    mat <- rowMeans(data.use[, cell_names])
+    mat <- Matrix::rowMeans(data.use[, cell_names])
 
   }) %>% Reduce(cbind, .)
 
