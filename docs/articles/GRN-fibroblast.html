@@ -112,14 +112,18 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/timoast/signac" class="external-link">Signac</a></span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://costalab.github.io/scMEGA/">scMEGA</a></span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">harmony</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/powellgenomicslab/Nebulosa" class="external-link">Nebulosa</a></span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">BSgenome.Hsapiens.UCSC.hg38</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://jaspar.genereg.net/" class="external-link">JASPAR2020</a></span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ge11232002/TFBSTools" class="external-link">TFBSTools</a></span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>Let’s load the data into memory and see how they look like</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">obj.rna</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"./snRNA.rds"</span><span class="op">)</span>
 <span class="va">obj.atac</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"./snATAC.rds"</span><span class="op">)</span>
+<span class="va">gene.activity</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"./gene.activity.rds"</span><span class="op">)</span>
 
 <span class="va">obj.rna</span></code></pre></div>
 <pre><code><span class="co">## An object of class Seurat </span>
@@ -150,6 +154,154 @@
 <h3 id="co-embedding">Co-embedding<a class="anchor" aria-label="anchor" href="#co-embedding"></a>
 </h3>
 <p>First, we need to project the data into a common low-dimensional space. This is done by using the CCA method from <a href="https://satijalab.org/seurat/" class="external-link">Seurat</a>. More specifically, we wrapped several functions from Seurat into a single function <em>CoembedData</em>.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">obj.coembed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CoembedData.html">CoembedData</a></span><span class="op">(</span><span class="va">obj.rna</span>, <span class="va">obj.atac</span>, <span class="va">gene.activity</span>, 
+                           weight.reduction <span class="op">=</span> <span class="st">"harmony"</span>, 
+                           verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Performing data integration using Seurat...</span></code></pre>
+<pre><code><span class="co">## Centering and scaling data matrix</span></code></pre>
+<pre><code><span class="co">## Warning in RunCCA.Seurat(object1 = reference, object2 = query, features =</span>
+<span class="co">## features, : Running CCA on different assays</span></code></pre>
+<pre><code><span class="co">## Running CCA</span></code></pre>
+<pre><code><span class="co">## Merging objects</span></code></pre>
+<pre><code><span class="co">## Finding neighborhoods</span></code></pre>
+<pre><code><span class="co">## Finding anchors</span></code></pre>
+<pre><code><span class="co">##  Found 28478 anchors</span></code></pre>
+<pre><code><span class="co">## Filtering anchors</span></code></pre>
+<pre><code><span class="co">##  Retained 4191 anchors</span></code></pre>
+<pre><code><span class="co">## Finding integration vectors</span></code></pre>
+<pre><code><span class="co">## Finding integration vector weights</span></code></pre>
+<pre><code><span class="co">## Transfering 19026 features onto reference data</span></code></pre>
+<pre><code><span class="co">## Coemebdding the data...</span></code></pre>
+<pre><code><span class="co">## Centering data matrix</span></code></pre>
+<pre><code><span class="co">## Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric</span>
+<span class="co">## To use Python UMAP via reticulate, set umap.method to 'umap-learn' and metric to 'correlation'</span>
+<span class="co">## This message will be shown once per session</span></code></pre>
+<p>We next visualize the snRNA-seq and snATAC-seq in this shared space. The cells are coloded by patient, region, modality, or patient group.</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.coembed</span>, group.by <span class="op">=</span> <span class="st">"patient"</span>, shuffle <span class="op">=</span> <span class="cn">TRUE</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.coembed</span>, group.by <span class="op">=</span> <span class="st">"region"</span>, shuffle <span class="op">=</span> <span class="cn">TRUE</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.coembed</span>, group.by <span class="op">=</span> <span class="st">"tech"</span>, shuffle <span class="op">=</span> <span class="cn">TRUE</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="va">p4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.coembed</span>, group.by <span class="op">=</span> <span class="st">"patient_group"</span>, shuffle <span class="op">=</span> <span class="cn">TRUE</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+
+<span class="op">(</span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">p3</span> <span class="op">+</span> <span class="va">p4</span><span class="op">)</span></code></pre></div>
+<p><img src="GRN-fibroblast_files/figure-html/unnamed-chunk-6-1.png" width="1152" style="display: block; margin: auto;"></p>
+<p>The batch effects between patients, regions and modalities are quite clear. So next we use <a href="https://www.nature.com/articles/s41592-019-0619-0" class="external-link">Harmony</a> to perform batch correction and generate a new UMAP embedding.</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">obj.coembed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/harmony/man/RunHarmony.html" class="external-link">RunHarmony</a></span><span class="op">(</span><span class="va">obj.coembed</span>, 
+                      group.by.vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"patient"</span>, <span class="st">"region"</span>, <span class="st">"tech"</span><span class="op">)</span>,
+                     reduction <span class="op">=</span> <span class="st">"pca"</span>, 
+                      max.iter.harmony <span class="op">=</span> <span class="fl">30</span>, 
+                      dims.use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>,
+                     project.dim <span class="op">=</span> <span class="cn">FALSE</span>,
+                     plot_convergence <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Warning: Quick-TRANSfer stage steps exceeded maximum (= 2599800)</span></code></pre>
+<pre><code><span class="co">## Harmony 1/30</span></code></pre>
+<pre><code><span class="co">## Harmony 2/30</span></code></pre>
+<pre><code><span class="co">## Harmony 3/30</span></code></pre>
+<pre><code><span class="co">## Harmony 4/30</span></code></pre>
+<pre><code><span class="co">## Harmony 5/30</span></code></pre>
+<pre><code><span class="co">## Harmony 6/30</span></code></pre>
+<pre><code><span class="co">## Harmony 7/30</span></code></pre>
+<pre><code><span class="co">## Harmony 8/30</span></code></pre>
+<pre><code><span class="co">## Harmony 9/30</span></code></pre>
+<pre><code><span class="co">## Harmony 10/30</span></code></pre>
+<pre><code><span class="co">## Harmony 11/30</span></code></pre>
+<pre><code><span class="co">## Harmony 12/30</span></code></pre>
+<pre><code><span class="co">## Harmony 13/30</span></code></pre>
+<pre><code><span class="co">## Harmony 14/30</span></code></pre>
+<pre><code><span class="co">## Harmony 15/30</span></code></pre>
+<pre><code><span class="co">## Harmony 16/30</span></code></pre>
+<pre><code><span class="co">## Harmony 17/30</span></code></pre>
+<pre><code><span class="co">## Harmony 18/30</span></code></pre>
+<pre><code><span class="co">## Harmony converged after 18 iterations</span></code></pre>
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">obj.coembed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/RunUMAP.html" class="external-link">RunUMAP</a></span><span class="op">(</span><span class="va">obj.coembed</span>, 
+               dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>, 
+               reduction <span class="op">=</span> <span class="st">'harmony'</span>,
+               reduction.name <span class="op">=</span> <span class="st">"umap_harmony"</span>,
+               reduction.ke <span class="op">=</span> <span class="st">'umapharmony_'</span>,
+              verbose <span class="op">=</span> <span class="cn">FALSE</span>,
+                   min.dist <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span></code></pre></div>
+<p>We can plot the data again</p>
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.coembed</span>, group.by <span class="op">=</span> <span class="st">"patient"</span>, reduction <span class="op">=</span> <span class="st">"umap_harmony"</span><span class="op">)</span>
+<span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.coembed</span>, group.by <span class="op">=</span> <span class="st">"region"</span>, reduction <span class="op">=</span> <span class="st">"umap_harmony"</span><span class="op">)</span>
+<span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.coembed</span>, group.by <span class="op">=</span> <span class="st">"tech"</span>, reduction <span class="op">=</span> <span class="st">"umap_harmony"</span><span class="op">)</span>
+<span class="va">p4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.coembed</span>, group.by <span class="op">=</span> <span class="st">"patient_group"</span>, reduction <span class="op">=</span> <span class="st">"umap_harmony"</span><span class="op">)</span>
+
+<span class="op">(</span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">p3</span> <span class="op">+</span> <span class="va">p4</span><span class="op">)</span></code></pre></div>
+<p><img src="GRN-fibroblast_files/figure-html/unnamed-chunk-8-1.png" width="1152" style="display: block; margin: auto;"> The new UMAP embedding shows that after batch-correction, cells from different patients, regions, and modalities are well mixed.</p>
+<p>Based on our previous works of myofibroblast differentiation in <a href="https://www.nature.com/articles/s41586-020-2941-1" class="external-link">human</a> and <a href="https://www.nature.com/articles/s41467-021-26530-2" class="external-link">mouse</a> kidney, we already known some relevant genes for this biological process. For example, SCARA5 is a marker for myofibroblast progenitor, and COL1A1, POSTN, and FN1 are highly expressed in myofibroblast. Therefore we can visualize the expression of these genes to check if we can also identify similar process in human heart. Note that to make the visualization clear, here we used the package <a href="https://github.com/powellgenomicslab/Nebulosa" class="external-link">Nebulosa</a> to plot the data.</p>
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Nebulosa/man/plot_density.html" class="external-link">plot_density</a></span><span class="op">(</span><span class="va">obj.coembed</span>, features<span class="op">=</span><span class="st">"SCARA5"</span>, reduction<span class="op">=</span><span class="st">"umap_harmony"</span>, pal <span class="op">=</span> <span class="st">"magma"</span><span class="op">)</span>
+<span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Nebulosa/man/plot_density.html" class="external-link">plot_density</a></span><span class="op">(</span><span class="va">obj.coembed</span>, features<span class="op">=</span><span class="st">"COL1A1"</span>, reduction<span class="op">=</span><span class="st">"umap_harmony"</span>, pal <span class="op">=</span> <span class="st">"magma"</span><span class="op">)</span>
+<span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Nebulosa/man/plot_density.html" class="external-link">plot_density</a></span><span class="op">(</span><span class="va">obj.coembed</span>, features<span class="op">=</span><span class="st">"POSTN"</span>, reduction<span class="op">=</span><span class="st">"umap_harmony"</span>, pal <span class="op">=</span> <span class="st">"magma"</span><span class="op">)</span>
+<span class="va">p4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Nebulosa/man/plot_density.html" class="external-link">plot_density</a></span><span class="op">(</span><span class="va">obj.coembed</span>, features<span class="op">=</span><span class="st">"FN1"</span>, reduction<span class="op">=</span><span class="st">"umap_harmony"</span>, pal <span class="op">=</span> <span class="st">"magma"</span><span class="op">)</span>
+
+
+<span class="op">(</span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">p3</span> <span class="op">+</span> <span class="va">p4</span><span class="op">)</span></code></pre></div>
+<p><img src="GRN-fibroblast_files/figure-html/unnamed-chunk-9-1.png" width="1152" style="display: block; margin: auto;"> From the visulization, we can observe that some cells highly express SCARA5 which could be the progentiors of myofibroblasts. On the other hand, some cells highly express COL1A1, POSTN, and FN1 and they could be terminally differentiated myofibroblasts.</p>
+</div>
+<div class="section level3">
+<h3 id="sub-clustering-and-cleaning">Sub-clustering and cleaning<a class="anchor" aria-label="anchor" href="#sub-clustering-and-cleaning"></a>
+</h3>
+<p>We next perform sub-clustering to identify different populations in our fibroblast data. To further control the data quality, here we will use a two-round approach to remove low-quality cells. We first use a high-resolution to get a large amount of clusters.</p>
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">obj.coembed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindNeighbors.html" class="external-link">FindNeighbors</a></span><span class="op">(</span><span class="va">obj.coembed</span>, reduction <span class="op">=</span> <span class="st">"harmony"</span>, dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Computing nearest neighbor graph</span></code></pre>
+<pre><code><span class="co">## Computing SNN</span></code></pre>
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">obj.coembed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindClusters.html" class="external-link">FindClusters</a></span><span class="op">(</span><span class="va">obj.coembed</span>, resolution <span class="op">=</span> <span class="fl">0.9</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+
+<span class="va">cols</span> <span class="op">&lt;-</span> <span class="fu">ArchR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ArchR/man/paletteDiscrete.html" class="external-link">paletteDiscrete</a></span><span class="op">(</span><span class="va">obj.coembed</span><span class="op">@</span><span class="va">meta.data</span><span class="op">[</span>, <span class="st">"RNA_snn_res.0.9"</span><span class="op">]</span><span class="op">)</span>
+    
+<span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.coembed</span>, group.by <span class="op">=</span> <span class="st">"RNA_snn_res.0.9"</span>, label <span class="op">=</span> <span class="cn">TRUE</span>,
+             reduction <span class="op">=</span> <span class="st">"umap_harmony"</span>, shuffle <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">cols</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">"UMAP1"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"UMAP2"</span><span class="op">)</span>
+    
+<span class="va">p</span></code></pre></div>
+<p><img src="GRN-fibroblast_files/figure-html/unnamed-chunk-10-1.png" width="576" style="display: block; margin: auto;"></p>
+<p>We can use the function <em>CellPropPlot</em> to visualize the cell propotion across all patients.</p>
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CellPropPlot.html">CellPropPlot</a></span><span class="op">(</span><span class="va">obj.coembed</span>, 
+                   group.by <span class="op">=</span> <span class="st">"RNA_snn_res.0.9"</span>, 
+                   prop.in <span class="op">=</span> <span class="st">"patient_region_id"</span>, 
+                   cols <span class="op">=</span> <span class="va">cols</span><span class="op">)</span>
+
+<span class="va">p</span></code></pre></div>
+<p><img src="GRN-fibroblast_files/figure-html/unnamed-chunk-11-1.png" width="960" style="display: block; margin: auto;"></p>
+<p>Next, we identify the markers for each cluster and visualize the top 5.</p>
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">all.markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindAllMarkers.html" class="external-link">FindAllMarkers</a></span><span class="op">(</span><span class="va">obj.coembed</span>, 
+                              only.pos <span class="op">=</span> <span class="cn">TRUE</span>, 
+                              min.pct <span class="op">=</span> <span class="fl">0.25</span>, logfc.threshold <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Calculating cluster 0</span></code></pre>
+<pre><code><span class="co">## Calculating cluster 1</span></code></pre>
+<pre><code><span class="co">## Calculating cluster 2</span></code></pre>
+<pre><code><span class="co">## Calculating cluster 3</span></code></pre>
+<pre><code><span class="co">## Calculating cluster 4</span></code></pre>
+<pre><code><span class="co">## Calculating cluster 5</span></code></pre>
+<pre><code><span class="co">## Calculating cluster 6</span></code></pre>
+<pre><code><span class="co">## Calculating cluster 7</span></code></pre>
+<pre><code><span class="co">## Calculating cluster 8</span></code></pre>
+<pre><code><span class="co">## Calculating cluster 9</span></code></pre>
+<pre><code><span class="co">## Calculating cluster 10</span></code></pre>
+<pre><code><span class="co">## Calculating cluster 11</span></code></pre>
+<pre><code><span class="co">## Calculating cluster 12</span></code></pre>
+<pre><code><span class="co">## Calculating cluster 13</span></code></pre>
+<pre><code><span class="co">## Calculating cluster 14</span></code></pre>
+<pre><code><span class="co">## Calculating cluster 15</span></code></pre>
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">all.markers</span> <span class="op"><a href="https://rdrr.io/pkg/harmony/man/pipe.html" class="external-link">%&gt;%</a></span>
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">cluster</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/harmony/man/pipe.html" class="external-link">%&gt;%</a></span>
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_max</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">3</span>, order_by <span class="op">=</span> <span class="va">avg_log2FC</span><span class="op">)</span>
+
+<span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DotPlot.html" class="external-link">DotPlot</a></span><span class="op">(</span><span class="va">obj.coembed</span>, features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">gene</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">RotatedAxis</a></span><span class="op">(</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></code></pre></div>
+<p><img src="GRN-fibroblast_files/figure-html/unnamed-chunk-12-1.png" width="1440" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2">
@@ -163,7 +315,7 @@
 <div class="section level2">
 <h2 id="gene-regulatory-network-inference-and-visualization">Gene regulatory network inference and visualization<a class="anchor" aria-label="anchor" href="#gene-regulatory-network-inference-and-visualization"></a>
 </h2>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Check session information</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## R version 4.1.1 (2021-08-10)</span>
@@ -186,15 +338,18 @@
 <span class="co">## [8] base     </span>
 <span class="co">## </span>
 <span class="co">## other attached packages:</span>
-<span class="co">##  [1] ggplot2_3.3.6                     TFBSTools_1.32.0                 </span>
+<span class="co">##  [1] dplyr_1.0.9                       TFBSTools_1.32.0                 </span>
 <span class="co">##  [3] JASPAR2020_0.99.10                BSgenome.Hsapiens.UCSC.hg38_1.4.4</span>
 <span class="co">##  [5] BSgenome_1.62.0                   rtracklayer_1.54.0               </span>
 <span class="co">##  [7] Biostrings_2.62.0                 XVector_0.34.0                   </span>
 <span class="co">##  [9] GenomicRanges_1.46.1              GenomeInfoDb_1.30.1              </span>
 <span class="co">## [11] IRanges_2.28.0                    S4Vectors_0.32.4                 </span>
-<span class="co">## [13] BiocGenerics_0.40.0               scMEGA_0.1.0                     </span>
-<span class="co">## [15] Signac_1.6.0                      sp_1.4-7                         </span>
-<span class="co">## [17] SeuratObject_4.1.0                Seurat_4.1.1                     </span>
+<span class="co">## [13] BiocGenerics_0.40.0               Nebulosa_1.4.0                   </span>
+<span class="co">## [15] patchwork_1.1.1                   ggplot2_3.3.6                    </span>
+<span class="co">## [17] harmony_0.1.0                     Rcpp_1.0.8.3                     </span>
+<span class="co">## [19] scMEGA_0.1.0                      Signac_1.6.0                     </span>
+<span class="co">## [21] sp_1.4-7                          SeuratObject_4.1.0               </span>
+<span class="co">## [23] Seurat_4.1.1                     </span>
 <span class="co">## </span>
 <span class="co">## loaded via a namespace (and not attached):</span>
 <span class="co">##   [1] SnowballC_0.7.0             scattermore_0.8            </span>
@@ -219,84 +374,87 @@
 <span class="co">##  [39] DBI_1.1.2                   htmlwidgets_1.5.4          </span>
 <span class="co">##  [41] sparsesvd_0.2               spatstat.geom_2.4-0        </span>
 <span class="co">##  [43] purrr_0.3.4                 ellipsis_0.3.2             </span>
-<span class="co">##  [45] RSpectra_0.16-1             dplyr_1.0.9                </span>
+<span class="co">##  [45] RSpectra_0.16-1             ks_1.13.5                  </span>
 <span class="co">##  [47] annotate_1.72.0             deldir_1.0-6               </span>
 <span class="co">##  [49] MatrixGenerics_1.6.0        vctrs_0.4.1                </span>
 <span class="co">##  [51] SingleCellExperiment_1.16.0 Biobase_2.54.0             </span>
 <span class="co">##  [53] TTR_0.24.3                  ROCR_1.0-11                </span>
-<span class="co">##  [55] abind_1.4-5                 withr_2.5.0                </span>
-<span class="co">##  [57] cachem_1.0.6                RcppEigen_0.3.3.9.2        </span>
+<span class="co">##  [55] abind_1.4-5                 cachem_1.0.6               </span>
+<span class="co">##  [57] RcppEigen_0.3.3.9.2         withr_2.5.0                </span>
 <span class="co">##  [59] ggforce_0.3.3               robustbase_0.95-0          </span>
 <span class="co">##  [61] progressr_0.10.0            vcd_1.4-9                  </span>
 <span class="co">##  [63] sctransform_0.3.3           GenomicAlignments_1.30.0   </span>
-<span class="co">##  [65] xts_0.12.1                  goftest_1.2-3              </span>
-<span class="co">##  [67] cluster_2.1.2               lazyeval_0.2.2             </span>
-<span class="co">##  [69] seqLogo_1.60.0              laeken_0.5.2               </span>
-<span class="co">##  [71] crayon_1.5.1                labeling_0.4.2             </span>
-<span class="co">##  [73] pkgconfig_2.0.3             slam_0.1-50                </span>
-<span class="co">##  [75] tweenr_1.0.2                nlme_3.1-155               </span>
-<span class="co">##  [77] nnet_7.3-17                 rlang_1.0.2                </span>
-<span class="co">##  [79] globals_0.15.0              lifecycle_1.0.1            </span>
-<span class="co">##  [81] miniUI_0.1.1.1              rprojroot_2.0.3            </span>
-<span class="co">##  [83] polyclip_1.10-0             RcppHNSW_0.3.0             </span>
-<span class="co">##  [85] matrixStats_0.62.0          lmtest_0.9-40              </span>
-<span class="co">##  [87] Matrix_1.4-0                ggseqlogo_0.1              </span>
-<span class="co">##  [89] carData_3.0-5               boot_1.3-28                </span>
-<span class="co">##  [91] zoo_1.8-10                  ggridges_0.5.3             </span>
-<span class="co">##  [93] png_0.1-7                   viridisLite_0.4.0          </span>
-<span class="co">##  [95] rjson_0.2.21                bitops_1.0-7               </span>
-<span class="co">##  [97] R.oo_1.24.0                 KernSmooth_2.23-20         </span>
-<span class="co">##  [99] blob_1.2.2                  stringr_1.4.0              </span>
-<span class="co">## [101] parallelly_1.31.1           spatstat.random_2.2-0      </span>
-<span class="co">## [103] readr_2.1.2                 CNEr_1.30.0                </span>
-<span class="co">## [105] scales_1.2.0                memoise_2.0.1              </span>
-<span class="co">## [107] magrittr_2.0.3              plyr_1.8.7                 </span>
-<span class="co">## [109] hexbin_1.28.2               ica_1.0-2                  </span>
-<span class="co">## [111] zlibbioc_1.40.0             compiler_4.1.1             </span>
-<span class="co">## [113] BiocIO_1.4.0                RColorBrewer_1.1-3         </span>
-<span class="co">## [115] pcaMethods_1.86.0           fitdistrplus_1.1-8         </span>
-<span class="co">## [117] Rsamtools_2.10.0            cli_3.3.0                  </span>
-<span class="co">## [119] listenv_0.8.0               patchwork_1.1.1            </span>
-<span class="co">## [121] pbapply_1.5-0               ggplot.multistats_1.0.0    </span>
-<span class="co">## [123] MASS_7.3-55                 mgcv_1.8-39                </span>
-<span class="co">## [125] tidyselect_1.1.2            stringi_1.7.6              </span>
-<span class="co">## [127] textshaping_0.3.6           highr_0.9                  </span>
-<span class="co">## [129] yaml_2.3.5                  ggrepel_0.9.1              </span>
-<span class="co">## [131] grid_4.1.1                  sass_0.4.1                 </span>
-<span class="co">## [133] fastmatch_1.1-3             tools_4.1.1                </span>
-<span class="co">## [135] future.apply_1.9.0          parallel_4.1.1             </span>
-<span class="co">## [137] TFMPvalue_0.0.8             lsa_0.73.3                 </span>
-<span class="co">## [139] gridExtra_2.3               smoother_1.1               </span>
-<span class="co">## [141] scatterplot3d_0.3-41        farver_2.1.0               </span>
-<span class="co">## [143] Rtsne_0.16                  digest_0.6.29              </span>
-<span class="co">## [145] rgeos_0.5-9                 pracma_2.3.8               </span>
-<span class="co">## [147] shiny_1.7.1                 qlcMatrix_0.9.7            </span>
-<span class="co">## [149] Rcpp_1.0.8.3                car_3.0-13                 </span>
-<span class="co">## [151] later_1.3.0                 RcppAnnoy_0.0.19           </span>
-<span class="co">## [153] AnnotationDbi_1.56.2        httr_1.4.3                 </span>
-<span class="co">## [155] colorspace_2.0-3            XML_3.99-0.9               </span>
-<span class="co">## [157] fs_1.5.2                    tensor_1.5                 </span>
-<span class="co">## [159] ranger_0.13.1               reticulate_1.24            </span>
-<span class="co">## [161] splines_4.1.1               uwot_0.1.11                </span>
-<span class="co">## [163] RcppRoll_0.3.0              spatstat.utils_2.3-1       </span>
-<span class="co">## [165] pkgdown_2.0.3               plotly_4.10.0              </span>
-<span class="co">## [167] systemfonts_1.0.4           xtable_1.8-4               </span>
-<span class="co">## [169] poweRlaw_0.70.6             jsonlite_1.8.0             </span>
-<span class="co">## [171] destiny_3.9.1               R6_2.5.1                   </span>
-<span class="co">## [173] pillar_1.7.0                htmltools_0.5.2            </span>
-<span class="co">## [175] mime_0.12                   glue_1.6.2                 </span>
-<span class="co">## [177] fastmap_1.1.0               VIM_6.1.1                  </span>
-<span class="co">## [179] BiocParallel_1.28.3         class_7.3-20               </span>
-<span class="co">## [181] codetools_0.2-18            utf8_1.2.2                 </span>
-<span class="co">## [183] lattice_0.20-45             bslib_0.3.1                </span>
-<span class="co">## [185] spatstat.sparse_2.1-1       tibble_3.1.7               </span>
-<span class="co">## [187] curl_4.3.2                  leiden_0.4.2               </span>
-<span class="co">## [189] gtools_3.9.2                GO.db_3.14.0               </span>
-<span class="co">## [191] survival_3.2-13             rmarkdown_2.11             </span>
-<span class="co">## [193] docopt_0.7.1                desc_1.4.1                 </span>
-<span class="co">## [195] munsell_0.5.0               e1071_1.7-9                </span>
-<span class="co">## [197] GenomeInfoDbData_1.2.7      reshape2_1.4.4             </span>
-<span class="co">## [199] gtable_0.3.0                spatstat.core_2.4-2</span></code></pre>
+<span class="co">##  [65] xts_0.12.1                  mclust_5.4.9               </span>
+<span class="co">##  [67] goftest_1.2-3               cluster_2.1.2              </span>
+<span class="co">##  [69] lazyeval_0.2.2              seqLogo_1.60.0             </span>
+<span class="co">##  [71] laeken_0.5.2                crayon_1.5.1               </span>
+<span class="co">##  [73] labeling_0.4.2              pkgconfig_2.0.3            </span>
+<span class="co">##  [75] slam_0.1-50                 tweenr_1.0.2               </span>
+<span class="co">##  [77] nlme_3.1-155                nnet_7.3-17                </span>
+<span class="co">##  [79] rlang_1.0.2                 globals_0.15.0             </span>
+<span class="co">##  [81] lifecycle_1.0.1             miniUI_0.1.1.1             </span>
+<span class="co">##  [83] rprojroot_2.0.3             polyclip_1.10-0            </span>
+<span class="co">##  [85] RcppHNSW_0.3.0              matrixStats_0.62.0         </span>
+<span class="co">##  [87] lmtest_0.9-40               Matrix_1.4-0               </span>
+<span class="co">##  [89] ggseqlogo_0.1               carData_3.0-5              </span>
+<span class="co">##  [91] Rhdf5lib_1.16.0             boot_1.3-28                </span>
+<span class="co">##  [93] zoo_1.8-10                  ggridges_0.5.3             </span>
+<span class="co">##  [95] png_0.1-7                   viridisLite_0.4.0          </span>
+<span class="co">##  [97] rjson_0.2.21                bitops_1.0-7               </span>
+<span class="co">##  [99] R.oo_1.24.0                 rhdf5filters_1.6.0         </span>
+<span class="co">## [101] KernSmooth_2.23-20          blob_1.2.2                 </span>
+<span class="co">## [103] stringr_1.4.0               parallelly_1.31.1          </span>
+<span class="co">## [105] spatstat.random_2.2-0       readr_2.1.2                </span>
+<span class="co">## [107] CNEr_1.30.0                 scales_1.2.0               </span>
+<span class="co">## [109] memoise_2.0.1               magrittr_2.0.3             </span>
+<span class="co">## [111] plyr_1.8.7                  hexbin_1.28.2              </span>
+<span class="co">## [113] ica_1.0-2                   zlibbioc_1.40.0            </span>
+<span class="co">## [115] compiler_4.1.1              BiocIO_1.4.0               </span>
+<span class="co">## [117] RColorBrewer_1.1-3          pcaMethods_1.86.0          </span>
+<span class="co">## [119] fitdistrplus_1.1-8          Rsamtools_2.10.0           </span>
+<span class="co">## [121] cli_3.3.0                   listenv_0.8.0              </span>
+<span class="co">## [123] pbapply_1.5-0               ggplot.multistats_1.0.0    </span>
+<span class="co">## [125] MASS_7.3-55                 mgcv_1.8-39                </span>
+<span class="co">## [127] tidyselect_1.1.2            stringi_1.7.6              </span>
+<span class="co">## [129] textshaping_0.3.6           highr_0.9                  </span>
+<span class="co">## [131] yaml_2.3.5                  ggrepel_0.9.1              </span>
+<span class="co">## [133] grid_4.1.1                  sass_0.4.1                 </span>
+<span class="co">## [135] fastmatch_1.1-3             tools_4.1.1                </span>
+<span class="co">## [137] future.apply_1.9.0          parallel_4.1.1             </span>
+<span class="co">## [139] TFMPvalue_0.0.8             lsa_0.73.3                 </span>
+<span class="co">## [141] gridExtra_2.3               smoother_1.1               </span>
+<span class="co">## [143] scatterplot3d_0.3-41        farver_2.1.0               </span>
+<span class="co">## [145] Rtsne_0.16                  digest_0.6.29              </span>
+<span class="co">## [147] rgeos_0.5-9                 shiny_1.7.1                </span>
+<span class="co">## [149] pracma_2.3.8                qlcMatrix_0.9.7            </span>
+<span class="co">## [151] car_3.0-13                  later_1.3.0                </span>
+<span class="co">## [153] RcppAnnoy_0.0.19            AnnotationDbi_1.56.2       </span>
+<span class="co">## [155] httr_1.4.3                  colorspace_2.0-3           </span>
+<span class="co">## [157] XML_3.99-0.9                fs_1.5.2                   </span>
+<span class="co">## [159] tensor_1.5                  ranger_0.13.1              </span>
+<span class="co">## [161] reticulate_1.24             splines_4.1.1              </span>
+<span class="co">## [163] uwot_0.1.11                 RcppRoll_0.3.0             </span>
+<span class="co">## [165] spatstat.utils_2.3-1        pkgdown_2.0.3              </span>
+<span class="co">## [167] ArchR_1.0.1                 plotly_4.10.0              </span>
+<span class="co">## [169] systemfonts_1.0.4           xtable_1.8-4               </span>
+<span class="co">## [171] poweRlaw_0.70.6             jsonlite_1.8.0             </span>
+<span class="co">## [173] destiny_3.9.1               R6_2.5.1                   </span>
+<span class="co">## [175] pillar_1.7.0                htmltools_0.5.2            </span>
+<span class="co">## [177] mime_0.12                   glue_1.6.2                 </span>
+<span class="co">## [179] fastmap_1.1.0               VIM_6.1.1                  </span>
+<span class="co">## [181] BiocParallel_1.28.3         class_7.3-20               </span>
+<span class="co">## [183] codetools_0.2-18            mvtnorm_1.1-3              </span>
+<span class="co">## [185] utf8_1.2.2                  lattice_0.20-45            </span>
+<span class="co">## [187] bslib_0.3.1                 spatstat.sparse_2.1-1      </span>
+<span class="co">## [189] tibble_3.1.7                curl_4.3.2                 </span>
+<span class="co">## [191] leiden_0.4.2                gtools_3.9.2               </span>
+<span class="co">## [193] GO.db_3.14.0                limma_3.50.1               </span>
+<span class="co">## [195] survival_3.2-13             rmarkdown_2.11             </span>
+<span class="co">## [197] docopt_0.7.1                desc_1.4.1                 </span>
+<span class="co">## [199] munsell_0.5.0               rhdf5_2.38.0               </span>
+<span class="co">## [201] e1071_1.7-9                 GenomeInfoDbData_1.2.7     </span>
+<span class="co">## [203] reshape2_1.4.4              gtable_0.3.0               </span>
+<span class="co">## [205] spatstat.core_2.4-2</span></code></pre>
 </div>
   </div>
 

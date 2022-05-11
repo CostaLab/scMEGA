@@ -35,12 +35,14 @@ suppressMessages(library(BSgenome.Hsapiens.UCSC.hg38))
 suppressMessages(library(JASPAR2020))
 suppressMessages(library(TFBSTools))
 suppressMessages(library(ggplot2))
+suppressMessages(library(dplyr))
 ```
 
 Let's load the data into memory and see how they look like
 ```{r}
 obj.rna <- readRDS("./snRNA.rds")
 obj.atac <- readRDS("./snATAC.rds")
+gene.activity <- readRDS("./gene.activity.rds")
 
 obj.rna
 obj.atac
@@ -84,6 +86,7 @@ p4 <- DimPlot(obj.coembed, group.by = "patient_group", shuffle = TRUE, label = T
 The batch effects between patients, regions and modalities are quite clear. 
 So next we use [Harmony](https://www.nature.com/articles/s41592-019-0619-0) to 
 perform batch correction and generate a new UMAP embedding.
+
 ```{r, fig.height = 10, fig.width = 12, fig.align = "center"}
 obj.coembed <- RunHarmony(obj.coembed, 
                       group.by.vars = c("patient", "region", "tech"),
@@ -112,6 +115,8 @@ p4 <- DimPlot(obj.coembed, group.by = "patient_group", reduction = "umap_harmony
 
 (p1 + p2) / (p3 + p4)
 ```
+The new UMAP embedding shows that after batch-correction, cells from different patients, regions, and modalities are well mixed.
+
 
 Based on our previous works of myofibroblast differentiation in [human](https://www.nature.com/articles/s41586-020-2941-1) and [mouse](https://www.nature.com/articles/s41467-021-26530-2) kidney, we already known some relevant genes for this biological process. For example, SCARA5 is a marker for myofibroblast progenitor, and COL1A1, POSTN, and FN1 are highly expressed in myofibroblast. Therefore we can visualize the expression of these genes to check if we can also identify similar process in human heart. Note that to make the visualization clear, here we used the package [Nebulosa](https://github.com/powellgenomicslab/Nebulosa) to plot the data.
 
@@ -125,10 +130,51 @@ p4 <- plot_density(obj.coembed, features="FN1", reduction="umap_harmony", pal = 
 
 (p1 + p2) / (p3 + p4)
 ```
+From the visulization, we can observe that some cells highly express SCARA5 which could be the progentiors of myofibroblasts. On the other hand, some cells highly express COL1A1, POSTN, and FN1 and they could be terminally differentiated myofibroblasts.
 
-It's 
+### Sub-clustering and cleaning
+We next perform sub-clustering to identify different populations in our fibroblast data. To further control the data quality, here we will use a two-round approach to remove low-quality cells. We first use a high-resolution to get a large amount of clusters.
 
-### Clustering and cleaning
+```{r, fig.height = 5, fig.width = 6, fig.align = "center"}
+obj.coembed <- FindNeighbors(obj.coembed, reduction = "harmony", dims = 1:30)
+obj.coembed <- FindClusters(obj.coembed, resolution = 0.9, verbose = FALSE)
+
+cols <- ArchR::paletteDiscrete(obj.coembed@meta.data[, "RNA_snn_res.0.9"])
+    
+p <- DimPlot(obj.coembed, group.by = "RNA_snn_res.0.9", label = TRUE,
+             reduction = "umap_harmony", shuffle = TRUE) +
+    scale_color_manual(values = cols) +
+    xlab("UMAP1") + ylab("UMAP2")
+    
+p
+```
+
+We can use the function _CellPropPlot_ to visualize the cell propotion across all patients.
+
+```{r, fig.height = 6, fig.width = 10, fig.align = "center"}
+p <- CellPropPlot(obj.coembed, 
+                   group.by = "RNA_snn_res.0.9", 
+                   prop.in = "patient_region_id", 
+                   cols = cols)
+
+p
+```
+
+Next, we identify the markers for each cluster and visualize the top 5.
+```{r, fig.height = 5, fig.width = 15, fig.align = "center"}
+all.markers <- FindAllMarkers(obj.coembed, 
+                              only.pos = TRUE, 
+                              min.pct = 0.25, logfc.threshold = 0.5)
+
+df <- all.markers %>%
+    group_by(cluster) %>%
+    slice_max(n = 3, order_by = avg_log2FC)
+
+p <- DotPlot(obj.coembed, features = unique(df$gene)) + RotatedAxis()
+
+print(p)
+```
+
 
 ## Trajectory identification
 ## TFs and genes selection

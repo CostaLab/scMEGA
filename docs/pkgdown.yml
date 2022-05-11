@@ -2,10 +2,9 @@ pandoc: 2.16.2
 pkgdown: 2.0.3
 pkgdown_sha: ~
 articles:
-  GRN-cardiomyocyte: GRN-cardiomyocyte.html
   GRN-fibroblast: GRN-fibroblast.html
   install: install.html
-last_built: 2022-05-11T11:05Z
+last_built: 2022-05-11T14:04Z
 urls:
   reference: https://costalab.github.io/scMEGA/reference
   article: https://costalab.github.io/scMEGA/articles
