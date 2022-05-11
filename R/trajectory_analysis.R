@@ -282,6 +282,8 @@ GetTrajectory <- function(object = NULL,
   message("Creating Trajectory Group Matrix..")
   data.use <- GetAssayData(object, assay = assay, slot = slot)
 
+  print(head(data.use))
+    
   groupMat <- lapply(1:length(groupList), function(x) {
     cell_names <- groupList[[x]]
     mat <- rowMeans(data.use[, cell_names])
