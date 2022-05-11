@@ -7,8 +7,8 @@
 CorrelationHeatmap(
   trajectory1,
   trajectory2,
-  name1 = "NULL",
-  name2 = "NULL",
+  name1 = NULL,
+  name2 = NULL,
   labelRows1 = TRUE,
   labelRows2 = TRUE,
   labelTop1 = 50,
