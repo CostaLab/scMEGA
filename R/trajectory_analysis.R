@@ -279,8 +279,7 @@ GetTrajectory <- function(object = NULL,
     paste0("T.", breaks[-length(breaks)], "_", breaks[-1])
 
   message("Creating Trajectory Group Matrix..")
-  data.use <- GetAssayData(object, assay = assay, slot = slot)
-
+  data.use <- Seurat::GetAssayData(object, assay = assay, slot = slot)
 
   groupMat <- lapply(1:length(groupList), function(x) {
     cell_names <- groupList[[x]]
@@ -333,7 +332,6 @@ GetTrajectory <- function(object = NULL,
       SummarizedExperiment(assays = SimpleList(mat = as.matrix(groupMat)))
 
   }
-  object
 
   return(seTrajectory)
 }
