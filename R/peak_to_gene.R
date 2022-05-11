@@ -7,12 +7,9 @@
 #' @param genome Which genome to use. Currently available are: hg19, hg38, mm9,
 #' and mm10
 #' @param max.dist The maximum distance between a peak and a gene
-## usethis namespace: start
 #' @useDynLib scMEGA, .registration = TRUE
-## usethis namespace: end
-## usethis namespace: start
 #' @importFrom Rcpp sourceCpp
-## usethis namespace: end
+#'
 #' @return A data frame containing all peak-to-gene links
 #' @export
 #'
@@ -85,6 +82,26 @@ PeakToGene <- function(peak.mat, gene.mat, genome = "hg19",
                                assay(seATAC),
                                assay(seRNA))
 
+    o$VarAssayA <- ArchR:::.getQuantiles(matrixStats::rowVars(assay(seATAC)))[o$peak_idx]
+    o$VarAssayB <- ArchR:::.getQuantiles(matrixStats::rowVars(assay(seRNA)))[o$gene_idx]
+    o$TStat <- (o$Correlation / sqrt((pmax(1-o$Correlation^2, 0.00000000000000001, na.rm = TRUE))/(ncol(seATAC)-2))) #T-statistic P-value
+
+    o$Pval <- 2 * pt(-abs(o$TStat), ncol(seATAC) - 2)
+    o$FDR <- p.adjust(o$Pval, method = "fdr")
+    out <- o[, c("peak_idx", "gene_idx", "Correlation", "FDR", "VarAssayA", 
+            "VarAssayB", "distance")]
+    colnames(out) <- c("peak_idx", "gene_idx", "Correlation", "FDR", 
+            "VarQATAC", "VarQRNA", "Distance")
+    mcols(peakSet) <- NULL
+    names(peakSet) <- NULL
+    metadata(out)$peakSet <- peakSet
+    metadata(out)$geneSet <- geneStart
+
+    out$gene <- o$gene
+    out$peak <- o$peak
+
+    out <- out[!is.na(out$FDR), ]
+    
     return(o)
 
 
