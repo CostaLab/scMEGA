@@ -32,5 +32,6 @@ Imports:
     pracma,
     igraph,
     glue,
-    S4Vectors
+    S4Vectors,
+    SummarizedExperiment
 RoxygenNote: 7.1.2

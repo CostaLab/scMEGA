@@ -36,6 +36,7 @@ suppressMessages(library(JASPAR2020))
 suppressMessages(library(TFBSTools))
 suppressMessages(library(ggplot2))
 suppressMessages(library(dplyr))
+suppressMessages(library(SummarizedExperiment))
 ```
 
 Let's load the data into memory and see how they look like
@@ -477,6 +478,69 @@ ht
 ```
 
 ### Select genes
+
+We will select relevant genes by first linking genes to peaks based on the corrleation between gene expression from the snRNA-seq data and peak accessibility from the snATAC-seq data along the inferred trajectory. This means that we only consider a gene to be a potential target if it can be assocaited to at least one peak.
+
+Let's first get the gene expression and chromatin accessibility data along our trajectory
+```{r}
+trajRNA <- GetTrajectory(obj, 
+                        assay = "RNA", 
+                        slot = "data",
+                       smoothWindow = 7,
+                       log2Norm = TRUE)
+
+trajATAC <- GetTrajectory(obj, 
+                        assay = "ATAC", 
+                        slot = "data",
+                       smoothWindow = 7,
+                       log2Norm = TRUE)
+
+# note here we only use the top 10% most variable genes
+groupMatRNA <- TrajectoryHeatmap(trajRNA,
+                        varCutOff = 0.9,
+                        pal = paletteContinuous(set = "horizonExtra"),
+                        limits = c(-2, 2),
+                                 returnMatrix = TRUE)
+
+groupMatATAC <- TrajectoryHeatmap(trajATAC, 
+                        varCutOff = 0,
+                                  maxFeatures = nrow(trajATAC),
+                            pal = paletteContinuous(set = "solarExtra"),
+                            limits = c(-2, 2),
+                       name = "Chromatin accessibility",
+                                 returnMatrix = TRUE)
+```
+
+The peak-to-gene link can be identified by using the function _PeakToGene_
+```{r}
+df.p2g <- PeakToGene(peak.mat = groupMatATAC,
+                     gene.mat = groupMatRNA, 
+                     genome = "hg38")
+```
+
+We here filter the links based on the following criteria:
+* The peak must be a distal regulatory element which likely play an enhancter role
+* The correlation between gene expression and peak accessibility muse be positive and significant
+```{r}
+df.p2g <- df.p2g %>%
+    subset(distance > 2000) %>%
+    subset(Correlation > 0 & FDR < 1e-04)
+```
+
+After filtering, we can also generate a joint heatmap to visualize the peak accessibility and associated gene expression dynamics along the trajectory
+```{r, fig.height = 8, fig.width = 12, fig.align = "center"}
+trajATAC <- trajATAC[df.p2g$peak, ]
+trajRNA <- trajRNA[df.p2g$gene, ]
+
+ht <- CorrelationHeatmap(trajectory1 = trajATAC, 
+                         trajectory2 = trajRNA,
+                        name1 = "Chromatin accessibility",
+                        name2 = "Gene expression",
+                        labelRows1 = FALSE,
+                        labelRows2 = FALSE)
+
+ht
+```
 
 
 ## Gene regulatory network inference and visualization
