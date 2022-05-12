@@ -13,8 +13,6 @@ navbar:
         href: "news/index.html"
       - text: "Vignettes"
         menu:
-          - text: "Infer GRN for cardiomyocyte"
-            href: "articles/GRN-cardiomyocyte.html"
           - text: "Infer GRN for myofibroblast"
             href: "articles/GRN-fibroblast.html"
       - text: "Reference"
