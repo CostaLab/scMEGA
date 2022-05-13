@@ -225,7 +225,6 @@ AddTrajectory <-
 #' (relative to groupEvery) for the sequential trajectory matrix to better reveal
 #' temporal dynamics.
 #'                      
-#' @import SummarizedExperiment
 #' @import Seurat
 #' @return A SummarizedExperiment object
 #' @export

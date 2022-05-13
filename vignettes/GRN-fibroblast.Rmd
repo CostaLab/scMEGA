@@ -26,6 +26,7 @@ wget https://www.dropbox.com/s/7uc2ad0jcrzks20/gene.activity.rds
 
 Next, we load all necessary packages:
 ```{r}
+suppressMessages(library(ArchR))
 suppressMessages(library(Seurat))
 suppressMessages(library(Signac))
 suppressMessages(library(scMEGA))
@@ -36,7 +37,6 @@ suppressMessages(library(JASPAR2020))
 suppressMessages(library(TFBSTools))
 suppressMessages(library(ggplot2))
 suppressMessages(library(dplyr))
-suppressMessages(library(SummarizedExperiment))
 ```
 
 Let's load the data into memory and see how they look like
@@ -165,7 +165,7 @@ p
 
 Next, we identify the markers for each cluster and visualize the top 3.
 
-```{r, fig.height = 5, fig.width = 15, fig.align = "center"}
+```{r, fig.height = 5, fig.width = 15, fig.align = "center", eval=FALSE}
 all.markers <- FindAllMarkers(obj.coembed, 
                               only.pos = TRUE, 
                               min.pct = 0.25, logfc.threshold = 0.5)
@@ -429,7 +429,6 @@ ht
 ```
 
 Apparently many TFs are showing dynamic TF activity along the trajectory. To reduce the number of candidates, we will use snRNA-seq to pick up the TFs that also show dynamic expression.
-
 
 ```{r}
 trajRNA <- GetTrajectory(obj, 

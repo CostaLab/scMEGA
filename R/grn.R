@@ -1,4 +1,4 @@
-GetTFGeneCor <- function(object, 
+GetTFGeneCorrelation <- function(object, 
                          tf.use = NULL,
                          gene.use = NULL,
                          tf.assay = "chromvar", 
@@ -118,8 +118,40 @@ GetGRN <- function(object,
 
 }
 
-GRNPlot <- function(df.grn, seed = 42, genes.highlight = NULL,
-                   cols.highlight = "#984ea3"){
+GRNHeatmap <- function(tf.gene.cor, tf.timepoint, km = 2){
+    col_fun <- circlize::colorRamp2(tf.timepoint, 
+                                    ArchR::paletteContinuous(set = "blueYellow", 
+                                                             n = length(tf.timepoint)))
+
+    column_ha <- ComplexHeatmap::HeatmapAnnotation(time_point = tf.timepoint,
+                                                   col = list(time_point = col_fun))
+
+    ht <- Heatmap(as.matrix(tf.gene.cor),
+                   name = "correlation",
+                   cluster_columns = FALSE,
+                 clustering_method_rows = "ward.D2",
+                   top_annotation = column_ha,
+                  show_row_names = FALSE,
+                   show_column_names = TRUE,
+                    row_km = km,
+                  column_km = km,
+                  border = TRUE)
+    
+    return(ht)
+
+
+}
+
+GRNPlot <- function(df.grn,
+                    tfs.timepoint = NULL, 
+                    genes.cluster = NULL,
+                    genes.highlight = NULL,
+                    cols.highlight = "#984ea3", seed = 42){
+    
+    if(is.null(tfs.timepoint)){
+        stop("Need time point for each TF!")
+    }
+    
     # create graph from data frame
     g <- graph_from_data_frame(df.grn, directed=TRUE)
    
@@ -144,8 +176,22 @@ GRNPlot <- function(df.grn, seed = 42, genes.highlight = NULL,
     ## for genes, we use the minimum size of TFs
     gene_size <- rep(min(df_measure$importance), length(unique(df.grn$gene)))
     
+    # assign color to each node
+    ## TFs are colored by pseudotime point
+    cols.tf <- ArchR::paletteContinuous(set = "blueYellow", 
+                                         n = length(tfs.timepoint))
+    names(cols.tf) <- names(tfs.timepoint)
+    
+    ## genes are colored based on the clustering
+    cols.gene <- ArchR::paletteDiscrete(values = names(genes.cluster))
+
+    names(gene_color) <- df_gene_clustering$gene
+
+    v_color <- c(tf_color, gene_color)
+    
+    
     # compute layout
-    set.seed(42)
+    set.seed(seed)
     layout <- layout_with_fr(g, weights = E(g)$correlation, dim = 2, niter = 1000)
     
     p <- ggraph(g, layout = layout) +
