@@ -165,7 +165,7 @@ p
 
 Next, we identify the markers for each cluster and visualize the top 3.
 
-```{r, fig.height = 5, fig.width = 15, fig.align = "center", eval=FALSE}
+```{r, fig.height = 5, fig.width = 15, fig.align = "center", eval=TRUE}
 all.markers <- FindAllMarkers(obj.coembed, 
                               only.pos = TRUE, 
                               min.pct = 0.25, logfc.threshold = 0.5)
@@ -179,7 +179,7 @@ p <- DotPlot(obj.coembed, features = unique(df$gene)) + RotatedAxis()
 print(p)
 ```
 The above dot plot demonstrates the top 3 markers per cluster and we can easily classify cluster
-3 and 7 as myofibroblasts. In addtion, two clusters (i.e., cluster 2 and 5) are markerd by RYR2, a well known marker gene for cardiomyocyte, likely due to the background noise. It is worth pointing out that in another study [Cells of the adult human heart](https://www.nature.com/articles/s41586-020-2797-4) a simialr fibroblast sub-population (marked by another cardiomyocyte-specific gene TNNT2) was also identified. Based on these, we decide to remove these two clusters.
+3 and 7 as myofibroblasts. In addition, two clusters (i.e., cluster 2 and 5) are marked by RYR2, a well known marker gene for cardiomyocyte, likely due to the background noise. It is worth pointing out that in another study [Cells of the adult human heart](https://www.nature.com/articles/s41586-020-2797-4) a similar fibroblast sub-population (marked by another cardiomyocyte-specific gene TNNT2) was also identified. Based on these, we decide to remove these two clusters.
 
 ```{r, fig.height = 5, fig.width = 6, fig.align = "center"}
 Idents(obj.coembed) <- "RNA_snn_res.0.9"
