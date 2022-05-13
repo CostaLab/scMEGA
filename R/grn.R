@@ -1,281 +1,393 @@
-GetTFGeneCorrelation <- function(object, 
-                         tf.use = NULL,
-                         gene.use = NULL,
-                         tf.assay = "chromvar", 
-                         gene.assay = "RNA",
-                        trajectory.name = "Trajectory"){
-    
-    ## get tf activity and gene expression along trajectory
-    trajMM <- GetTrajectory(object, 
-                        assay = tf.assay, 
-                        slot = "data",
-                            trajectory.name = trajectory.name,
-                       smoothWindow = 7,
-                       log2Norm = FALSE)
+#' Get TF gene correlation
+#'
+#' This function will compute the correlation between TF binding activity and
+#' gene expression along the trajectory.
+#'
+#' @param object A Seurat object
+#' @param tf.use A string list to specify which TFs to use for correlation computation
+#' @param gene.use A string list to specify which genes to use for correlation computation
+#' @param tf.assay Assay that includes TF activity data. Default: "chromvar"
+#' @param gene.assay Assay that includes gene expression activity data. Default: "RNA"
+#' @param trajectory.name Trajectory name
+#'
+#' @return A matrix containing TF-gene correlation
+#' @export
+#'
+GetTFGeneCorrelation <- function(object,
+                                 tf.use = NULL,
+                                 gene.use = NULL,
+                                 tf.assay = "chromvar",
+                                 gene.assay = "RNA",
+                                 trajectory.name = "Trajectory") {
+  ## get tf activity and gene expression along trajectory
+  trajMM <- GetTrajectory(
+    object,
+    assay = tf.assay,
+    slot = "data",
+    trajectory.name = trajectory.name,
+    smoothWindow = 7,
+    log2Norm = FALSE
+  )
 
-    trajRNA <- GetTrajectory(object, 
-                        assay = gene.assay, 
-                        slot = "data",
-                             trajectory.name = trajectory.name,
-                       smoothWindow = 7,
-                       log2Norm = TRUE)
-    
-    rownames(trajMM) <- object@assays$ATAC@motifs@motif.names
+  trajRNA <- GetTrajectory(
+    object,
+    assay = gene.assay,
+    slot = "data",
+    trajectory.name = trajectory.name,
+    smoothWindow = 7,
+    log2Norm = TRUE
+  )
 
-    tf_activity <- suppressMessages(TrajectoryHeatmap(trajMM, 
-                            varCutOff = 0,
-                            pal = paletteContinuous(set = "solarExtra"),
-                            limits = c(-2, 2),
-                           name = "TF activity",
-                           returnMatrix = TRUE)) 
+  rownames(trajMM) <- object@assays$ATAC@motifs@motif.names
 
-    gene_expression <- suppressMessages(TrajectoryHeatmap(trajRNA, 
-                            varCutOff = 0.9,
-                            pal = paletteContinuous(set = "solarExtra"),
-                            limits = c(-2, 2),
-                           name = "Gene expression",
-                                        returnMatrix = TRUE))
-    
-    ## here we filter the TFs according to our correlation analysis
-    if(!is.null(tf.use)){
-        tf_activity <- tf_activity[tf.use, ]
-    }
-    
-    ## here we further filter the genes by only consider genes that are linked to peaks
-    if(!is.null(gene.use)){
-        sel_genes <- intersect(rownames(gene_expression), gene.use)
-        
-        ## subset the gene expression matrix
-        gene_expression <- gene_expression[sel_genes, ]
-    }
-    
-    ## compute the correlation of TF activity and gene expression along the trajectory
-    ## df.cor -> gene by TF matrix
-    df.cor <- t(cor(t(tf_activity), t(gene_expression)))
-    
-    if(!is.null(tf.use)){
-        df.cor <- df.cor[, tf.use]
-    }
+  tf_activity <- suppressMessages(
+    TrajectoryHeatmap(
+      trajMM,
+      varCutOff = 0,
+      pal = paletteContinuous(set = "solarExtra"),
+      limits = c(-2, 2),
+      name = "TF activity",
+      returnMatrix = TRUE
+    )
+  )
 
-    return(df.cor)
+  gene_expression <- suppressMessages(
+    TrajectoryHeatmap(
+      trajRNA,
+      varCutOff = 0.9,
+      pal = paletteContinuous(set = "solarExtra"),
+      limits = c(-2, 2),
+      name = "Gene expression",
+      returnMatrix = TRUE
+    )
+  )
+
+  ## here we filter the TFs according to our correlation analysis
+  if (!is.null(tf.use)) {
+    tf_activity <- tf_activity[tf.use,]
+  }
+
+  ## here we further filter the genes by only consider genes that are linked to peaks
+  if (!is.null(gene.use)) {
+    sel_genes <- intersect(rownames(gene_expression), gene.use)
+
+    ## subset the gene expression matrix
+    gene_expression <- gene_expression[sel_genes,]
+  }
+
+  ## compute the correlation of TF activity and gene expression along the trajectory
+  ## df.cor -> gene by TF matrix
+  df.cor <- t(cor(t(tf_activity), t(gene_expression)))
+
+  if (!is.null(tf.use)) {
+    df.cor <- df.cor[, tf.use]
+  }
+
+  return(df.cor)
 
 }
 
+#' Get gene regulatory network
+#'
+#' This function will generate the final prediction of TF-gene network. It takes the
+#' correlation matrix as input, and associates TFs to genes by using peak-to-gene links and
+#' TF binding sites.
+#'
+#' @param object A Seurat object
+#' @param df.cor A matrix of TF-gene correlation as generated by using the function
+#' \code{\link{GetTFGeneCorrelation}}
+#' @param df.p2g A data frame containing predicted peak-to-gene links
+#' @param min.cor A float number specifying the minimum correlation between TF activity
+#' and target gene expression.
+#'
+#' @return A data frame representing gene regulatory network
+#' @export
+#'
 GetGRN <- function(object,
-                   df.cor = NULL, 
+                   df.cor = NULL,
                    df.p2g = NULL,
-                   min.cor = 0.4){
+                   min.cor = 0.4) {
+  if (is.null(df.cor)) {
+    stop("Please provide a tf-gene correlation matrix!")
+  }
 
-    if(is.null(df.cor)){
-        stop("Please provide a tf-gene correlation matrix!")
-    }
-    
-    if(is.null(df.p2g)){
-        stop("Please provide peak-to-gene links!")
-    }
-    
-    ## We next use peak-to-gene links to predict the target genes for each TF.
-    ## We consider a gene is regulated by a peak if there is a positive
-    ## correlation between gene expression and peak accessibility
-    ## mat.p2g is a gene by peak data frame
-    message("Filtering network by peak-to-gene links...")
-    mat.p2g <- df.p2g %>%
-        select(c(peak, gene, Correlation)) %>%
-        tidyr::pivot_wider(names_from = peak, values_from = Correlation) %>%
-        textshape::column_to_rownames("gene")
+  if (is.null(df.p2g)) {
+    stop("Please provide peak-to-gene links!")
+  }
 
-    mat.p2g[is.na(mat.p2g)] <- 0
-    mat.p2g[mat.p2g>0] <- 1
-    
-    ## To link gene to TF, we also need the TF binding information
-    ## Here we obtain a peak by TF matrix representing if peak is bound by a TF 
-    ## mat.motif is a peak by TF matrix
-    message("Filtering network by TF binding site...")
-    mat.motif <- object@assays$ATAC@motifs@data
-    colnames(mat.motif) <- object@assays$ATAC@motifs@motif.names
-    
-    ## We can filter this complete matching matrix by only using the peaks that are
-    ## linked with some genes, and TFs that are selected based on correlation analysis
-    mat.motif <- mat.motif[colnames(mat.p2g), colnames(df.cor)]
-    
-    ## multiply gene by peak and peak by tf matrix to obtain gene by tf matrix
-    mat.tf.gene <- as.matrix(mat.p2g) %*% as.matrix(mat.motif)
-    
-    ## we binarize this matrix to indicate if a gene is regulated by a TF through a peak
-    mat.tf.gene[mat.tf.gene > 0] <- 1
-    
-    ## here we multiply correlation matrix and regulation matrix
-    df.grn <- as.matrix(df.cor) * mat.tf.gene %>%
-        as.data.frame()
-    
-    df.grn$gene <- rownames(df.grn)
-    
-    df.grn <- df.grn %>%
-       tidyr::pivot_longer(!gene, names_to = "tf", values_to = "correlation") %>%
-       subset(correlation > min.cor) %>%
-       select(tf, gene, correlation)
+  ## We next use peak-to-gene links to predict the target genes for each TF.
+  ## We consider a gene is regulated by a peak if there is a positive
+  ## correlation between gene expression and peak accessibility
+  ## mat.p2g is a gene by peak data frame
+  message("Filtering network by peak-to-gene links...")
+  mat.p2g <- df.p2g %>%
+    select(c(peak, gene, Correlation)) %>%
+    tidyr::pivot_wider(names_from = peak, values_from = Correlation) %>%
+    textshape::column_to_rownames("gene")
 
-    return(df.grn)
+  mat.p2g[is.na(mat.p2g)] <- 0
+  mat.p2g[mat.p2g > 0] <- 1
+
+  ## To link gene to TF, we also need the TF binding information
+  ## Here we obtain a peak by TF matrix representing if peak is bound by a TF
+  ## mat.motif is a peak by TF matrix
+  message("Filtering network by TF binding site...")
+  mat.motif <- object@assays$ATAC@motifs@data
+  colnames(mat.motif) <- object@assays$ATAC@motifs@motif.names
+
+  ## We can filter this complete matching matrix by only using the peaks that are
+  ## linked with some genes, and TFs that are selected based on correlation analysis
+  mat.motif <- mat.motif[colnames(mat.p2g), colnames(df.cor)]
+
+  ## multiply gene by peak and peak by tf matrix to obtain gene by tf matrix
+  mat.tf.gene <- as.matrix(mat.p2g) %*% as.matrix(mat.motif)
+
+  ## we binarize this matrix to indicate if a gene is regulated by a TF through a peak
+  mat.tf.gene[mat.tf.gene > 0] <- 1
+
+  ## here we multiply correlation matrix and regulation matrix
+  df.grn <- as.matrix(df.cor) * mat.tf.gene %>%
+    as.data.frame()
+
+  df.grn$gene <- rownames(df.grn)
+
+  df.grn <- df.grn %>%
+    tidyr::pivot_longer(!gene, names_to = "tf", values_to = "correlation") %>%
+    subset(correlation > min.cor) %>%
+    select(tf, gene, correlation)
+
+  return(df.grn)
 
 }
 
-GRNHeatmap <- function(tf.gene.cor, tf.timepoint, km = 2){
-    col_fun <- circlize::colorRamp2(tf.timepoint, 
-                                    ArchR::paletteContinuous(set = "blueYellow", 
+#' Get a heatmap of TF gene correlation
+#'
+#' This function will generate a heatmap to visualize the TF-gene correlation computed
+#' by the \code{\link{GetTFGeneCorrelation}}
+#'
+#' @param tf.gene.cor A matrix representing TF-gene correlation
+#' @param tf.timepoint A list of TF time point along the trajectory
+#' @param km Number of clusters
+#'
+#' @return A heatmap
+#' @export
+#'
+GRNHeatmap <- function(tf.gene.cor,
+                       tf.timepoint = NULL,
+                       km = 2) {
+  if (!is.null(tf.timepoint)) {
+    col_fun <- circlize::colorRamp2(tf.timepoint,
+                                    ArchR::paletteContinuous(set = "blueYellow",
                                                              n = length(tf.timepoint)))
 
-    column_ha <- ComplexHeatmap::HeatmapAnnotation(time_point = tf.timepoint,
-                                                   col = list(time_point = col_fun))
+    column_ha <-
+      ComplexHeatmap::HeatmapAnnotation(time_point = tf.timepoint,
+                                        col = list(time_point = col_fun))
 
-    ht <- Heatmap(as.matrix(tf.gene.cor),
-                   name = "correlation",
-                   cluster_columns = FALSE,
-                 clustering_method_rows = "ward.D2",
-                   top_annotation = column_ha,
-                  show_row_names = FALSE,
-                   show_column_names = TRUE,
-                    row_km = km,
-                  column_km = km,
-                  border = TRUE)
-    
-    return(ht)
+    ht <- Heatmap(
+      as.matrix(tf.gene.cor),
+      name = "correlation",
+      cluster_columns = FALSE,
+      clustering_method_rows = "ward.D2",
+      top_annotation = column_ha,
+      show_row_names = FALSE,
+      show_column_names = TRUE,
+      row_km = km,
+      column_km = km,
+      border = TRUE
+    )
 
+  } else{
+    ht <- Heatmap(
+      as.matrix(tf.gene.cor),
+      name = "correlation",
+      cluster_columns = FALSE,
+      clustering_method_rows = "ward.D2",
+      show_row_names = FALSE,
+      show_column_names = TRUE,
+      row_km = km,
+      column_km = km,
+      border = TRUE
+    )
+
+
+  }
+
+
+  return(ht)
 
 }
 
+#' Get a graph
+#'
+#' This function will generate a graph to visualize the predicted gene regulatory network
+#'
+#' @param df.grn A data frame representing predicted network
+#' @param tfs.timepoint Time points of TFs
+#' @param genes.cluster A data frame containing clustering results of genes
+#' @param genes.highlight A string list to include gene names for plotting
+#' @param cols.highlight Color code for highlighted genes
+#' @param seed Random seet
+#' @param plot.importance Whether or not plot the scatter plot to visualize importance score of each TF
+#' @param min.importance The minimum importance score for showing the TF labels.
+#'
+#' @return A ggplot object
+#' @export
+#'
 GRNPlot <- function(df.grn,
-                    tfs.timepoint = NULL, 
+                    tfs.timepoint = NULL,
                     genes.cluster = NULL,
                     genes.highlight = NULL,
-                    cols.highlight = "#984ea3", 
+                    cols.highlight = "#984ea3",
                     seed = 42,
-                   plot.importance = TRUE,
-                   min.importance = 2){
-    
-    if(is.null(tfs.timepoint)){
-        stop("Need time point for each TF!")
-    }
-    
-    tf.list <- unique(df.grn$tf)
-    gene.list <- setdiff(unique(df.grn$gene), tf.list)
-    
-    # create graph from data frame
-    g <- graph_from_data_frame(df.grn, directed=TRUE)
-   
-    # compute pagerank and betweenness
-    pagerank <- page_rank(g, weights = E(g)$correlation)
-    bet <-betweenness(g, weights = E(g)$correlation, normalized = TRUE)
-    df_measure <- data.frame(tf = V(g)$name, 
-                              pagerank = pagerank$vector, 
-                              betweenness = bet) %>%
-        subset(tf %in% df.grn$tf) %>%
-        mutate(pagerank = scale(pagerank)[, 1]) %>%
-        mutate(betweenness = scale(betweenness)[, 1])
-    
-    # compute importance only for TFs based on centrality and betweenness
-    min.page <- min(df_measure$pagerank)
-    min.bet <- min(df_measure$betweenness)
-    df_measure$importance <- sqrt((df_measure$pagerank - min.page)**2 + 
-                                 (df_measure$betweenness - min.bet)**2)
-    
-    if(plot.importance){
-        p <- ggplot(data = df_measure) + aes(x = reorder(tf, -importance), 
-                                             y = importance) +
-            geom_point() +
-            xlab("TFs") + ylab("Importance") +
-            cowplot::theme_cowplot() +
-            theme(axis.text.x = element_text(angle = 60, hjust = 1))
-        
-        print(p)
-    }
-    
-    df_measure_sub <- subset(df_measure, importance > 2)
-    
-    # assign size to each node
-    # for TFs, the size is proportional to the importance
-    tf_size <- df_measure$importance
-    names(tf_size) <- df_measure$tf
-    
-    ## for genes, we use the minimum size of TFs
-    gene_size <- rep(min(df_measure$importance), length(unique(df.grn$gene)))
-    names(gene_size) <- gene.list
-    v_size <- c(tf_size, gene_size)
-    V(g)$size <- v_size[V(g)$name]
-    
-    # assign color to each node
-    ## TFs are colored by pseudotime point
-    cols.tf <- ArchR::paletteContinuous(set = "blueYellow", 
-                                         n = length(tfs.timepoint))
-    names(cols.tf) <- names(tfs.timepoint)
-    
-    ## genes are colored based on the clustering
-    if(is.null(genes.cluster)){
-        cols.gene <- rep("gray", length(gene.list))
-        names(cols.gene) <- gene.list
-    } else{
-        genes.cluster <- genes.cluster %>%
-            subset(gene %in% gene.list)
+                    plot.importance = TRUE,
+                    min.importance = 2) {
+  if (is.null(tfs.timepoint)) {
+    stop("Need time point for each TF!")
+  }
 
-        cols <- ArchR::paletteDiscrete(values = as.character(genes.cluster$cluster))
-        
-        df.gene <- lapply(1:length(cols), function(x){
-            df <- subset(genes.cluster, cluster == x)
-            df$color <- rep(cols[[x]], nrow(df))
-            return(df)
+  tf.list <- unique(df.grn$tf)
+  gene.list <- setdiff(unique(df.grn$gene), tf.list)
 
-        }) %>% Reduce(rbind, .)
-        
-        cols.gene <- df.gene$color       
-        names(cols.gene) <- df.gene$gene
-    }
-    v_color <- c(cols.tf, cols.gene)
-    v_color <- v_color[V(g)$name]
-    
-    ## assign alpha
-    tf_alpha <- rep(1, length(tf.list))
-    gene_alpha <- rep(0.5, length(gene.list))
-    names(tf_alpha) <- tf.list
-    names(gene_alpha) <- gene.list
-    v_alpha <- c(tf.list, gene.list)
-    V(g)$alpha <- v_alpha[V(g)$name]
-    
-    # compute layout
-    set.seed(seed)
-    layout <- layout_with_fr(g, 
-                             weights = E(g)$correlation, 
-                             dim = 2, niter = 1000)
-    
-    p <- ggraph(g, layout = layout) +
+  # create graph from data frame
+  g <- graph_from_data_frame(df.grn, directed = TRUE)
+
+  # compute pagerank and betweenness
+  pagerank <- page_rank(g, weights = E(g)$correlation)
+  bet <-
+    betweenness(g,
+                weights = E(g)$correlation,
+                normalized = TRUE)
+  df_measure <- data.frame(
+    tf = V(g)$name,
+    pagerank = pagerank$vector,
+    betweenness = bet
+  ) %>%
+    subset(tf %in% df.grn$tf) %>%
+    mutate(pagerank = scale(pagerank)[, 1]) %>%
+    mutate(betweenness = scale(betweenness)[, 1])
+
+  # compute importance only for TFs based on centrality and betweenness
+  min.page <- min(df_measure$pagerank)
+  min.bet <- min(df_measure$betweenness)
+  df_measure$importance <-
+    sqrt((df_measure$pagerank - min.page) ** 2 +
+           (df_measure$betweenness - min.bet) ** 2)
+
+  if (plot.importance) {
+    p <- ggplot(data = df_measure) + aes(x = reorder(tf,-importance),
+                                         y = importance) +
+      geom_point() +
+      xlab("TFs") + ylab("Importance") +
+      cowplot::theme_cowplot() +
+      theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
+    print(p)
+  }
+
+  df_measure_sub <- subset(df_measure, importance > 2)
+
+  # assign size to each node
+  # for TFs, the size is proportional to the importance
+  tf_size <- df_measure$importance
+  names(tf_size) <- df_measure$tf
+
+  ## for genes, we use the minimum size of TFs
+  gene_size <-
+    rep(min(df_measure$importance), length(unique(df.grn$gene)))
+  names(gene_size) <- gene.list
+  v_size <- c(tf_size, gene_size)
+  V(g)$size <- v_size[V(g)$name]
+
+  # assign color to each node
+  ## TFs are colored by pseudotime point
+  cols.tf <- ArchR::paletteContinuous(set = "blueYellow",
+                                      n = length(tfs.timepoint))
+  names(cols.tf) <- names(tfs.timepoint)
+
+  ## genes are colored based on the clustering
+  if (is.null(genes.cluster)) {
+    cols.gene <- rep("gray", length(gene.list))
+    names(cols.gene) <- gene.list
+  } else{
+    genes.cluster <- genes.cluster %>%
+      subset(gene %in% gene.list)
+
+    cols <-
+      ArchR::paletteDiscrete(values = as.character(genes.cluster$cluster))
+
+    df.gene <- lapply(1:length(cols), function(x) {
+      df <- subset(genes.cluster, cluster == x)
+      df$color <- rep(cols[[x]], nrow(df))
+      return(df)
+
+    }) %>% Reduce(rbind, .)
+
+    cols.gene <- df.gene$color
+    names(cols.gene) <- df.gene$gene
+  }
+  v_color <- c(cols.tf, cols.gene)
+  v_color <- v_color[V(g)$name]
+
+  ## assign alpha
+  tf_alpha <- rep(1, length(tf.list))
+  gene_alpha <- rep(0.5, length(gene.list))
+  names(tf_alpha) <- tf.list
+  names(gene_alpha) <- gene.list
+  v_alpha <- c(tf.list, gene.list)
+  V(g)$alpha <- v_alpha[V(g)$name]
+
+  # compute layout
+  set.seed(seed)
+  layout <- layout_with_fr(
+    g,
+    weights = E(g)$correlation,
+    dim = 2,
+    niter = 1000
+  )
+
+  p <- ggraph(g, layout = layout) +
     geom_edge_link(edge_colour = "gray", edge_alpha = 0.25) +
-    geom_node_point(aes(size = V(g)$size,
-                        color = as.factor(name),
-                        alpha = V(g)$alpha),
-                    show.legend = FALSE) +
+    geom_node_point(aes(
+      size = V(g)$size,
+      color = as.factor(name),
+      alpha = V(g)$alpha
+    ),
+    show.legend = FALSE) +
     scale_size(range = c(1, 10)) +
     scale_color_manual(values = v_color) +
-    geom_node_label(aes(filter = V(g)$name %in% df_measure_sub$tf,
-                        label = V(g)$name),
-                    repel = TRUE,
-                    hjust = "inward",
-                color = "#ff7f00",
-                size = 5,
-                show.legend = FALSE,
-               max.overlaps = Inf)
-    
-    
-    # highlight some genes
-    if(!is.null(genes.highlight)){
-        p <- p + geom_node_label(aes(filter = V(g)$name %in% genes.highlight,
-                    label = V(g)$name),
-                    repel = TRUE,
-                    hjust = "inward",
-                size = 5,
-                color = cols.highlight,
-                show.legend = FALSE)
-    
-    }
+    geom_node_label(
+      aes(
+        filter = V(g)$name %in% df_measure_sub$tf,
+        label = V(g)$name
+      ),
+      repel = TRUE,
+      hjust = "inward",
+      color = "#ff7f00",
+      size = 5,
+      show.legend = FALSE,
+      max.overlaps = Inf
+    )
 
-    p <- p + theme_void()
-    
-    return(p)
+
+  # highlight some genes
+  if (!is.null(genes.highlight)) {
+    p <-
+      p + geom_node_label(
+        aes(
+          filter = V(g)$name %in% genes.highlight,
+          label = V(g)$name
+        ),
+        repel = TRUE,
+        hjust = "inward",
+        size = 5,
+        color = cols.highlight,
+        show.legend = FALSE
+      )
+
+  }
+
+  p <- p + theme_void()
+
+  return(p)
 }
