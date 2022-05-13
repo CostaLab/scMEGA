@@ -372,8 +372,8 @@ GetCorrelation <- function(trajectory1,
     message(glue::glue("Find {length(features.use)} shared features!"))
   }
 
-  mat1 <- mat1[features.use,]
-  mat2 <- mat2[features.use,]
+  mat1 <- mat1[features.use, ]
+  mat2 <- mat2[features.use, ]
 
   df_cor <- lapply(1:length(features.use), function(x) {
     cor.res <- suppressWarnings(cor.test(mat1[x,], mat2[x,]))

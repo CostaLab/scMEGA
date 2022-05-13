@@ -518,8 +518,10 @@ df.p2g <- PeakToGene(peak.mat = groupMatATAC,
 ```
 
 We here filter the links based on the following criteria:
+
 * The peak must be a distal regulatory element which likely play an enhancter role
 * The correlation between gene expression and peak accessibility muse be positive and significant
+
 ```{r}
 df.p2g <- df.p2g %>%
     subset(distance > 2000) %>%

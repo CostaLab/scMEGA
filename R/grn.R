@@ -112,7 +112,8 @@ GetGRN <- function(object,
     
     df.grn <- df.grn %>%
        tidyr::pivot_longer(!gene, names_to = "tf", values_to = "correlation") %>%
-       subset(correlation > min.cor)
+       subset(correlation > min.cor) %>%
+       select(tf, gene, correlation)
 
     return(df.grn)
 
@@ -146,11 +147,17 @@ GRNPlot <- function(df.grn,
                     tfs.timepoint = NULL, 
                     genes.cluster = NULL,
                     genes.highlight = NULL,
-                    cols.highlight = "#984ea3", seed = 42){
+                    cols.highlight = "#984ea3", 
+                    seed = 42,
+                   plot.importance = TRUE,
+                   min.importance = 2){
     
     if(is.null(tfs.timepoint)){
         stop("Need time point for each TF!")
     }
+    
+    tf.list <- unique(df.grn$tf)
+    gene.list <- setdiff(unique(df.grn$gene), tf.list)
     
     # create graph from data frame
     g <- graph_from_data_frame(df.grn, directed=TRUE)
@@ -158,10 +165,12 @@ GRNPlot <- function(df.grn,
     # compute pagerank and betweenness
     pagerank <- page_rank(g, weights = E(g)$correlation)
     bet <-betweenness(g, weights = E(g)$correlation, normalized = TRUE)
-    df_measure <- data.frame(node = V(g)$name, 
+    df_measure <- data.frame(tf = V(g)$name, 
                               pagerank = pagerank$vector, 
                               betweenness = bet) %>%
-        subset(node %in% df.grn$tf)
+        subset(tf %in% df.grn$tf) %>%
+        mutate(pagerank = scale(pagerank)[, 1]) %>%
+        mutate(betweenness = scale(betweenness)[, 1])
     
     # compute importance only for TFs based on centrality and betweenness
     min.page <- min(df_measure$pagerank)
@@ -169,12 +178,29 @@ GRNPlot <- function(df.grn,
     df_measure$importance <- sqrt((df_measure$pagerank - min.page)**2 + 
                                  (df_measure$betweenness - min.bet)**2)
     
+    if(plot.importance){
+        p <- ggplot(data = df_measure) + aes(x = reorder(tf, -importance), 
+                                             y = importance) +
+            geom_point() +
+            xlab("TFs") + ylab("Importance") +
+            cowplot::theme_cowplot() +
+            theme(axis.text.x = element_text(angle = 60, hjust = 1))
+        
+        print(p)
+    }
+    
+    df_measure_sub <- subset(df_measure, importance > 2)
+    
     # assign size to each node
     # for TFs, the size is proportional to the importance
     tf_size <- df_measure$importance
+    names(tf_size) <- df_measure$tf
     
     ## for genes, we use the minimum size of TFs
     gene_size <- rep(min(df_measure$importance), length(unique(df.grn$gene)))
+    names(gene_size) <- gene.list
+    v_size <- c(tf_size, gene_size)
+    V(g)$size <- v_size[V(g)$name]
     
     # assign color to each node
     ## TFs are colored by pseudotime point
@@ -183,22 +209,61 @@ GRNPlot <- function(df.grn,
     names(cols.tf) <- names(tfs.timepoint)
     
     ## genes are colored based on the clustering
-    cols.gene <- ArchR::paletteDiscrete(values = names(genes.cluster))
+    if(is.null(genes.cluster)){
+        cols.gene <- rep("gray", length(gene.list))
+        names(cols.gene) <- gene.list
+    } else{
+        genes.cluster <- genes.cluster %>%
+            subset(gene %in% gene.list)
 
-    names(gene_color) <- df_gene_clustering$gene
+        cols <- ArchR::paletteDiscrete(values = as.character(genes.cluster$cluster))
+        
+        df.gene <- lapply(1:length(cols), function(x){
+            df <- subset(genes.cluster, cluster == x)
+            df$color <- rep(cols[[x]], nrow(df))
+            return(df)
 
-    v_color <- c(tf_color, gene_color)
+        }) %>% Reduce(rbind, .)
+        
+        cols.gene <- df.gene$color       
+        names(cols.gene) <- df.gene$gene
+    }
+    v_color <- c(cols.tf, cols.gene)
+    v_color <- v_color[V(g)$name]
     
+    ## assign alpha
+    tf_alpha <- rep(1, length(tf.list))
+    gene_alpha <- rep(0.5, length(gene.list))
+    names(tf_alpha) <- tf.list
+    names(gene_alpha) <- gene.list
+    v_alpha <- c(tf.list, gene.list)
+    V(g)$alpha <- v_alpha[V(g)$name]
     
     # compute layout
     set.seed(seed)
-    layout <- layout_with_fr(g, weights = E(g)$correlation, dim = 2, niter = 1000)
+    layout <- layout_with_fr(g, 
+                             weights = E(g)$correlation, 
+                             dim = 2, niter = 1000)
     
     p <- ggraph(g, layout = layout) +
-    geom_edge_link(edge_colour = "gray", edge_alpha = 0.25)
+    geom_edge_link(edge_colour = "gray", edge_alpha = 0.25) +
+    geom_node_point(aes(size = V(g)$size,
+                        color = as.factor(name),
+                        alpha = V(g)$alpha),
+                    show.legend = FALSE) +
+    scale_size(range = c(1, 10)) +
+    scale_color_manual(values = v_color) +
+    geom_node_label(aes(filter = V(g)$name %in% df_measure_sub$tf,
+                        label = V(g)$name),
+                    repel = TRUE,
+                    hjust = "inward",
+                color = "#ff7f00",
+                size = 5,
+                show.legend = FALSE,
+               max.overlaps = Inf)
     
     
-    # highlight some TFs
+    # highlight some genes
     if(!is.null(genes.highlight)){
         p <- p + geom_node_label(aes(filter = V(g)$name %in% genes.highlight,
                     label = V(g)$name),
