@@ -232,6 +232,12 @@ GRNHeatmap <- function(tf.gene.cor,
 #' @param plot.importance Whether or not plot the scatter plot to visualize importance score of each TF
 #' @param min.importance The minimum importance score for showing the TF labels.
 #'
+#' @importFrom igraph layout_with_fr
+#' @importFrom igraph graph_from_data_frame
+#' @importFrom ggraph geom_edge_link
+#' @importFrom ggraph geom_node_point
+#' @importFrom ggraph geom_node_label
+#'
 #' @return A ggplot object
 #' @export
 #'
