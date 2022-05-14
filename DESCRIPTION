@@ -25,7 +25,6 @@ Imports:
     Seurat,
     dplyr,
     optmatch,
-    Signac,
     ggplot2,
     cowplot,
     ggpubr,
@@ -33,11 +32,15 @@ Imports:
     pracma,
     igraph,
     glue,
-    S4Vectors,
     ComplexHeatmap,
     IRanges,
     Matrix,
     circlize,
-    ggrepel
+    ggrepel,
+    matrixStats,
+    nabor,
+    stringr,
+    textshape,
+    tidyr
 RoxygenNote: 7.1.2
 Config/testthat/edition: 3
