@@ -83,7 +83,7 @@
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Gene-regulatory network of myofibroblast differentiation in myocardial infarction</h1>
             
-            <h4 data-toc-skip class="date">Compiled: May 12, 2022</h4>
+            <h4 data-toc-skip class="date">Compiled: May 13, 2022</h4>
       
       
       <div class="hidden name"><code>GRN-fibroblast.Rmd</code></div>
@@ -414,10 +414,10 @@
 <p>To infer trajectory, we will perform dimension reduction using diffusion map via the function <em>RunDiffusionMap</em>. This is based on the R package <a href="https://bioconductor.org/packages/release/bioc/html/destiny.html" class="external-link">destiny</a>.</p>
 <div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">coembed.sub</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RunDiffusionMap.html">RunDiffusionMap</a></span><span class="op">(</span><span class="va">coembed.sub</span>, reduction <span class="op">=</span> <span class="st">"harmony"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## finding knns......done. Time: 272.39s</span>
-<span class="co">## Calculating transition probabilities......done. Time: 0.26s</span>
+<pre><code><span class="co">## finding knns......done. Time: 281.56s</span>
+<span class="co">## Calculating transition probabilities......done. Time: 0.30s</span>
 <span class="co">## </span>
-<span class="co">## performing eigen decomposition......done. Time: 1.65s</span></code></pre>
+<span class="co">## performing eigen decomposition......done. Time: 1.66s</span></code></pre>
 <div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">coembed.sub</span>, group.by <span class="op">=</span> <span class="st">"RNA_snn_res.0.2"</span>, label <span class="op">=</span> <span class="cn">TRUE</span>,
              reduction <span class="op">=</span> <span class="st">"dm"</span>, shuffle <span class="op">=</span> <span class="cn">TRUE</span>, cols <span class="op">=</span> <span class="va">cols</span><span class="op">)</span> <span class="op">+</span>
@@ -656,7 +656,11 @@
 <code class="sourceCode R"><span class="va">df.p2g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PeakToGene.html">PeakToGene</a></span><span class="op">(</span>peak.mat <span class="op">=</span> <span class="va">groupMatATAC</span>,
                      gene.mat <span class="op">=</span> <span class="va">groupMatRNA</span>, 
                      genome <span class="op">=</span> <span class="st">"hg38"</span><span class="op">)</span></code></pre></div>
-<p>We here filter the links based on the following criteria: * The peak must be a distal regulatory element which likely play an enhancter role * The correlation between gene expression and peak accessibility muse be positive and significant</p>
+<p>We here filter the links based on the following criteria:</p>
+<ul>
+<li>The peak must be a distal regulatory element which likely play an enhancter role</li>
+<li>The correlation between gene expression and peak accessibility muse be positive and significant</li>
+</ul>
 <div class="sourceCode" id="cb141"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">df.p2g</span> <span class="op">&lt;-</span> <span class="va">df.p2g</span> <span class="op"><a href="https://rdrr.io/pkg/harmony/man/pipe.html" class="external-link">%&gt;%</a></span>
     <span class="fu"><a href="https://satijalab.org/signac/reference/subset.Motif.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">&gt;</span> <span class="fl">2000</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/harmony/man/pipe.html" class="external-link">%&gt;%</a></span>
