@@ -9,7 +9,10 @@
 #' @param max.dist The maximum distance between a peak and a gene
 #' @useDynLib scMEGA, .registration = TRUE
 #' @importFrom Rcpp sourceCpp
-#'
+#' @importFrom GenomicRanges GRanges
+#' @importFrom IRanges IRanges
+#' @importFrom S4Vectors SimpleList
+#' @importFrom stats p.adjust
 #' @return A data frame containing all peak-to-gene links
 #' @export
 #'

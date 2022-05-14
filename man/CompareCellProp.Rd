@@ -29,6 +29,8 @@ this refers to the sample identify}
 
 \item{comparisons}{A list of length-2 vectors used to compare the proportion.
 This parameter is passed to the function stat_compare_means.}
+
+\item{method.test}{Name of method for statistical test. Default: "wilcox.test"}
 }
 \value{
 A ggplot object

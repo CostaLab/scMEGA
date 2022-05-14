@@ -11,18 +11,19 @@ Encoding: UTF-8
 LazyData: true
 URL: https://costalab.github.io/scMEGA/
 Depends:
-    R (>= 4.0.0),
-    methods
+    R (>= 4.0.0)
 Suggests: 
     knitr,
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    SummarizedExperiment
 VignetteBuilder: knitr
 LinkingTo: Rcpp
 Imports: 
     Rcpp,
     ArchR,
     Seurat,
+    SeuratObject,
     dplyr,
     optmatch,
     ggplot2,
@@ -41,6 +42,8 @@ Imports:
     nabor,
     stringr,
     textshape,
-    tidyr
+    tidyr,
+    GenomicRanges,
+    S4Vectors
 RoxygenNote: 7.1.2
 Config/testthat/edition: 3

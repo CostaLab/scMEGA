@@ -4,7 +4,7 @@
 \alias{GRNHeatmap}
 \title{Get a heatmap of TF gene correlation}
 \usage{
-GRNHeatmap(df_cor)
+GRNHeatmap(tf.gene.cor, tf.timepoint = NULL, km = 2)
 }
 \arguments{
 \item{tf.gene.cor}{A matrix representing TF-gene correlation}

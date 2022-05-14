@@ -127,13 +127,13 @@ AddTrajectory <-
           rownames(groupsFilter)[groupsFilter[, 1] == trajectory[x + 1]]
         meanx <- colMeans(matFilter[groupsxp1, , drop = FALSE])
         diffx <- sqrt(colSums((t(matx) - meanx) ^ 2))
-        timex <- (1 - ArchR:::.getQuantiles(diffx)) + x
+        timex <- (1 - getQuantiles(diffx)) + x
       } else{
         groupsxm1 <-
           rownames(groupsFilter)[groupsFilter[, 1] == trajectory[x - 1]]
         meanx <- colMeans(matFilter[groupsxm1, , drop = FALSE])
         diffx <- sqrt(colSums((t(matx) - meanx) ^ 2))
-        timex <- ArchR:::.getQuantiles(diffx) + x
+        timex <- getQuantiles(diffx) + x
       }
 
       timex
@@ -176,7 +176,7 @@ AddTrajectory <-
     knnIdx <- knnObj[[1]]
     knnDist <- knnObj[[2]]
     knnDiff <- ifelse(knnIdx[, 2] > knnIdx[, 3], 1,-1)
-    knnDistQ <- ArchR:::.getQuantiles(knnDist[, 1])
+    knnDistQ <- getQuantiles(knnDist[, 1])
 
     #Filter Outlier Cells to Trajectory for High Resolution
     idxKeep <-
@@ -191,7 +191,7 @@ AddTrajectory <-
     dfTrajectory3 <- dfTrajectory
 
     dfTrajectory3$Trajectory <-
-      100 * ArchR:::.getQuantiles(dfTrajectory3[, 2])
+      100 * getQuantiles(dfTrajectory3[, 2])
     nas <- rep(NA, dim(object)[2])
     names(nas) <- colnames(object)
     nas[rownames(dfTrajectory3)] <- dfTrajectory3$Trajectory
@@ -224,8 +224,8 @@ AddTrajectory <-
 #' @param smoothWindow An integer value indicating the smoothing window in size
 #' (relative to groupEvery) for the sequential trajectory matrix to better reveal
 #' temporal dynamics.
-#'                      
-#' @import Seurat
+#'
+#' @importFrom SeuratObject GetAssayData
 #' @return A SummarizedExperiment object
 #' @export
 #'
@@ -316,7 +316,7 @@ GetTrajectory <- function(object = NULL,
     message("Smoothing...")
     smoothGroupMat <-
       as.matrix(t(apply(groupMat, 1, function(x)
-        ArchR:::.centerRollMean(x, k = smoothWindow))))
+        centerRollMean(x, k = smoothWindow))))
     colnames(smoothGroupMat) <- paste0(colnames(groupMat))
     colnames(groupMat) <- paste0(colnames(groupMat))
 
