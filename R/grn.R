@@ -165,6 +165,7 @@ GetGRN <- function(object,
 #' This function will generate a heatmap to visualize the TF-gene correlation computed
 #' by the \code{\link{GetTFGeneCorrelation}}
 #'
+#'
 #' @param tf.gene.cor A matrix representing TF-gene correlation
 #' @param tf.timepoint A list of TF time point along the trajectory
 #' @param km Number of clusters

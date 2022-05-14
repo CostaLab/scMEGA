@@ -32,5 +32,10 @@ Imports:
     pracma,
     igraph,
     glue,
-    S4Vectors
+    S4Vectors,
+    ComplexHeatmap,
+    IRanges,
+    Matrix,
+    circlize,
+    ggrepel
 RoxygenNote: 7.1.2
