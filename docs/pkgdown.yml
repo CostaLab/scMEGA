@@ -1,10 +1,10 @@
-pandoc: 2.16.2
+pandoc: 2.0.6
 pkgdown: 2.0.3
 pkgdown_sha: ~
 articles:
   GRN-fibroblast: GRN-fibroblast.html
   install: install.html
-last_built: 2022-05-14T13:10Z
+last_built: 2022-05-14T20:36Z
 urls:
   reference: https://costalab.github.io/scMEGA/reference
   article: https://costalab.github.io/scMEGA/articles
