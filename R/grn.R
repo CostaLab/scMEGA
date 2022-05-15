@@ -239,7 +239,8 @@ GRNHeatmap <- function(tf.gene.cor,
 #' @importFrom ggraph geom_edge_link
 #' @importFrom ggraph geom_node_point
 #' @importFrom ggraph geom_node_label
-#'
+#' @importFrom igraph E
+#' @importFrom igraph V
 #' @return A ggplot object
 #' @export
 #'

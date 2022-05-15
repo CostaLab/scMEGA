@@ -37,6 +37,8 @@ suppressMessages(library(JASPAR2020))
 suppressMessages(library(TFBSTools))
 suppressMessages(library(ggplot2))
 suppressMessages(library(dplyr))
+suppressMessages(library(igraph))
+suppressMessages(library(ggraph))
 ```
 
 Let's load the data into memory and see how they look like
@@ -587,7 +589,7 @@ df.grn <- GetGRN(object = obj,
 
 Finally, we can visualize our network as the last step of this analysis
 
-```{r, fig.height = 10, fig.width = 10, fig.align = "center"}
+```{r viz_network, fig.height = 10, fig.width = 10, fig.align = "center"}
 # define colors for nodes representing TFs (i.e., regulators)
 df.cor <- df.cor[order(df.cor$time_point), ]
 tfs.timepoint <- df.cor$time_point
@@ -607,7 +609,7 @@ genes.cluster <- lapply(1:length(row.oders), function(x){
     
 }) %>% Reduce(rbind, .)
 
-## plot the graph, here we can highlight some genes
+# plot the graph, here we can highlight some genes
 p <- GRNPlot(df.grn, 
              tfs.timepoint = tfs.timepoint,
              genes.cluster = genes.cluster,
@@ -620,8 +622,6 @@ p <- GRNPlot(df.grn,
 
 print(p)
 ```
-
-
 
 ```{r}
 # Check session information
