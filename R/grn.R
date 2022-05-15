@@ -233,6 +233,8 @@ GRNHeatmap <- function(tf.gene.cor,
 #' @param min.importance The minimum importance score for showing the TF labels.
 #'
 #' @importFrom igraph layout_with_fr
+#' @importFrom igraph page_rank
+#' @importFrom igraph betweenness
 #' @importFrom igraph graph_from_data_frame
 #' @importFrom ggraph geom_edge_link
 #' @importFrom ggraph geom_node_point

@@ -10,6 +10,8 @@
 #' @useDynLib scMEGA, .registration = TRUE
 #' @importFrom Rcpp sourceCpp
 #' @importFrom GenomicRanges GRanges
+#' @importFrom GenomicRanges findOverlaps
+#' @importFrom GenomicRanges resize
 #' @importFrom IRanges IRanges
 #' @importFrom S4Vectors SimpleList
 #' @importFrom stats p.adjust
