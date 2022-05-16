@@ -69,14 +69,18 @@ In this step, we integrate the snRNA-seq and snATAC-seq so that we can define th
 First, we need to project the data into a common low-dimensional space. This is done by using the CCA method from [Seurat](https://satijalab.org/seurat/). To this end, we have wrapped several functions from Seurat into a single function _CoembedData_.
 
 ```{r}
-obj.coembed <- CoembedData(obj.rna, 
-obj.atac, gene.activity, 
-                           weight.reduction = "harmony", 
-                           verbose = FALSE)
+obj.coembed <- CoembedData(
+  obj.rna,
+  obj.atac, 
+  gene.activity, 
+  weight.reduction = "harmony", 
+  verbose = FALSE
+)
 ```
 
 We next visualize the snRNA-seq and snATAC-seq in this shared UMAP space. The cells are coloded by
 patient, region, modality, or patient group.
+
 ```{r, fig.height = 10, fig.width = 12, fig.align = "center"}
 
 p1 <- DimPlot(obj.coembed, group.by = "patient", shuffle = TRUE, label = TRUE)
@@ -92,45 +96,68 @@ So next we use [Harmony](https://www.nature.com/articles/s41592-019-0619-0) to
 perform batch correction and generate a new UMAP embedding.
 
 ```{r, fig.height = 10, fig.width = 12, fig.align = "center"}
-obj.coembed <- RunHarmony(obj.coembed, 
-                      group.by.vars = c("patient", "region", "tech"),
-                     reduction = "pca", 
-                      max.iter.harmony = 30, 
-                      dims.use = 1:30,
-                     project.dim = FALSE,
-                     plot_convergence = FALSE)
+obj.coembed <- RunHarmony(
+  obj.coembed,
+  group.by.vars = c("patient", "region", "tech"),
+  reduction = "pca",
+  max.iter.harmony = 30,
+  dims.use = 1:30,
+  project.dim = FALSE,
+  plot_convergence = FALSE
+)
 
-obj.coembed <- RunUMAP(obj.coembed, 
-               dims = 1:30, 
-               reduction = 'harmony',
-               reduction.name = "umap_harmony",
-               reduction.ke = 'umapharmony_',
-              verbose = FALSE,
-                   min.dist = 0.4)
+obj.coembed <- RunUMAP(
+  obj.coembed,
+  dims = 1:30,
+  reduction = 'harmony',
+  reduction.name = "umap_harmony",
+  reduction.ke = 'umapharmony_',
+  verbose = FALSE,
+  min.dist = 0.4
+)
 ```
 
 We can plot the data again
 
 ```{r, fig.height = 10, fig.width = 12, fig.align = "center"}
-
-p1 <- DimPlot(obj.coembed, group.by = "patient", reduction = "umap_harmony")
-p2 <- DimPlot(obj.coembed, group.by = "region", reduction = "umap_harmony")
-p3 <- DimPlot(obj.coembed, group.by = "tech", reduction = "umap_harmony")
-p4 <- DimPlot(obj.coembed, group.by = "patient_group", reduction = "umap_harmony")
+p1 <-
+  DimPlot(obj.coembed, group.by = "patient", reduction = "umap_harmony")
+p2 <-
+  DimPlot(obj.coembed, group.by = "region", reduction = "umap_harmony")
+p3 <-
+  DimPlot(obj.coembed, group.by = "tech", reduction = "umap_harmony")
+p4 <-
+  DimPlot(obj.coembed, group.by = "patient_group", reduction = "umap_harmony")
 
 (p1 + p2) / (p3 + p4)
 ```
+
 From the new UMAP embedding, we can observe that after batch-correction, cells from different patients, regions, and modalities are well mixed.
 
 
 Based on our previous works of myofibroblast differentiation in [human](https://www.nature.com/articles/s41586-020-2941-1) and [mouse](https://www.nature.com/articles/s41467-021-26530-2) kidney, we already known some relevant genes for this biological process. For example, SCARA5 is a marker for myofibroblast progenitor, and COL1A1, POSTN, and FN1 are highly expressed in myofibroblast. Therefore we can visualize the expression of these genes to check if we can also identify similar process in human heart. Note that to make the visualization clear, here we used the package [Nebulosa](https://github.com/powellgenomicslab/Nebulosa) to plot the data.
 
 ```{r, fig.height = 10, fig.width = 12, fig.align = "center"}
-
-p1 <- plot_density(obj.coembed, features="SCARA5", reduction="umap_harmony", pal = "magma")
-p2 <- plot_density(obj.coembed, features="COL1A1", reduction="umap_harmony", pal = "magma")
-p3 <- plot_density(obj.coembed, features="POSTN", reduction="umap_harmony", pal = "magma")
-p4 <- plot_density(obj.coembed, features="FN1", reduction="umap_harmony", pal = "magma")
+p1 <-
+  plot_density(obj.coembed,
+               features = "SCARA5",
+               reduction = "umap_harmony",
+               pal = "magma")
+p2 <-
+  plot_density(obj.coembed,
+               features = "COL1A1",
+               reduction = "umap_harmony",
+               pal = "magma")
+p3 <-
+  plot_density(obj.coembed,
+               features = "POSTN",
+               reduction = "umap_harmony",
+               pal = "magma")
+p4 <-
+  plot_density(obj.coembed,
+               features = "FN1",
+               reduction = "umap_harmony",
+               pal = "magma")
 
 
 (p1 + p2) / (p3 + p4)
@@ -158,10 +185,10 @@ p
 We can use the function _CellPropPlot_ to visualize the cell propotion across all patients.
 
 ```{r, fig.height = 6, fig.width = 10, fig.align = "center"}
-p <- CellPropPlot(obj.coembed, 
-                   group.by = "RNA_snn_res.0.9", 
-                   prop.in = "patient_region_id", 
-                   cols = cols)
+p <- CellPropPlot(obj.coembed,
+                  group.by = "RNA_snn_res.0.9",
+                  prop.in = "patient_region_id",
+                  cols = cols)
 
 p
 ```
