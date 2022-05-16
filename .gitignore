@@ -1,6 +1,7 @@
 .Rproj.user
 .Rhistory
 .RData
+.DS_Store
 .Ruserdata
 vignettes/*.rds
 vignettes/.ipynb_checkpoints/
