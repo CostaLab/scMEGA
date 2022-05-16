@@ -69,7 +69,8 @@ In this step, we integrate the snRNA-seq and snATAC-seq so that we can define th
 First, we need to project the data into a common low-dimensional space. This is done by using the CCA method from [Seurat](https://satijalab.org/seurat/). To this end, we have wrapped several functions from Seurat into a single function _CoembedData_.
 
 ```{r}
-obj.coembed <- CoembedData(obj.rna, obj.atac, gene.activity, 
+obj.coembed <- CoembedData(obj.rna, 
+obj.atac, gene.activity, 
                            weight.reduction = "harmony", 
                            verbose = FALSE)
 ```
