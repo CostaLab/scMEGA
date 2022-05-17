@@ -1,10 +1,15 @@
 ### scMEGA: Single-cell Multiomic Enhancer-based Gene regulAtory network inference
 
-scMEGA (**S**ingle-**c**ell **M**ultiomic **E**nhancer-based **G**ene regul**A**tory network inference) is a R package designed to infer gene regulatory network by using single cell 
-multi-omics data. It is based on several popular packages for single cell RNA/ATAC-seq data analysis, 
-particularly, [Seurat](https://satijalab.org/seurat/), [Signac](https://satijalab.org/signac/index.html), and [ArchR](https://www.archrproject.com/). Picture below showed the principal of scMEGA for
-linking genes to TFs and building a gene regualtory network.
+scMEGA is a R package designed to infer gene regulatory network by using single cell 
+multi-omics data.
 
-![](./man/figures/schematic.png)
+You can install scMEGA via below commands:
+
+# Install devtools
+if (!requireNamespace("devtools", quietly = TRUE))
+    install.packages("devtools")
+
+# Install scMEGA
+devtools::install_github("CostaLab/scMEGA")
 
 
