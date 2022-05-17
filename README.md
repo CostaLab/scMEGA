@@ -5,11 +5,11 @@ multi-omics data.
 
 You can install scMEGA via below commands:
 
-# Install devtools
+'''
 if (!requireNamespace("devtools", quietly = TRUE))
     install.packages("devtools")
-
-# Install scMEGA
 devtools::install_github("CostaLab/scMEGA")
+'''
+
 
 
