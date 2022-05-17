@@ -10,5 +10,7 @@ if (!requireNamespace("devtools", quietly = TRUE))
 devtools::install_github("CostaLab/scMEGA")
 ```
 
+Find [here](https://costalab.github.io/scMEGA/articles/GRN-fibroblast.html) a tutorial about how to build a GRN for myofibroblasts differentiation by using snRNA-seq and snATAC-seq as inputs.
+
 
 
