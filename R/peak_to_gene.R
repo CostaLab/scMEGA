@@ -6,7 +6,10 @@
 #' @param gene.mat A matrix containing gene expression data
 #' @param genome Which genome to use. Currently available are: hg19, hg38, mm9,
 #' and mm10
-#' @param max.dist The maximum distance between a peak and a gene
+#' @param method Which method to use to measure the association between peak and gene.
+#' Available are: "correlation", "glm"
+#' @param max.dist The maximum distance between a peak and a gene. Default: 250000 bp
+#'
 #' @useDynLib scMEGA, .registration = TRUE
 #' @importFrom Rcpp sourceCpp
 #' @importFrom GenomicRanges GRanges
@@ -21,7 +24,8 @@
 PeakToGene <- function(peak.mat,
                        gene.mat,
                        genome = "hg19",
-                       max.dist = 250000) {
+                       max.dist = 250000,
+                       method = "corrleation") {
   if (!(genome %in% c("hg19", "hg38", "mm9", "mm10"))) {
     stop("Available genome are: hg19, hg38, mm9, and mm10!")
   }
