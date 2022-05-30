@@ -111,20 +111,21 @@ CompareCellProp <-
       group_by(across(all_of(c(prop.in, group.by)))) %>%
       summarise(counts = n()) %>%
       mutate(proportion = counts / sum(counts))
-
+      
     df_anno <- object@meta.data %>%
       as.data.frame() %>%
       subset(., select = c(prop.in, sample.annotation)) %>%
       unique()
-
+      
     df <- merge.data.frame(df_prop, df_anno)
-
+      
     proportion <- "proportion"
 
     if (!is.null(comparisons)) {
       p <-
         ggplot(data = df, aes_string(x = sample.annotation, y = proportion)) +
-        geom_boxplot(aes_string(color = sample.annotation)) +
+        geom_boxplot(aes_string(color = sample.annotation), outlier.shape = NA) +
+        geom_jitter(aes_string(color = sample.annotation), size=0.4, alpha=1) +
         facet_wrap(as.formula(paste("~", group.by)), nrow = 1) +
         ggpubr::stat_compare_means(comparisons = comparisons,
                                    method = method.test) +
@@ -136,7 +137,8 @@ CompareCellProp <-
     } else{
       p <-
         ggplot(data = df, aes_string(x = sample.annotation, y = proportion)) +
-        geom_boxplot(aes_string(color = sample.annotation)) +
+        geom_boxplot(aes_string(color = sample.annotation), outlier.shape = NA) +
+        geom_jitter(aes_string(color = sample.annotation), size=0.4, alpha=1) +
         facet_wrap(as.formula(paste("~", group.by)), nrow = 1) +
         cowplot::theme_cowplot() +
         xlab("") + ylab("") +

@@ -640,7 +640,6 @@ genes.cluster <- lapply(1:length(row.oders), function(x){
 # plot the graph, here we can highlight some genes
 p <- GRNPlot(df.grn, 
              tfs.timepoint = tfs.timepoint,
-             genes.cluster = genes.cluster,
              seed = 42, 
              genes.highlight = c("SCARA5", "PCOLCE2",
                                  "MBLN1", "COL1A1", "POSTN",

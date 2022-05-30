@@ -83,7 +83,7 @@
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Gene-regulatory network of myofibroblast differentiation in myocardial infarction</h1>
             
-            <h4 data-toc-skip class="date">Compiled: May 15, 2022</h4>
+            <h4 data-toc-skip class="date">Compiled: May 16, 2022</h4>
       
       
       <div class="hidden name"><code>GRN-fibroblast.Rmd</code></div>
@@ -155,9 +155,13 @@
 </h3>
 <p>First, we need to project the data into a common low-dimensional space. This is done by using the CCA method from <a href="https://satijalab.org/seurat/" class="external-link">Seurat</a>. To this end, we have wrapped several functions from Seurat into a single function <em>CoembedData</em>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">obj.coembed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CoembedData.html">CoembedData</a></span><span class="op">(</span><span class="va">obj.rna</span>, <span class="va">obj.atac</span>, <span class="va">gene.activity</span>, 
-                           weight.reduction <span class="op">=</span> <span class="st">"harmony"</span>, 
-                           verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">obj.coembed</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CoembedData.html">CoembedData</a></span><span class="op">(</span>
+  <span class="va">obj.rna</span>,
+  <span class="va">obj.atac</span>, 
+  <span class="va">gene.activity</span>, 
+  weight.reduction <span class="op">=</span> <span class="st">"harmony"</span>, 
+  verbose <span class="op">=</span> <span class="cn">FALSE</span>
+<span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## Performing data integration using Seurat...</span></code></pre>
 <pre><code><span class="co">## Warning in RunCCA.Seurat(object1 = reference, object2 = query, features =</span>
 <span class="co">## features, : Running CCA on different assays</span></code></pre>
@@ -180,13 +184,15 @@
 <p><img src="GRN-fibroblast_files/figure-html/unnamed-chunk-6-1.png" width="1152" style="display: block; margin: auto;"></p>
 <p>The batch effects between patients, regions and modalities are quite clear. So next we use <a href="https://www.nature.com/articles/s41592-019-0619-0" class="external-link">Harmony</a> to perform batch correction and generate a new UMAP embedding.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">obj.coembed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/harmony/man/RunHarmony.html" class="external-link">RunHarmony</a></span><span class="op">(</span><span class="va">obj.coembed</span>, 
-                      group.by.vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"patient"</span>, <span class="st">"region"</span>, <span class="st">"tech"</span><span class="op">)</span>,
-                     reduction <span class="op">=</span> <span class="st">"pca"</span>, 
-                      max.iter.harmony <span class="op">=</span> <span class="fl">30</span>, 
-                      dims.use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>,
-                     project.dim <span class="op">=</span> <span class="cn">FALSE</span>,
-                     plot_convergence <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">obj.coembed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/harmony/man/RunHarmony.html" class="external-link">RunHarmony</a></span><span class="op">(</span>
+  <span class="va">obj.coembed</span>,
+  group.by.vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"patient"</span>, <span class="st">"region"</span>, <span class="st">"tech"</span><span class="op">)</span>,
+  reduction <span class="op">=</span> <span class="st">"pca"</span>,
+  max.iter.harmony <span class="op">=</span> <span class="fl">30</span>,
+  dims.use <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>,
+  project.dim <span class="op">=</span> <span class="cn">FALSE</span>,
+  plot_convergence <span class="op">=</span> <span class="cn">FALSE</span>
+<span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## Warning: Quick-TRANSfer stage steps exceeded maximum (= 2599800)</span></code></pre>
 <pre><code><span class="co">## Harmony 1/30</span></code></pre>
 <pre><code><span class="co">## Harmony 2/30</span></code></pre>
@@ -208,28 +214,51 @@
 <pre><code><span class="co">## Harmony 18/30</span></code></pre>
 <pre><code><span class="co">## Harmony converged after 18 iterations</span></code></pre>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">obj.coembed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/RunUMAP.html" class="external-link">RunUMAP</a></span><span class="op">(</span><span class="va">obj.coembed</span>, 
-               dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>, 
-               reduction <span class="op">=</span> <span class="st">'harmony'</span>,
-               reduction.name <span class="op">=</span> <span class="st">"umap_harmony"</span>,
-               reduction.ke <span class="op">=</span> <span class="st">'umapharmony_'</span>,
-              verbose <span class="op">=</span> <span class="cn">FALSE</span>,
-                   min.dist <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">obj.coembed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/RunUMAP.html" class="external-link">RunUMAP</a></span><span class="op">(</span>
+  <span class="va">obj.coembed</span>,
+  dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>,
+  reduction <span class="op">=</span> <span class="st">'harmony'</span>,
+  reduction.name <span class="op">=</span> <span class="st">"umap_harmony"</span>,
+  reduction.ke <span class="op">=</span> <span class="st">'umapharmony_'</span>,
+  verbose <span class="op">=</span> <span class="cn">FALSE</span>,
+  min.dist <span class="op">=</span> <span class="fl">0.4</span>
+<span class="op">)</span></code></pre></div>
 <p>We can plot the data again</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.coembed</span>, group.by <span class="op">=</span> <span class="st">"patient"</span>, reduction <span class="op">=</span> <span class="st">"umap_harmony"</span><span class="op">)</span>
-<span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.coembed</span>, group.by <span class="op">=</span> <span class="st">"region"</span>, reduction <span class="op">=</span> <span class="st">"umap_harmony"</span><span class="op">)</span>
-<span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.coembed</span>, group.by <span class="op">=</span> <span class="st">"tech"</span>, reduction <span class="op">=</span> <span class="st">"umap_harmony"</span><span class="op">)</span>
-<span class="va">p4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.coembed</span>, group.by <span class="op">=</span> <span class="st">"patient_group"</span>, reduction <span class="op">=</span> <span class="st">"umap_harmony"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.coembed</span>, group.by <span class="op">=</span> <span class="st">"patient"</span>, reduction <span class="op">=</span> <span class="st">"umap_harmony"</span><span class="op">)</span>
+<span class="va">p2</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.coembed</span>, group.by <span class="op">=</span> <span class="st">"region"</span>, reduction <span class="op">=</span> <span class="st">"umap_harmony"</span><span class="op">)</span>
+<span class="va">p3</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.coembed</span>, group.by <span class="op">=</span> <span class="st">"tech"</span>, reduction <span class="op">=</span> <span class="st">"umap_harmony"</span><span class="op">)</span>
+<span class="va">p4</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.coembed</span>, group.by <span class="op">=</span> <span class="st">"patient_group"</span>, reduction <span class="op">=</span> <span class="st">"umap_harmony"</span><span class="op">)</span>
 
 <span class="op">(</span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">p3</span> <span class="op">+</span> <span class="va">p4</span><span class="op">)</span></code></pre></div>
-<p><img src="GRN-fibroblast_files/figure-html/unnamed-chunk-8-1.png" width="1152" style="display: block; margin: auto;"> From the new UMAP embedding, we can observe that after batch-correction, cells from different patients, regions, and modalities are well mixed.</p>
+<p><img src="GRN-fibroblast_files/figure-html/unnamed-chunk-8-1.png" width="1152" style="display: block; margin: auto;"></p>
+<p>From the new UMAP embedding, we can observe that after batch-correction, cells from different patients, regions, and modalities are well mixed.</p>
 <p>Based on our previous works of myofibroblast differentiation in <a href="https://www.nature.com/articles/s41586-020-2941-1" class="external-link">human</a> and <a href="https://www.nature.com/articles/s41467-021-26530-2" class="external-link">mouse</a> kidney, we already known some relevant genes for this biological process. For example, SCARA5 is a marker for myofibroblast progenitor, and COL1A1, POSTN, and FN1 are highly expressed in myofibroblast. Therefore we can visualize the expression of these genes to check if we can also identify similar process in human heart. Note that to make the visualization clear, here we used the package <a href="https://github.com/powellgenomicslab/Nebulosa" class="external-link">Nebulosa</a> to plot the data.</p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Nebulosa/man/plot_density.html" class="external-link">plot_density</a></span><span class="op">(</span><span class="va">obj.coembed</span>, features<span class="op">=</span><span class="st">"SCARA5"</span>, reduction<span class="op">=</span><span class="st">"umap_harmony"</span>, pal <span class="op">=</span> <span class="st">"magma"</span><span class="op">)</span>
-<span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Nebulosa/man/plot_density.html" class="external-link">plot_density</a></span><span class="op">(</span><span class="va">obj.coembed</span>, features<span class="op">=</span><span class="st">"COL1A1"</span>, reduction<span class="op">=</span><span class="st">"umap_harmony"</span>, pal <span class="op">=</span> <span class="st">"magma"</span><span class="op">)</span>
-<span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Nebulosa/man/plot_density.html" class="external-link">plot_density</a></span><span class="op">(</span><span class="va">obj.coembed</span>, features<span class="op">=</span><span class="st">"POSTN"</span>, reduction<span class="op">=</span><span class="st">"umap_harmony"</span>, pal <span class="op">=</span> <span class="st">"magma"</span><span class="op">)</span>
-<span class="va">p4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Nebulosa/man/plot_density.html" class="external-link">plot_density</a></span><span class="op">(</span><span class="va">obj.coembed</span>, features<span class="op">=</span><span class="st">"FN1"</span>, reduction<span class="op">=</span><span class="st">"umap_harmony"</span>, pal <span class="op">=</span> <span class="st">"magma"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/Nebulosa/man/plot_density.html" class="external-link">plot_density</a></span><span class="op">(</span><span class="va">obj.coembed</span>,
+               features <span class="op">=</span> <span class="st">"SCARA5"</span>,
+               reduction <span class="op">=</span> <span class="st">"umap_harmony"</span>,
+               pal <span class="op">=</span> <span class="st">"magma"</span><span class="op">)</span>
+<span class="va">p2</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/Nebulosa/man/plot_density.html" class="external-link">plot_density</a></span><span class="op">(</span><span class="va">obj.coembed</span>,
+               features <span class="op">=</span> <span class="st">"COL1A1"</span>,
+               reduction <span class="op">=</span> <span class="st">"umap_harmony"</span>,
+               pal <span class="op">=</span> <span class="st">"magma"</span><span class="op">)</span>
+<span class="va">p3</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/Nebulosa/man/plot_density.html" class="external-link">plot_density</a></span><span class="op">(</span><span class="va">obj.coembed</span>,
+               features <span class="op">=</span> <span class="st">"POSTN"</span>,
+               reduction <span class="op">=</span> <span class="st">"umap_harmony"</span>,
+               pal <span class="op">=</span> <span class="st">"magma"</span><span class="op">)</span>
+<span class="va">p4</span> <span class="op">&lt;-</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/Nebulosa/man/plot_density.html" class="external-link">plot_density</a></span><span class="op">(</span><span class="va">obj.coembed</span>,
+               features <span class="op">=</span> <span class="st">"FN1"</span>,
+               reduction <span class="op">=</span> <span class="st">"umap_harmony"</span>,
+               pal <span class="op">=</span> <span class="st">"magma"</span><span class="op">)</span>
 
 
 <span class="op">(</span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">p3</span> <span class="op">+</span> <span class="va">p4</span><span class="op">)</span></code></pre></div>
@@ -257,10 +286,10 @@
 <p><img src="GRN-fibroblast_files/figure-html/unnamed-chunk-10-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>We can use the function <em>CellPropPlot</em> to visualize the cell propotion across all patients.</p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CellPropPlot.html">CellPropPlot</a></span><span class="op">(</span><span class="va">obj.coembed</span>, 
-                   group.by <span class="op">=</span> <span class="st">"RNA_snn_res.0.9"</span>, 
-                   prop.in <span class="op">=</span> <span class="st">"patient_region_id"</span>, 
-                   cols <span class="op">=</span> <span class="va">cols</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CellPropPlot.html">CellPropPlot</a></span><span class="op">(</span><span class="va">obj.coembed</span>,
+                  group.by <span class="op">=</span> <span class="st">"RNA_snn_res.0.9"</span>,
+                  prop.in <span class="op">=</span> <span class="st">"patient_region_id"</span>,
+                  cols <span class="op">=</span> <span class="va">cols</span><span class="op">)</span>
 
 <span class="va">p</span></code></pre></div>
 <p><img src="GRN-fibroblast_files/figure-html/unnamed-chunk-11-1.png" width="960" style="display: block; margin: auto;"></p>
@@ -443,10 +472,10 @@
 <p>To infer trajectory, we will perform dimension reduction using diffusion map via the function <em>RunDiffusionMap</em>. This is based on the R package <a href="https://bioconductor.org/packages/release/bioc/html/destiny.html" class="external-link">destiny</a>.</p>
 <div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">coembed.sub</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RunDiffusionMap.html">RunDiffusionMap</a></span><span class="op">(</span><span class="va">coembed.sub</span>, reduction <span class="op">=</span> <span class="st">"harmony"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## finding knns......done. Time: 267.44s</span>
-<span class="co">## Calculating transition probabilities......done. Time: 0.31s</span>
+<pre><code><span class="co">## finding knns......done. Time: 247.88s</span>
+<span class="co">## Calculating transition probabilities......done. Time: 0.27s</span>
 <span class="co">## </span>
-<span class="co">## performing eigen decomposition......done. Time: 1.97s</span></code></pre>
+<span class="co">## performing eigen decomposition......done. Time: 1.66s</span></code></pre>
 <div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">coembed.sub</span>, group.by <span class="op">=</span> <span class="st">"RNA_snn_res.0.2"</span>, label <span class="op">=</span> <span class="cn">TRUE</span>,
              reduction <span class="op">=</span> <span class="st">"dm"</span>, shuffle <span class="op">=</span> <span class="cn">TRUE</span>, cols <span class="op">=</span> <span class="va">cols</span><span class="op">)</span> <span class="op">+</span>

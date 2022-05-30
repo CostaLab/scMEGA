@@ -161,7 +161,8 @@ PairCells <- function(object,
     stop("Please specify how to split the data for pairing!")
   }
 
-
+  options("optmatch_max_problem_size" = Inf)
+    
   message("Getting dimensional reduction data for pairing cells...")
   obj.1 <- object[, object@meta.data[[pair.by]] == ident1]
   obj.2 <- object[, object@meta.data[[pair.by]] == ident2]
@@ -317,8 +318,6 @@ PairCells <- function(object,
       ))
 
       message("Determing pairs through optimized bipartite matching ..")
-      options("optmatch_max_problem_size" = Inf)
-
       cell_matches <-
         suppressWarnings(
           optmatch::fullmatch(
