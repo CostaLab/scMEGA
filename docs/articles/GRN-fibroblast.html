@@ -83,7 +83,7 @@
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Gene-regulatory network of myofibroblast differentiation in myocardial infarction</h1>
             
-            <h4 data-toc-skip class="date">Compiled: May 16, 2022</h4>
+            <h4 data-toc-skip class="date">Compiled: May 30, 2022</h4>
       
       
       <div class="hidden name"><code>GRN-fibroblast.Rmd</code></div>
@@ -472,10 +472,10 @@
 <p>To infer trajectory, we will perform dimension reduction using diffusion map via the function <em>RunDiffusionMap</em>. This is based on the R package <a href="https://bioconductor.org/packages/release/bioc/html/destiny.html" class="external-link">destiny</a>.</p>
 <div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">coembed.sub</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RunDiffusionMap.html">RunDiffusionMap</a></span><span class="op">(</span><span class="va">coembed.sub</span>, reduction <span class="op">=</span> <span class="st">"harmony"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## finding knns......done. Time: 247.88s</span>
+<pre><code><span class="co">## finding knns......done. Time: 244.65s</span>
 <span class="co">## Calculating transition probabilities......done. Time: 0.27s</span>
 <span class="co">## </span>
-<span class="co">## performing eigen decomposition......done. Time: 1.66s</span></code></pre>
+<span class="co">## performing eigen decomposition......done. Time: 1.63s</span></code></pre>
 <div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">coembed.sub</span>, group.by <span class="op">=</span> <span class="st">"RNA_snn_res.0.2"</span>, label <span class="op">=</span> <span class="cn">TRUE</span>,
              reduction <span class="op">=</span> <span class="st">"dm"</span>, shuffle <span class="op">=</span> <span class="cn">TRUE</span>, cols <span class="op">=</span> <span class="va">cols</span><span class="op">)</span> <span class="op">+</span>
@@ -841,7 +841,6 @@
 <span class="co"># plot the graph, here we can highlight some genes</span>
 <span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GRNPlot.html">GRNPlot</a></span><span class="op">(</span><span class="va">df.grn</span>, 
              tfs.timepoint <span class="op">=</span> <span class="va">tfs.timepoint</span>,
-             genes.cluster <span class="op">=</span> <span class="va">genes.cluster</span>,
              seed <span class="op">=</span> <span class="fl">42</span>, 
              genes.highlight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SCARA5"</span>, <span class="st">"PCOLCE2"</span>,
                                  <span class="st">"MBLN1"</span>, <span class="st">"COL1A1"</span>, <span class="st">"POSTN"</span>,

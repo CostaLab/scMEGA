@@ -4,7 +4,13 @@
 \alias{PeakToGene}
 \title{Get peak to gene links}
 \usage{
-PeakToGene(peak.mat, gene.mat, genome = "hg19", max.dist = 250000)
+PeakToGene(
+  peak.mat,
+  gene.mat,
+  genome = "hg19",
+  max.dist = 250000,
+  method = "corrleation"
+)
 }
 \arguments{
 \item{peak.mat}{A matrix containing chromatin accessibility data}
@@ -14,7 +20,10 @@ PeakToGene(peak.mat, gene.mat, genome = "hg19", max.dist = 250000)
 \item{genome}{Which genome to use. Currently available are: hg19, hg38, mm9,
 and mm10}
 
-\item{max.dist}{The maximum distance between a peak and a gene}
+\item{max.dist}{The maximum distance between a peak and a gene. Default: 250000 bp}
+
+\item{method}{Which method to use to measure the association between peak and gene.
+Available are: "correlation", "glm"}
 }
 \value{
 A data frame containing all peak-to-gene links

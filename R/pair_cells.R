@@ -160,8 +160,6 @@ PairCells <- function(object,
   if (is.null(pair.by)) {
     stop("Please specify how to split the data for pairing!")
   }
-
-  options("optmatch_max_problem_size" = Inf)
     
   message("Getting dimensional reduction data for pairing cells...")
   obj.1 <- object[, object@meta.data[[pair.by]] == ident1]
@@ -184,6 +182,7 @@ PairCells <- function(object,
 
   if (pair.mode == "geodesic") {
     message("Constructing KNN graph for computing geodesic distance ..")
+    optmatch::setMaxProblemSize(size = Inf)
 
     object <-
       Seurat::FindNeighbors(object,
