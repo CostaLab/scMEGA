@@ -67,7 +67,7 @@ GetTFGeneCorrelation <- function(object,
     tf_activity <- tf_activity[tf.use,]
   }
 
-  ## here we further filter the genes by only consider genes that are linked to peaks
+  ## here we filter the genes by only considering genes that are linked to peaks
   if (!is.null(gene.use)) {
     sel_genes <- intersect(rownames(gene_expression), gene.use)
 
@@ -77,11 +77,26 @@ GetTFGeneCorrelation <- function(object,
 
   ## compute the correlation of TF activity and gene expression along the trajectory
   ## df.cor -> gene by TF matrix
-  df.cor <- t(cor(t(tf_activity), t(gene_expression)))
+  df.cor <- t(cor(t(tf_activity), t(gene_expression))) %>%
+      as.data.frame()
 
   if (!is.null(tf.use)) {
     df.cor <- df.cor[, tf.use]
   }
+
+  df.cor$gene <- rownames(df.cor)
+
+  df.cor <- df.cor %>%
+    tidyr::pivot_longer(!gene, names_to = "tf", values_to = "correlation") %>%
+    select(c(tf, gene, correlation))
+
+  df.cor$t_stat <-
+    (df.cor$correlation / sqrt((
+      pmax(1 - df.cor$correlation ^ 2, 0.00000000000000001, na.rm = TRUE)
+    ) / (ncol(tf_activity) - 2))) #T-statistic P-value
+
+  df.cor$p_value <- 2 * pt(-abs(df.cor$t_stat), ncol(tf_activity) - 2)
+  df.cor$fdr <- p.adjust(df.cor$p_value, method = "fdr")
 
   return(df.cor)
 
@@ -135,6 +150,14 @@ GetGRN <- function(object,
   mat.motif <- object@assays$ATAC@motifs@data
   colnames(mat.motif) <- object@assays$ATAC@motifs@motif.names
 
+  df.cor <- df.cor %>%
+    select(c(tf, gene, correlation)) %>%
+    tidyr::pivot_wider(names_from = tf, values_from = correlation,
+                       values_fill = 0) %>%
+    textshape::column_to_rownames("gene")
+
+  # print(df.cor)
+
   ## We can filter this complete matching matrix by only using the peaks that are
   ## linked with some genes, and TFs that are selected based on correlation analysis
   mat.motif <- mat.motif[colnames(mat.p2g), colnames(df.cor)]
@@ -153,7 +176,7 @@ GetGRN <- function(object,
 
   df.grn <- df.grn %>%
     tidyr::pivot_longer(!gene, names_to = "tf", values_to = "correlation") %>%
-    subset(correlation > min.cor) %>%
+    subset(abs(correlation) > 0) %>%
     select(tf, gene, correlation)
 
   return(df.grn)

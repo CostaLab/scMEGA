@@ -5,6 +5,7 @@
 #' and scATAC-seq) data into a common low-dimensional space via CCA approach.
 #' The details can be found:
 #' \url{https://satijalab.org/seurat/articles/atacseq_integration_vignette.html}
+#'
 #' @param obj.rna A Seurat object including gene expression data
 #' @param obj.atac A Seurat object including chromatin accessibility data
 #' @param gene.activity A sparse matrix containing gene activity score per cell
@@ -50,6 +51,7 @@ CoembedData <-
 
     obj.atac[['GeneActivity']] <-
       CreateAssayObject(counts = gene.activity[gene.use,])
+
     DefaultAssay(obj.atac) <- "GeneActivity"
 
     obj.atac <- obj.atac %>%
@@ -81,12 +83,6 @@ CoembedData <-
     )
 
     DefaultAssay(obj.atac) <- "RNA"
-
-    # meta.data.use <- intersect(colnames(obj.atac@meta.data),
-    #                           colnames(obj.rna@meta.data))
-
-    # obj.imputation <- AddMetaData(obj.imputation, obj.atac@meta.data[, meta.data.use])
-    # obj.rna@meta.data <- obj.rna@meta.data[, meta.data.use]
 
     obj.rna$tech <- "RNA"
     obj.atac$tech <- "ATAC"
@@ -160,7 +156,7 @@ PairCells <- function(object,
   if (is.null(pair.by)) {
     stop("Please specify how to split the data for pairing!")
   }
-    
+
   message("Getting dimensional reduction data for pairing cells...")
   obj.1 <- object[, object@meta.data[[pair.by]] == ident1]
   obj.2 <- object[, object@meta.data[[pair.by]] == ident2]
