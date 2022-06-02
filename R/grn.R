@@ -176,7 +176,7 @@ GetGRN <- function(object,
 
   df.grn <- df.grn %>%
     tidyr::pivot_longer(!gene, names_to = "tf", values_to = "correlation") %>%
-    subset(abs(correlation) > 0) %>%
+    subset(correlation > 0) %>%
     select(tf, gene, correlation)
 
   return(df.grn)
