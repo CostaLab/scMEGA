@@ -139,17 +139,13 @@ GetGRN <- function(motif.matching = NULL,
   ## correlation between gene expression and peak accessibility
   ## mat.p2g is a gene by peak data frame
   message("Filtering network by peak-to-gene links...")
-  
-  ## We can filter this complete matching matrix by only using the peaks that are
-  ## linked with some genes, and TFs that are selected based on correlation analysis
-  motif.matching <-
-    motif.matching[unique(df.p2g$peak), unique(df.cor$tf)]
 
   # convert sparse matrix to data frame
-  summ <- summary(motif.matching)
+  summ <- Matrix::summary(motif.matching)
+    
   df.p2m <- data.frame(peak = rownames(motif.matching)[summ$i],
                        tf = colnames(motif.matching)[summ$j],
-                      is_bound = summ$x)
+                       is_bound = summ$x)
 
   df.p2g <- subset(df.p2g, select = c(peak, gene))
 
