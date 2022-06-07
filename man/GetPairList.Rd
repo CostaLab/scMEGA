@@ -19,5 +19,8 @@ A data frame containing the cell pairs
 \description{
 This function takes in the output of the \code{\link{fullmatch}} function and sort the
 results into a list of ATAC-RNA pairs.
-It was modified from \url{https://github.com/buenrostrolab/stimATAC_analyses_code/blob/master/R/optMatching_functions.R}
+It was modified from \url{https://github.com/buenrostrolab/stimATAC_analyses_code/blob/master/R/optMatching_functions.R} \cr
+Author: Vinay Kartha, Yan Hu \cr
+Contact: <vinay_kartha@g.harvard.edu> \cr
+Affiliation: Buenrostro Lab, Department of Stem Cell and Regenerative Biology, Harvard University \cr
 }
