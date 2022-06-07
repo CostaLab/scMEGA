@@ -8,20 +8,25 @@ date: 'Compiled: `r format(Sys.Date(), "%B %d, %Y")`'
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-During this tutorial, we will be analyzing the snRNA-seq and snATAC-seq generated from human hearts after myocardial infarction to understand the gene regulatory dynamics for myofibroblast differentiation. More specifically, we will:  
+During this tutorial, we will integrate the snRNA-seq and snATAC-seq data
+generated from the human heart samples after myocardial infarction. The integrated
+data will be used as input for inferring gene regulatory network.
 
-* Integrate the snRNA-seq and snATAC data
-* Identify the trajectory for myofibroblast differentiation
-* Select the relevant TFs and genes for this process
-* Infer and visualize the gene regulatory network
-
-We first download all the required data. In this case, we need two Seurat objects with each one corresponding to snRNA-seq and snATAC-seq respectively. The snRNA-seq object includes gene expression data of all fibroblasts and snRNA-seq includes all chromatin accessibility data. Additionally, we also need a gene activity matrix for data integration. This matrix was estimated from the snATAC-seq data by using [ArchR](https://www.archrproject.com/) package. The script of cleaning the data and preparing these objects is found [here](https://www.dropbox.com/s/9i1lni0iia71ape/01_prepare_data.html?dl=0).
+We first download the required data. In this case, we need two Seurat objects 
+with each one corresponding to snRNA-seq and snATAC-seq respectively. 
+The snRNA-seq object includes gene expression data of all fibroblasts and 
+the snATAC-seq includes all chromatin accessibility profiles. 
+Additionally, we also need a gene activity matrix for data integration. 
+This matrix was estimated from the snATAC-seq data by using 
+the [ArchR](https://www.archrproject.com/) package. 
+The script of cleaning the data and preparing these objects is found [here](https://www.dropbox.com/s/9i1lni0iia71ape/01_prepare_data.html?dl=0).
 
 Run the following commands to download the data:
 ```{bash, eval=TRUE, echo=FALSE}
-wget https://www.dropbox.com/s/6v98iiq8dtlcjho/snRNA.rds
-wget https://www.dropbox.com/s/h30ej52burtsgdy/snATAC.rds
-wget https://www.dropbox.com/s/7uc2ad0jcrzks20/gene.activity.rds
+mkdir -p Myofib
+wget -P Myofib https://www.dropbox.com/s/6v98iiq8dtlcjho/snRNA.rds
+wget -P Myofib https://www.dropbox.com/s/h30ej52burtsgdy/snATAC.rds
+wget -P Myofib https://www.dropbox.com/s/7uc2ad0jcrzks20/gene.activity.rds
 ```
 
 Next, we load all necessary packages:
@@ -33,25 +38,23 @@ suppressMessages(library(scMEGA))
 suppressMessages(library(harmony))
 suppressMessages(library(Nebulosa))
 suppressMessages(library(BSgenome.Hsapiens.UCSC.hg38))
-suppressMessages(library(JASPAR2020))
-suppressMessages(library(TFBSTools))
 suppressMessages(library(ggplot2))
 suppressMessages(library(dplyr))
-suppressMessages(library(igraph))
-suppressMessages(library(ggraph))
 ```
 
 Let's load the data into memory and see how they look like
+
 ```{r}
-obj.rna <- readRDS("./snRNA.rds")
-obj.atac <- readRDS("./snATAC.rds")
-gene.activity <- readRDS("./gene.activity.rds")
+obj.rna <- readRDS("./Myofib/snRNA.rds")
+obj.atac <- readRDS("./Myofib/snATAC.rds")
+gene.activity <- readRDS("./Myofib/gene.activity.rds")
 
 obj.rna
 obj.atac
 ```
 
 We can observe that there are 45,515 and 6,481 cells in our snRNA-seq and snATAC-seq datasets. We now visualize the data as colored by patients. Note that here we used the UMAP embedding generated from batch-corrected low-dimensional space so that no batch effects are observed from the 2D visualization.
+
 ```{r, fig.height = 5, fig.width = 12, fig.align = "center"}
 p1 <- DimPlot(obj.rna, pt.size = 1, reduction = "umap_harmony") +
     ggtitle("snRNA-seq")
@@ -62,10 +65,7 @@ p2 <- DimPlot(obj.atac, pt.size = 1, reduction = "umap_harmony") +
 p1 + p2
 ```
 
-## Data integration
-In this step, we integrate the snRNA-seq and snATAC-seq so that we can define the sample sub-popualtions between these two modalities.
-
-### Co-embedding
+## Co-embedding
 First, we need to project the data into a common low-dimensional space. This is done by using the CCA method from [Seurat](https://satijalab.org/seurat/). To this end, we have wrapped several functions from Seurat into a single function _CoembedData_.
 
 ```{r}
@@ -79,16 +79,14 @@ obj.coembed <- CoembedData(
 ```
 
 We next visualize the snRNA-seq and snATAC-seq in this shared UMAP space. The cells are colored by
-patient, region, modality, or patient group.
+patients or modalities.
 
-```{r, fig.height = 10, fig.width = 12, fig.align = "center"}
+```{r, fig.height = 5, fig.width = 12, fig.align = "center"}
 
 p1 <- DimPlot(obj.coembed, group.by = "patient", shuffle = TRUE, label = TRUE)
-p2 <- DimPlot(obj.coembed, group.by = "region", shuffle = TRUE, label = TRUE)
-p3 <- DimPlot(obj.coembed, group.by = "tech", shuffle = TRUE, label = TRUE)
-p4 <- DimPlot(obj.coembed, group.by = "patient_group", shuffle = TRUE, label = TRUE)
+p2 <- DimPlot(obj.coembed, group.by = "tech", shuffle = TRUE, label = TRUE)
 
-(p1 + p2) / (p3 + p4)
+p1 + p2
 ```
 
 The batch effects between patients, regions and modalities are quite clear. 
@@ -119,17 +117,13 @@ obj.coembed <- RunUMAP(
 
 We can plot the data again
 
-```{r, fig.height = 10, fig.width = 12, fig.align = "center"}
+```{r, fig.height = 5, fig.width = 12, fig.align = "center"}
 p1 <-
   DimPlot(obj.coembed, group.by = "patient", reduction = "umap_harmony")
 p2 <-
-  DimPlot(obj.coembed, group.by = "region", reduction = "umap_harmony")
-p3 <-
   DimPlot(obj.coembed, group.by = "tech", reduction = "umap_harmony")
-p4 <-
-  DimPlot(obj.coembed, group.by = "patient_group", reduction = "umap_harmony")
 
-(p1 + p2) / (p3 + p4)
+p1 + p2
 ```
 
 From the new UMAP embedding, we can observe that after batch-correction, cells from different patients, regions, and modalities are well mixed.
@@ -165,7 +159,7 @@ p4 <-
 
 From the visualization, we can observe that some cells highly express SCARA5 which could be the progenitors of myofibroblasts. On the other hand, some cells highly express COL1A1, POSTN, and FN1 and they could be terminally differentiated myofibroblasts.
 
-### Sub-clustering
+## Sub-clustering
 
 We next perform sub-clustering to identify different populations in our multi-omic fibroblast data. To further control the data quality, here we will use a two-round approach to remove low-quality cells. We first use a high-resolution to get a large amount of clusters.
 
@@ -335,6 +329,12 @@ p <- DimPlot(coembed.sub, group.by = "RNA_snn_res.0.2", label = TRUE,
     xlab("UMAP1") + ylab("UMAP2")
 
 p
+```
+
+
+Save data
+```{r, fig.height = 5, fig.width = 6, fig.align = "center"}
+saveRDS(coembed.sub, "./Myofib/coembed.sub.rds")
 ```
 
 ```{r}
