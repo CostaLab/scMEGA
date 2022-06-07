@@ -22,7 +22,7 @@ the [ArchR](https://www.archrproject.com/) package.
 The script of cleaning the data and preparing these objects is found [here](https://www.dropbox.com/s/9i1lni0iia71ape/01_prepare_data.html?dl=0).
 
 Run the following commands to download the data:
-```{bash, eval=FALSE, echo=FALSE}
+```{bash, eval=FALSE}
 mkdir -p Myofib
 wget -P Myofib https://www.dropbox.com/s/6v98iiq8dtlcjho/snRNA.rds
 wget -P Myofib https://www.dropbox.com/s/h30ej52burtsgdy/snATAC.rds

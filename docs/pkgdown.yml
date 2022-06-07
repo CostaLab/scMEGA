@@ -3,8 +3,9 @@ pkgdown: 2.0.3
 pkgdown_sha: ~
 articles:
   install: install.html
+  myofibroblast-GRN: myofibroblast-GRN.html
   myofibroblast-preprocessing: myofibroblast-preprocessing.html
-last_built: 2022-06-07T13:23Z
+last_built: 2022-06-07T15:23Z
 urls:
   reference: https://costalab.github.io/scMEGA/reference
   article: https://costalab.github.io/scMEGA/articles
