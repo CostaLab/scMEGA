@@ -14,5 +14,5 @@
 source ~/.bashrc
 conda activate scmega 
 
-#R -e "devtools::document()"
+R -e "devtools::document()"
 R -e "pkgdown::build_site(preview = FALSE, lazy=TRUE)"

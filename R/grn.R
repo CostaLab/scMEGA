@@ -139,14 +139,7 @@ GetGRN <- function(motif.matching = NULL,
   ## correlation between gene expression and peak accessibility
   ## mat.p2g is a gene by peak data frame
   message("Filtering network by peak-to-gene links...")
-  # mat.p2g <- df.p2g %>%
-  #   select(c(peak, gene, Correlation)) %>%
-  #   tidyr::pivot_wider(names_from = peak, values_from = Correlation) %>%
-  #   textshape::column_to_rownames("gene")
-  #
-  # mat.p2g[is.na(mat.p2g)] <- 0
-  # mat.p2g[mat.p2g > 0] <- 1
-
+  
   ## We can filter this complete matching matrix by only using the peaks that are
   ## linked with some genes, and TFs that are selected based on correlation analysis
   motif.matching <-
@@ -170,34 +163,6 @@ GetGRN <- function(motif.matching = NULL,
   ## mat.motif is a peak by TF matrix
   message("Filtering network by TF binding site prediction...")
   df.grn <- dplyr::left_join(df.m2g, df.cor, by = c("tf", "gene"))
-
-  # df.cor2 <- df.cor %>%
-  #   select(c(tf, gene, correlation)) %>%
-  #   tidyr::pivot_wider(
-  #     names_from = tf,
-  #     values_from = correlation,
-  #     values_fill = 0
-  #   ) %>%
-  #   textshape::column_to_rownames("gene")
-
-
-  ## multiply gene by peak and peak by tf matrix to obtain gene by tf matrix
-#  mat.tf.gene <- as.matrix(mat.p2g) %*% as.matrix(motif.matching)
-
-  ## we binarize this matrix to indicate if a gene is regulated by a TF through a peak
-#  mat.tf.gene[mat.tf.gene > 0] <- 1
-
-  ## here we multiply correlation matrix and regulation matrix
-  # df.grn <- as.matrix(df.cor2) * mat.tf.gene %>%
-  #   as.data.frame()
-  #
-  # df.grn$gene <- rownames(df.grn)
-  #
-  # df.grn <- df.grn %>%
-  #   tidyr::pivot_longer(!gene, names_to = "tf", values_to = "correlation") %>%
-  #   subset(abs(correlation) > 0) %>%
-  #   select(tf, gene)
-
 
   return(df.grn)
 
