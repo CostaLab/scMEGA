@@ -287,26 +287,24 @@ ht <- CorrelationHeatmap(trajectory1 = trajATAC,
 ht
 ```
 
-
 ## Gene regulatory network inference and visualization
 
 We here will try to predict a gene regulatory network based on the correlation of the TF binding activity as estimated from snATAC-seq and gene expression as measured by snRNA-seq along the trajectory.
 
 ```{r}
 tf.gene.cor <- GetTFGeneCorrelation(object = obj, 
-                           tf.use = df.cor$tfs, 
-                            gene.use = unique(df.p2g$gene),
-                       tf.assay = "chromvar", 
-                       gene.assay = "RNA",
-                       trajectory.name = "Trajectory")
+                                    tf.use = df.cor$tfs, 
+                                    gene.use = unique(df.p2g$gene),
+                                    tf.assay = "chromvar", 
+                                    gene.assay = "RNA",
+                                    trajectory.name = "Trajectory")
 ```
 
 We can then visualize this correlation matrix by heatmap. Also, we can cluster the genes and TFs to identify different regulatory modules for the predefined sub-populations.
 
 ```{r, fig.height = 6, fig.width = 12, fig.align = "center"}
 ht <- GRNHeatmap(tf.gene.cor, 
-                 tf.timepoint = df.cor$time_point, 
-                 km = 2)
+                 tf.timepoint = df.cor$time_point)
 ht
 ```
 
