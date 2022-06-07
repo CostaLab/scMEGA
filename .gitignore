@@ -5,6 +5,8 @@
 .Ruserdata
 vignettes/*.rds
 vignettes/.ipynb_checkpoints/
+vignettes/Myofib
 .ipynb_checkpoints/
 R/.ipynb_checkpoints/
 run.sh
+build_site.txt
