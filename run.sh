@@ -12,7 +12,7 @@
 #SBATCH --mem=360G -c 64 -x big-node001
 
 source ~/.bashrc
-conda activate scmega 
+conda activate r-4.1
 
 R -e "devtools::document()"
 R -e "pkgdown::build_site(preview = FALSE, lazy=TRUE)"
