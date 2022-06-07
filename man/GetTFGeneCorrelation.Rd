@@ -10,8 +10,7 @@ GetTFGeneCorrelation(
   gene.use = NULL,
   tf.assay = "chromvar",
   gene.assay = "RNA",
-  trajectory.name = "Trajectory",
-  fdr.cutoff = 1e-05
+  trajectory.name = "Trajectory"
 )
 }
 \arguments{

@@ -6,13 +6,17 @@
 \usage{
 GRNPlot(
   df.grn,
+  tfs.use = NULL,
+  show.tf.labels = TRUE,
   tfs.timepoint = NULL,
   genes.cluster = NULL,
+  genes.use = NULL,
   genes.highlight = NULL,
   cols.highlight = "#984ea3",
   seed = 42,
   plot.importance = TRUE,
-  min.importance = 2
+  min.importance = 2,
+  remove.isolated = FALSE
 )
 }
 \arguments{

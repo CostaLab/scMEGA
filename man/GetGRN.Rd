@@ -22,5 +22,5 @@ A data frame representing gene regulatory network
 }
 \description{
 This function will generate the final prediction of TF-gene network. It takes the
-TF-gene correlation. peak-TF binding prediction, and peak-to-gene links as input.
+TF-gene correlation, peak-TF binding prediction, and peak-to-gene links as input.
 }
