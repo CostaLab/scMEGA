@@ -144,147 +144,31 @@ obj <- RunChromVAR(
   genome = BSgenome.Hsapiens.UCSC.hg38,
     assay = "ATAC"
 )
+
+res <- SelectTFs(object = obj, return.heatmap = TRUE)
+
+df.cor <- res$tfs
+ht <- res$heatmap
 ```
 
 We can visualize the TF activity dynamic along the trajectory
 
 ```{r, fig.height = 6, fig.width = 6, fig.align = "center"}
-trajMM <- GetTrajectory(obj, 
-                        assay = "chromvar", 
-                        slot = "data",
-                       smoothWindow = 7,
-                       log2Norm = FALSE)
-
-rownames(trajMM) <- obj@assays$ATAC@motifs@motif.names
-
-ht <- TrajectoryHeatmap(trajMM, 
-                        varCutOff = 0,
-                        pal = paletteContinuous(set = "solarExtra"),
-                        limits = c(-2, 2),
-                       name = "TF activity")
-
-ht
-```
-
-Apparently many TFs are showing dynamic TF activity along the trajectory. To reduce the number of candidates, we will use snRNA-seq to pick up the TFs that also show dynamic expression.
-
-```{r}
-trajRNA <- GetTrajectory(obj, 
-                        assay = "RNA", 
-                        slot = "data",
-                       smoothWindow = 7,
-                       log2Norm = TRUE)
-                       
-df.cor <- GetCorrelation(trajMM, trajRNA)
-
-# we only select TFs that show significant correlation
-df.cor <- df.cor[df.cor$adj_p < 0.01 & df.cor$correlation > 0.3, ]
-```
-
-We can try to assign a pseudo-time label for each TF.
-
-```{r}
-matMM <- TrajectoryHeatmap(trajMM, 
-                        varCutOff = 0,
-                        pal = paletteContinuous(set = "solarExtra"),
-                        limits = c(-2, 2),
-                       name = "TF activity",
-                       returnMatrix = TRUE)
-
-df_tf_time_point <- data.frame(tfs = rownames(matMM),
-                               time_point = seq(1, 100, length.out = nrow(matMM)))
-rownames(df_tf_time_point) <- df_tf_time_point$tfs
-
-df_tf_time_point <- df_tf_time_point[df.cor$tfs, ]
-df.cor$time_point <- df_tf_time_point$time_point
-df.cor <- df.cor[order(df.cor$time_point), ]
-
-head(df.cor)
-```
-
-We can visualize the TF activity and expression dynamics along the trajectory by generating a joint heatmap plot.
-
-```{r, fig.height = 8, fig.width = 8, fig.align = "center"}
-trajMM <- trajMM[df.cor$tfs, ]
-trajRNA <- trajRNA[df.cor$tfs, ]
-
-ht <- CorrelationHeatmap(trajectory1 = trajMM, 
-                         trajectory2 = trajRNA,
-                         name1 = "TF activity",
-                         name2 = "Gene expression")
-
-ht
+draw(ht)
 ```
 
 ### Select genes
 
 We will select relevant genes by first linking genes to peaks based on the corrleation between gene expression from the snRNA-seq data and peak accessibility from the snATAC-seq data along the inferred trajectory. This means that we only consider a gene to be a potential target if it can be assocaited to at least one peak.
-
-Let's first get the gene expression and chromatin accessibility data along our trajectory
-
-```{r}
-trajRNA <- GetTrajectory(obj, 
-                        assay = "RNA", 
-                        slot = "data",
-                       smoothWindow = 7,
-                       log2Norm = TRUE)
-
-trajATAC <- GetTrajectory(obj, 
-                        assay = "ATAC", 
-                        slot = "data",
-                       smoothWindow = 7,
-                       log2Norm = TRUE)
-
-# note here we only use the top 10% most variable genes
-groupMatRNA <- TrajectoryHeatmap(trajRNA,
-                        varCutOff = 0.9,
-                        pal = paletteContinuous(set = "horizonExtra"),
-                        limits = c(-2, 2),
-                                 returnMatrix = TRUE)
-
-groupMatATAC <- TrajectoryHeatmap(trajATAC, 
-                        varCutOff = 0,
-                                  maxFeatures = nrow(trajATAC),
-                            pal = paletteContinuous(set = "solarExtra"),
-                            limits = c(-2, 2),
-                       name = "Chromatin accessibility",
-                                 returnMatrix = TRUE)
-```
-
-The peak-to-gene link can be identified by using the function _PeakToGene_
-
-```{r}
-df.p2g <- PeakToGene(peak.mat = groupMatATAC,
-                     gene.mat = groupMatRNA, 
-                     genome = "hg38")
-```
-
-We here filter the links based on the following criteria:
-
-* The peak must be a distal regulatory element which likely play a role as enhancer
-
-* The correlation between gene expression and peak accessibility muse be positive and significant
-
-```{r}
-df.p2g <- df.p2g %>%
-    subset(distance > 2000) %>%
-    subset(Correlation > 0 & FDR < 1e-04)
-```
-
-After filtering, we can also generate a joint heatmap to visualize the peak accessibility and associated gene expression dynamics along the trajectory
-
 ```{r, fig.height = 8, fig.width = 12, fig.align = "center"}
-trajATAC <- trajATAC[df.p2g$peak, ]
-trajRNA <- trajRNA[df.p2g$gene, ]
+res <- SelectGenes(object = obj,
+                  labelTop1 = 5,
+                  labelTop2 = 5)
 
-ht <- CorrelationHeatmap(trajectory1 = trajATAC, 
-                         trajectory2 = trajRNA,
-                        name1 = "Chromatin accessibility",
-                        name2 = "Gene expression",
-                        labelRows1 = FALSE,
-                        labelRows2 = FALSE)
+df.p2g <- res$p2g
+ht <- res$heatmap
 
-ht
+draw(ht)
 ```
 
 ## Gene regulatory network inference and visualization
