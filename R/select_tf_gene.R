@@ -1,5 +1,5 @@
 SelectTFs <- function(object,
-                      motif.assay = "chromvar",
+                      tf.assay = "chromvar",
                       rna.assay = "RNA",
                       trajectory.name = "Trajectory",
                       p.cutoff = 0.01,
@@ -7,7 +7,7 @@ SelectTFs <- function(object,
                       return.heatmap = TRUE
                       ){
   trajMM <- GetTrajectory(object,
-                          assay = motif.assay,
+                          assay = tf.assay,
                           slot = "data",
                           smoothWindow = 7,
                           log2Norm = FALSE)
@@ -69,7 +69,9 @@ SelectGenes <- function(object,
                        distance.cutoff = 2000,
                        cor.cutoff = 0,
                        fdr.cutoff = 1e-04,
-                       return.heatmap = TRUE){
+                       return.heatmap = TRUE,
+                       labelTop1 = 10,
+                       labelTop2 = 10){
     
     trajRNA <- GetTrajectory(object, 
                         assay = rna.assay, 
@@ -84,22 +86,21 @@ SelectGenes <- function(object,
                        log2Norm = TRUE)
     
     # note here we only use the top 10% most variable genes
-    groupMatRNA <- TrajectoryHeatmap(trajRNA,
+    groupMatRNA <- suppressMessages(TrajectoryHeatmap(trajRNA,
                             varCutOff = var.cutoff.gene,
                             pal = paletteContinuous(set = "horizonExtra"),
                             limits = c(-2, 2),
-                                     returnMatrix = TRUE)
+                                     returnMatrix = TRUE))
     
-    groupMatATAC <- TrajectoryHeatmap(trajATAC, 
+    groupMatATAC <- suppressMessages(TrajectoryHeatmap(trajATAC, 
                                       varCutOff = 0,
                                   maxFeatures = nrow(trajATAC),
                             pal = paletteContinuous(set = "solarExtra"),
                             limits = c(-2, 2),
                        name = "Chromatin accessibility",
-                                      returnMatrix = TRUE)
+                                      returnMatrix = TRUE))
     
-    print(head(groupMatATAC))
-    
+    message("Linking cis-regulatory elements to genes...")
     df.p2g <- PeakToGene(peak.mat = groupMatATAC,
                      gene.mat = groupMatRNA, 
                      genome = "hg38")
@@ -115,7 +116,8 @@ SelectGenes <- function(object,
             ht <- suppressMessages(CorrelationHeatmap(trajectory1 = trajATAC, 
                              trajectory2 = trajRNA,
                             name1 = "Chromatin accessibility",
-                            name2 = "Gene expression",
+                            name2 = "Gene expression",                                                                                      labelTop1 = labelTop1,
+                                                      labelTop2 = labelTop2,
                             labelRows1 = FALSE,
                             labelRows2 = FALSE))
         

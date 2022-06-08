@@ -4,8 +4,10 @@
 .DS_Store
 .Ruserdata
 vignettes/*.rds
+vignettes/*.ipynb
 vignettes/.ipynb_checkpoints/
-vignettes/Myofib
+vignettes/Fibroblast
+vignettes/Cardiomyocyte
 .ipynb_checkpoints/
 R/.ipynb_checkpoints/
 run.sh
