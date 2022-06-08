@@ -72,7 +72,7 @@ PeakToGene <- function(peak.mat,
 
   ## create object for ATAC data
   df_peak <-
-    stringr::str_split_fixed(rownames(groupMatATAC), "-", 3)
+    stringr::str_split_fixed(rownames(peak.mat), "-", 3)
 
   peakSet <- GRanges(df_peak[, 1],
                      IRanges(start = as.numeric(df_peak[, 2]),
