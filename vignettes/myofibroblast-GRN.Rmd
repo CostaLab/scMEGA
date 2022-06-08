@@ -36,7 +36,7 @@ suppressMessages(library(ggraph))
 
 We first load the integrated data:
 ```{r, fig.height = 5, fig.width = 6, fig.align = "center"}
-coembed.sub <- readRDS("./Myofib/coembed.sub.rds")
+coembed.sub <- readRDS("./Fibroblast/coembed.sub.rds")
 ```
 
 ## Trajectory analysis

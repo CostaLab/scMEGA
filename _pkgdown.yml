@@ -14,7 +14,7 @@ navbar:
       - text: "Vignettes"
         menu:
           - text: "Infer GRN for myofibroblast"
-            href: "articles/GRN-fibroblast.html"
+            href: "articles/myofibroblast-GRN.html"
       - text: "Reference"
         href: "reference/index.html"
     right:
