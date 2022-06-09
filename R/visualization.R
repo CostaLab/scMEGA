@@ -205,7 +205,8 @@ CorrelationPlot <- function(df) {
 #' @return A heatmap
 #' @export
 #'
-CorrelationHeatmap <- function(trajectory1, trajectory2,
+CorrelationHeatmap <- function(trajectory1, 
+                               trajectory2,
                                name1 = NULL,
                                name2 = NULL,
                                labelRows1 = TRUE,
@@ -484,7 +485,7 @@ TrajectoryHeatmap <- function(trajectory,
   }
 
 
-  if (!is.null(labelTop)) {
+  if (!is.null(labelTop) & labelTop > 0) {
     if (orderedVar) {
       idxLabel <- rownames(mat)[seq_len(labelTop)]
     } else{
