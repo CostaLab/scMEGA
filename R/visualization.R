@@ -517,7 +517,7 @@ TrajectoryHeatmap <- function(trajectory,
   }
 
   if(!is.null(idxLabel)){
-    customRowLabel <- match(idxLabel, rownames(mat[idx,])),
+    customRowLabel <- match(idxLabel, rownames(mat[idx,]))
   } else{
       customRowLabel <- NULL
   }
