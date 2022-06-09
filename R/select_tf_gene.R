@@ -13,7 +13,6 @@
 #'and a heatmap
 #' @export
 #'
-#' @examples
 SelectTFs <- function(object,
                       tf.assay = "chromvar",
                       rna.assay = "RNA",
@@ -100,13 +99,12 @@ SelectTFs <- function(object,
 #' @param cor.cutoff The cutoff of peak-to-gene correlation. Default: 0
 #' @param fdr.cutoff The cutoff of peak-to-gene p-value Default: 1e-04
 #' @param return.heatmap Whether or not return the heatmap for visualization
-#' @param labelTop1
-#' @param labelTop2
+#' @param labelTop1 Number of labels for row names
+#' @param labelTop2 Number of labels for row names
 #'
 #' @return A list containing a dataframe of peak-to-gene links and a heatmap
 #' @export
 #'
-#' @examples
 SelectGenes <- function(object,
                         atac.assay = "ATAC",
                         rna.assay = "RNA",

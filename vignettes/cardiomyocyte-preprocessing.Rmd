@@ -1,5 +1,5 @@
 ---
-title: "Gene-regulatory network of myocardiocyte after myocardial infarction"
+title: "Gene-regulatory network of cardiomyocyte remodeling after myocardial infarction"
 output: html_document
 date: 'Compiled: `r format(Sys.Date(), "%B %d, %Y")`'
 ---
