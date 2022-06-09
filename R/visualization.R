@@ -495,12 +495,13 @@ TrajectoryHeatmap <- function(trajectory,
   } else{
     idxLabel <- NULL
   }
-
+    
   if (scaleRows) {
     mat <- sweep(mat - rowMeans(mat), 1, matrixStats::rowSds(mat), `/`)
     mat[mat > max(limits)] <- max(limits)
     mat[mat < min(limits)] <- min(limits)
   }
+    
   if (nrow(mat) == 0) {
     stop("No Features Remaining!")
   }
@@ -515,6 +516,12 @@ TrajectoryHeatmap <- function(trajectory,
     idx <- order(apply(mat, 1, which.max))
   }
 
+  if(!is.null(idxLabel)){
+    customRowLabel <- match(idxLabel, rownames(mat[idx,])),
+  } else{
+      customRowLabel <- NULL
+  }
+    
   ht <- ArchR:::.ArchRHeatmap(
     mat = mat[idx, ],
     scale = FALSE,
@@ -524,7 +531,7 @@ TrajectoryHeatmap <- function(trajectory,
     clusterRows = FALSE,
     labelRows = labelRows,
     labelCols = FALSE,
-    customRowLabel = match(idxLabel, rownames(mat[idx,])),
+    customRowLabel = customRowLabel,
     showColDendrogram = TRUE,
     name = name,
     draw = FALSE
