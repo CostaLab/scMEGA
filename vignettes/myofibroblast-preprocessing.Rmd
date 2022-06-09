@@ -338,7 +338,7 @@ p
 
 Save data
 ```{r, fig.height = 5, fig.width = 6, fig.align = "center"}
-saveRDS(coembed.sub, "./Myofib/coembed.sub.rds")
+saveRDS(coembed.sub, "./Fibroblast/coembed.sub.rds")
 ```
 
 ```{r}

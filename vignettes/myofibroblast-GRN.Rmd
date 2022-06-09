@@ -233,6 +233,11 @@ options(repr.plot.height = 20, repr.plot.width = 20)
 print(p)
 ```
 
+Save data
+```{r, fig.height = 5, fig.width = 6, fig.align = "center"}
+saveRDS(obj, "./Fibroblast/coembed.trajectory.rds")
+```
+
 ```{r}
 # Check session information
 sessionInfo()
