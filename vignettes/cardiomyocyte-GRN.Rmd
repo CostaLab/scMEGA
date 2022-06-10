@@ -96,10 +96,11 @@ obj.pair <- AddTrajectory(object = obj.pair,
 # we only plot the cells that are in this trajectory
 obj <- obj.pair[, !is.na(obj.pair$Trajectory)]
 
-options(repr.plot.height = 5, repr.plot.width = 10)
-
 p1 <- DimPlot(obj, reduction = "umap_harmony", 
-              group.by = "RNA_snn_res.0.1", cols = cols)
+              group.by = "RNA_snn_res.0.1", cols = cols) +
+              xlab("UMAP 1") + ylab("UMAP 2") +
+    ggtitle("Cluster")
+
 
 p2 <- TrajectoryPlot(object = obj, 
                     reduction = "umap_harmony",
@@ -139,7 +140,7 @@ obj <- RunChromVAR(
     assay = "ATAC"
 )
 
-res <- SelectTFs(object = obj.trajectory, return.heatmap = TRUE,
+res <- SelectTFs(object = obj, return.heatmap = TRUE,
 cor.cutoff = 0.1)
 
 df.cor <- res$tfs

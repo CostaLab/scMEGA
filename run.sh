@@ -9,11 +9,10 @@
 #SBATCH -t 120:00:00
 
 ### Memory your job needs per node, e. g. 1 GB
-#SBATCH --mem=360G -c 64 -x big-node001
+#SBATCH --mem=500G -c 64
 
 source ~/.bashrc
 conda activate r-4.1
 
 R -e "devtools::document()"
-#R -e "pkgdown::build_site(preview = FALSE, lazy=TRUE)"
-R -e "pkgdown::build_site(preview = FALSE)"
+R -e "pkgdown::build_site(preview = FALSE, lazy=TRUE)"

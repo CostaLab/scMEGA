@@ -38,7 +38,9 @@ between TF binding activity and TF expression}
 
 \item{return.heatmap}{Whether or not return the heatmap for visualization}
 
-\item{labelTop2}{}
+\item{labelTop1}{Number of labels for row names}
+
+\item{labelTop2}{Number of labels for row names}
 }
 \value{
 A list containing a dataframe of peak-to-gene links and a heatmap
