@@ -422,3 +422,29 @@ GRNPlot <- function(df.grn,
 
   return(p)
 }
+
+
+GRNSpatialPlot <- function(object, assay, 
+                           df.grn, 
+                           tf.use, 
+                           min.cutoff = "q5", 
+                           max.cutoff = "q95",
+                          vis.option = "B"){
+    DefaultAssay(object) <- assay
+    
+    # select all targets for a TF
+    df.target <- subset(df.grn, tf == tf.use)
+    
+    geneset <- list(tf.use = df.target$gene)
+    object <- AddModuleScore(object, features = geneset)
+    
+    p <- Seurat::SpatialFeaturePlot(object, features = "Cluster1", 
+                         min.cutoff = min.cutoff,
+                         max.cutoff = max.cutoff)+
+            scale_fill_viridis(option = vis.option) +
+            ggtitle(glue::glue("{tf.use} targets")) +
+    labs(fill='')
+
+    return(p)
+
+}
