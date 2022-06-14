@@ -9,6 +9,7 @@ vignettes/.ipynb_checkpoints/
 vignettes/Fibroblast
 vignettes/Cardiomyocyte
 vignettes/VisiumSpatial
+vignettes/*.pdf
 .ipynb_checkpoints/
 R/.ipynb_checkpoints/
 run.sh
