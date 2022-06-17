@@ -142,7 +142,7 @@ GetGRN <- function(motif.matching = NULL,
 
   # convert sparse matrix to data frame
   summ <- Matrix::summary(motif.matching)
-    
+
   df.p2m <- data.frame(peak = rownames(motif.matching)[summ$i],
                        tf = colnames(motif.matching)[summ$j],
                        is_bound = summ$x)
@@ -424,21 +424,37 @@ GRNPlot <- function(df.grn,
 }
 
 
-GRNSpatialPlot <- function(object, assay, 
-                           df.grn, 
-                           tf.use, 
-                           min.cutoff = "q5", 
+#' Plot the target gene in spatial space
+#'
+#' This function plots the overall expression of all target genes
+#' for a particular TF using spatial transcriptome data. It is based on
+#'
+#' @param object A Seurat object of spatial transcriptome data
+#' @param assay Which assay to plot
+#' @param df.grn A data frame including the inferred gene regulatory network
+#' @param tf.use Which TF to use
+#' @param min.cutoff Minimum cutoff values for each feature
+#' @param max.cutoff Maximum cutoff values for each feature
+#' @param vis.option Options for visualization. Default: "B"
+#'
+#' @return A ggplot object
+#' @export
+#'
+GRNSpatialPlot <- function(object, assay,
+                           df.grn,
+                           tf.use,
+                           min.cutoff = "q5",
                            max.cutoff = "q95",
                           vis.option = "B"){
     DefaultAssay(object) <- assay
-    
+
     # select all targets for a TF
     df.target <- subset(df.grn, tf == tf.use)
-    
+
     geneset <- list(tf.use = df.target$gene)
     object <- AddModuleScore(object, features = geneset)
-    
-    p <- Seurat::SpatialFeaturePlot(object, features = "Cluster1", 
+
+    p <- Seurat::SpatialFeaturePlot(object, features = "Cluster1",
                          min.cutoff = min.cutoff,
                          max.cutoff = max.cutoff)+
             scale_fill_viridis(option = vis.option) +
