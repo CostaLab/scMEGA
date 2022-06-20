@@ -242,7 +242,7 @@ wget -P VisiumSpatial https://costalab.ukaachen.de/open_data/scMEGA/VisiumSpatia
 Next, we can pick up two TFs, namely NR2C1 and TEAD3, to visualize their targets expression.
 
 ```{r, fig.height = 5, fig.width = 15, fig.align = "center"}
-obj <- readRDS(("./VisiumSpatial/AKK004_157772.rds"))
+obj <- readRDS("./VisiumSpatial/AKK004_157772.rds")
 
 DefaultAssay(obj) <- "c2l_props"
 
@@ -253,7 +253,7 @@ p1 <- SpatialFeaturePlot(obj, features = "Fib", min.cutoff = "q5",
     labs(fill = "")
 
 p2 <- GRNSpatialPlot(object = obj, assay = "SCT", df.grn = df.grn2,
-                   tf.use = "TEAD3", vis.option = "B")
+                   tf.use = "RUNX1", vis.option = "B")
 p3 <- GRNSpatialPlot(object = obj, assay = "SCT", df.grn = df.grn2,
                    tf.use = "NR2C1", vis.option = "B")
 
