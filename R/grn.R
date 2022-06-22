@@ -465,7 +465,21 @@ GRNSpatialPlot <- function(object, assay,
 
 }
 
-AddTargetAssay <- function(object, df.grn = NULL){
+#' Add the TF target expression
+#'
+#' This function will created a new assay by using the predicted gene
+#' regulatory network where features are the selected TFs. Each value represents
+#' the average expression of all targets calculated by using the function
+#' \code{\link{AddModuleScore}} from Seurat.
+#'
+#' @param object A Seurat object used as input
+#' @param df.grn A data frame containing the predicted gene regulatory network.
+#' @param target.assay Name for the new assay. Default: "target"
+#'
+#' @return A Seurat object with a new assay named by target.assay
+#' @export
+AddTargetAssay <- function(object, target.assay = "target",
+                           df.grn = NULL){
     if(is.na(df.grn)){
         stop("Cannot find the gene regulatory network!")
     }
@@ -481,7 +495,7 @@ AddTargetAssay <- function(object, df.grn = NULL){
     colnames(target_gex) <- names(df.genes)
 
     object[["target"]] <- CreateAssayObject(data = t(target_gex))
-    
+
     return(object)
-    
+
 }
