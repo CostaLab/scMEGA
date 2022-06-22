@@ -464,3 +464,24 @@ GRNSpatialPlot <- function(object, assay,
     return(p)
 
 }
+
+AddTargetAssay <- function(object, df.grn = NULL){
+    if(is.na(df.grn)){
+        stop("Cannot find the gene regulatory network!")
+    }
+
+    df.genes <- split(df.grn2$gene,df.grn2$tf)
+    object <- AddModuleScore(object, features = df.genes,
+                     name = "tf_target_")
+
+    target_gex <- object@meta.data %>%
+        as.data.frame() %>%
+        select(contains("tf_target_"))
+
+    colnames(target_gex) <- names(df.genes)
+
+    object[["target"]] <- CreateAssayObject(data = t(target_gex))
+    
+    return(object)
+    
+}
