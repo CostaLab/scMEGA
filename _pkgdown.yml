@@ -15,6 +15,8 @@ navbar:
         menu:
           - text: "Infer GRN for myofibroblast"
             href: "articles/myofibroblast-GRN.html"
+          - text: "Infer GRN for cardiomyocytes"
+            href: "articles/cardiomyocyte-GRN.html"
       - text: "Reference"
         href: "reference/index.html"
     right:
