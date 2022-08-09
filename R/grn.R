@@ -464,3 +464,110 @@ GRNSpatialPlot <- function(object, assay,
     return(p)
 
 }
+
+
+
+#' PCA of Topological Measures
+#'
+#' This function will generate a graph centrality PCA embedding
+#'
+#' @param df.grn A data frame representing predicted network
+#' @param genes.cluster A data frame containing clustering results of genes
+#'
+#' @importFrom igraph layout_with_fr
+#' @importFrom igraph page_rank
+#' @importFrom factoextra fviz_pca_biplot
+#' @importFrom igraph betweenness
+#' @importFrom igraph degree
+#' @importFrom igraph graph_from_data_frame
+#' @importFrom ggraph geom_edge_link
+#' @importFrom ggraph geom_node_point
+#' @importFrom ggraph geom_node_label
+#' @importFrom ggrepel geom_label_repel
+#' @importFrom igraph E
+#' @importFrom igraph V
+#' @return a prcomp output
+#' @export
+#'
+TopEmbGRN <- function(df.grn,gene.cluster=NULL,axis=c(1,2)){
+	netembb <- tibble("nodes" = V(df.grn)$name,
+			  "outdegree"= degree(as.directed(df.grn),mode = 'out')[V(df.grn)$name],
+			  "indegree"=degree(as.directed(df.grn),mode = 'in')[V(df.grn)$name],
+			  "mediator"= betweenness(df.grn,normalized = TRUE)[V(df.grn)$name],
+			  "pagerank"=page.rank(df.grn)$vector[V(df.grn)$name],
+			  "type"=V(df.grn)$type[V(netobj)$name])
+	netembb$indegree <- (netembb$indegree - min(netembb$indegree))/(max(netembb$indegree)-min(netembb$indegree))
+	netembb$outdegree <- (netembb$outdegree - min(netembb$outdegree))/(max(netembb$outdegree)-min(netembb$outdegree))
+	pcaemb <- prcomp(netembb[,c(2,3,4)],center = T)
+	rownames(pcaemb$x) <- netembb$nodes
+	x <- max(abs(pcaemb$x[,axis[1]]))
+	y <- max(abs(pcaemb$x[,axis[2]]))
+	z_x <- pcaemb$x[,axis[1]]
+	z_y <- pcaemb$x[,axis[2]]
+	ver_zx <- ifelse(abs(z_x)>2*pcaemb$sdev[axis[1]],1,0)
+	ver_zy <- ifelse(abs(z_y)>2*pcaemb$sdev[axis[2]],1,0)
+	p<-fviz_pca_biplot(pcaemb,
+              axes = axis,
+              pointshape = 21, pointsize = 0.5,labelsize = 12,
+              repel = TRUE,max.overlaps=150,label='var',arrowsize = 1.5)+
+	      geom_label_repel(aes(label=rownames(pcaemb$x)),hjust=0, vjust=0,size = 4)+
+              xlim(-(x), (x))+
+              ylim(-(y), (y))+
+	      theme(text = element_text(size = 4),
+                    axis.title = element_text(size = 7.5),
+                    axis.text = element_text(size = 7.5))
+
+	print(p)
+	return(pcaemb)
+
+}
+
+
+
+
+
+#' Centric Plot
+#'
+#' This function will generate a plot centered in a specific gene/TF
+#'
+#' @param netobj scMEGA net
+#' @importFrom ggraph geom_edge_link
+#' @importFrom ggraph geom_node_point
+#' @importFrom ggraph geom_node_label
+#' @importFrom ggraph scale_edge_color_viridis
+#' @importFrom igraph degree
+#' @importFrom igraph V
+#' @return a ggraph plot
+#' @export
+
+NetCentPlot <- function(netobj,gene,highlights=NULL){
+d <- betweenness(netobj)
+if(is.null(highlights)){
+	p<- ggraph(netobj, layout = "focus", focus = which(V(netobj)$name==gene)) +
+		geom_edge_link(aes(colour=weights,alpha=weights),edge_width=0.1) +
+		geom_node_point(aes(size=d),shape = 20) +
+		geom_node_label(aes(filter = (d > mean(d)) & (type == "TF/Gene"),
+				      label = name),
+				     size = 5,
+				repel = TRUE) +
+		scale_edge_color_viridis()+
+		coord_fixed() +
+		theme_graph() +
+		theme(legend.position = "none")
+}else{
+	p<- ggraph(netobj, layout = "focus", focus = which(V(netobj)$name==gene)) +
+		geom_edge_link(aes(colour=weights,alpha=weights),edge_width=0.1) +
+		geom_node_point(aes(size=d),shape = 20) +
+		geom_node_label(aes(filter = ifelse(V(netobj)$name %in% highlights, T, F),
+				      label = name),
+				     size = 5,
+				repel = TRUE) +
+		scale_edge_color_viridis()+
+		coord_fixed() +
+		theme_graph() +
+		theme(legend.position = "none")
+
+}
+return(p)
+
+}
