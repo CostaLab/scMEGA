@@ -1,3 +1,98 @@
+#' Plot dynamic changes along pseudotime trajectory
+#'
+#' This function will generate a line plot to visualize the TF binding activity,
+#' TF expression, and TF target expression along the trajectory.
+#'
+#' @param object A Seurat object used as input.
+#' @param tf.use Which TF to plot.
+#' @param tf.assay Assay name for TF binding activity. Default: "chromvar"
+#' @param rna.assay Assay name for TF expression. Default: "RNA"
+#' @param target.assay Assay name for TF target expression. Default: "target"
+#' @param trajectory.name Trajectory name for visualization.
+#'
+#' @return A ggplot object
+#' @export
+#'
+PseudotimePlot <- function(object, tf.use,
+                           tf.assay="chromvar",
+                           rna.assay = "RNA",
+                           target.assay = "target",
+                           trajectory.name = "Trajectory"){
+
+    trajMM <- suppressMessages(GetTrajectory(
+        object,
+        assay = tf.assay,
+        slot = "data",
+        smoothWindow = 7,
+        log2Norm = FALSE
+    ))
+
+    rownames(trajMM) <- object@assays$ATAC@motifs@motif.names
+
+    df.tf.activity <- assay(trajMM)
+    df.tf.activity <- t(scale(t(df.tf.activity)))
+    df.tf.activity <- as.data.frame(df.tf.activity)
+    colnames(df.tf.activity) <- 1:100
+    df.tf.activity$tf <- toupper(rownames(df.tf.activity))
+    df.tf.activity <- tidyr::pivot_longer(df.tf.activity, -tf,
+                                              names_to = "pseudotime",
+                                              values_to = "value")
+    df.tf.activity$pseudotime <- as.numeric(df.tf.activity$pseudotime)
+
+    trajGEX <- suppressMessages(GetTrajectory(
+        object,
+        assay = rna.assay,
+        slot = "data",
+        smoothWindow = 7,
+        log2Norm = TRUE
+    ))
+
+    df.tf.expression <- assay(trajGEX)
+    df.tf.expression <- t(scale(t(df.tf.expression)))
+    df.tf.expression <- as.data.frame(df.tf.expression)
+    colnames(df.tf.expression) <- 1:100
+    df.tf.expression$tf <- toupper(rownames(df.tf.expression))
+    df.tf.expression <- tidyr::pivot_longer(df.tf.expression, -tf,
+                                              names_to = "pseudotime",
+                                              values_to = "value")
+    df.tf.expression$pseudotime <- as.numeric(df.tf.expression$pseudotime)
+
+    traj.target <- suppressMessages(GetTrajectory(
+        object,
+        assay = target.assay,
+        slot = "data",
+        smoothWindow = 7,
+        log2Norm = FALSE
+    ))
+
+    df.target <- assay(traj.target)
+    df.target <- t(scale(t(df.target)))
+    df.target <- as.data.frame(df.target)
+    colnames(df.target) <- 1:100
+    df.target$tf <- toupper(rownames(df.target))
+    df.target <- tidyr::pivot_longer(df.target, -tf,
+                                              names_to = "pseudotime",
+                                              values_to = "value")
+    df.target$pseudotime <- as.numeric(df.target$pseudotime)
+
+    df.tf.activity$data <- "TF activity"
+    df.tf.expression$data <- "TF expression"
+    df.target$data <- "Targets expression"
+
+    df.tf <- rbind(df.tf.activity, df.tf.expression, df.target)
+    df.plot <- subset(df.tf, tf == tf.use)
+
+    p <- ggplot(df.plot, aes(x = pseudotime, y = value, color = data)) +
+         geom_smooth(method = "loess",se = FALSE) +
+        ggtitle(tf.use) +
+        cowplot::theme_cowplot() +
+        ylab("") +
+        theme(legend.title = element_blank())
+
+    return(p)
+
+}
+
 #' Plot cell proportion
 #'
 #' This function will generate a bar plot to visualize the cell proportion across
@@ -111,14 +206,14 @@ CompareCellProp <-
       group_by(across(all_of(c(prop.in, group.by)))) %>%
       summarise(counts = n()) %>%
       mutate(proportion = counts / sum(counts))
-      
+
     df_anno <- object@meta.data %>%
       as.data.frame() %>%
       subset(., select = c(prop.in, sample.annotation)) %>%
       unique()
-      
+
     df <- merge.data.frame(df_prop, df_anno)
-      
+
     proportion <- "proportion"
 
     if (!is.null(comparisons)) {
@@ -205,7 +300,7 @@ CorrelationPlot <- function(df) {
 #' @return A heatmap
 #' @export
 #'
-CorrelationHeatmap <- function(trajectory1, 
+CorrelationHeatmap <- function(trajectory1,
                                trajectory2,
                                name1 = NULL,
                                name2 = NULL,
@@ -495,13 +590,13 @@ TrajectoryHeatmap <- function(trajectory,
   } else{
     idxLabel <- NULL
   }
-    
+
   if (scaleRows) {
     mat <- sweep(mat - rowMeans(mat), 1, matrixStats::rowSds(mat), `/`)
     mat[mat > max(limits)] <- max(limits)
     mat[mat < min(limits)] <- min(limits)
   }
-    
+
   if (nrow(mat) == 0) {
     stop("No Features Remaining!")
   }
@@ -521,7 +616,7 @@ TrajectoryHeatmap <- function(trajectory,
   } else{
       customRowLabel <- NULL
   }
-    
+
   ht <- ArchR:::.ArchRHeatmap(
     mat = mat[idx, ],
     scale = FALSE,

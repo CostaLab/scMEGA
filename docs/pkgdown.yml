@@ -1,0 +1,14 @@
+pandoc: 2.16.2
+pkgdown: 2.0.3
+pkgdown_sha: ~
+articles:
+  cardiomyocyte-GRN: cardiomyocyte-GRN.html
+  cardiomyocyte-preprocessing: cardiomyocyte-preprocessing.html
+  install: install.html
+  myofibroblast-GRN: myofibroblast-GRN.html
+  myofibroblast-preprocessing: myofibroblast-preprocessing.html
+last_built: 2022-08-04T08:27Z
+urls:
+  reference: https://costalab.github.io/scMEGA/reference
+  article: https://costalab.github.io/scMEGA/articles
+

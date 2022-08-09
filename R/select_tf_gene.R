@@ -20,23 +20,24 @@ SelectTFs <- function(object,
                       p.cutoff = 0.01,
                       cor.cutoff = 0.3,
                       return.heatmap = TRUE) {
-  trajMM <- GetTrajectory(
+  
+    trajMM <- suppressMessages(GetTrajectory(
     object,
     assay = tf.assay,
     slot = "data",
     smoothWindow = 7,
     log2Norm = FALSE
-  )
+  )) 
 
   rownames(trajMM) <- object@assays$ATAC@motifs@motif.names
 
-  trajRNA <- GetTrajectory(
+  trajRNA <- suppressMessages(GetTrajectory(
     object,
     assay = rna.assay,
     slot = "data",
     smoothWindow = 7,
     log2Norm = TRUE
-  )
+  ))
 
   df.cor <- GetCorrelation(trajMM, trajRNA)
 
@@ -45,14 +46,14 @@ SelectTFs <- function(object,
     df.cor[df.cor$adj_p < p.cutoff &
              df.cor$correlation > cor.cutoff,]
 
-  matMM <- TrajectoryHeatmap(
+  matMM <- suppressMessages(TrajectoryHeatmap(
     trajMM,
     varCutOff = 0,
     pal = paletteContinuous(set = "solarExtra"),
     limits = c(-2, 2),
     name = "TF activity",
     returnMatrix = TRUE
-  )
+  ))
 
   df_tf_time_point <- data.frame(tfs = rownames(matMM),
                                  time_point = seq(1, 100, length.out = nrow(matMM)))
