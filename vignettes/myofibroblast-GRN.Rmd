@@ -219,7 +219,9 @@ df.grn2 <- df.grn %>%
     subset(correlation > 0.4) %>%
     select(c(tf, gene, correlation)) %>%
     rename(weights = correlation)
-    
+
+saveRDS(df.grn2,"./Fibroblast/final_grn.Rds")    
+
 p <- GRNPlot(df.grn2, 
              tfs.timepoint = tfs.timepoint,
              show.tf.labels = TRUE,
