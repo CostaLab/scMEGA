@@ -45,6 +45,7 @@ Imports:
     GenomicRanges,
     S4Vectors,
     SummarizedExperiment,
-    ggraph
+    ggraph,
+    factoextra
 RoxygenNote: 7.2.0
 Config/testthat/edition: 3
