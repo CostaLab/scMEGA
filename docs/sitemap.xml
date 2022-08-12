@@ -25,6 +25,9 @@
     <loc>https://costalab.github.io/scMEGA/articles/myofibroblast-GRN.html</loc>
   </url>
   <url>
+    <loc>https://costalab.github.io/scMEGA/articles/myofibroblast-network.html</loc>
+  </url>
+  <url>
     <loc>https://costalab.github.io/scMEGA/articles/myofibroblast-preprocessing.html</loc>
   </url>
   <url>
@@ -85,6 +88,9 @@
     <loc>https://costalab.github.io/scMEGA/reference/GetTrajectory.html</loc>
   </url>
   <url>
+    <loc>https://costalab.github.io/scMEGA/reference/NetCentPlot.html</loc>
+  </url>
+  <url>
     <loc>https://costalab.github.io/scMEGA/reference/PairCells.html</loc>
   </url>
   <url>
@@ -101,6 +107,9 @@
   </url>
   <url>
     <loc>https://costalab.github.io/scMEGA/reference/SelectTFs.html</loc>
+  </url>
+  <url>
+    <loc>https://costalab.github.io/scMEGA/reference/TopEmbGRN.html</loc>
   </url>
   <url>
     <loc>https://costalab.github.io/scMEGA/reference/TrajectoryHeatmap.html</loc>
