@@ -525,7 +525,6 @@ AddTargetAssay <- function(object, target.assay = "target",
 #' @importFrom igraph V
 #' @return a prcomp output
 #' @export
-#'
 TopEmbGRN <- function(df.grn,gene.cluster=NULL,axis=c(1,2)){
 	netembb <- tibble("nodes" = V(df.grn)$name,
 			  "outdegree"= degree(as.directed(df.grn),mode = 'out')[V(df.grn)$name],
@@ -560,9 +559,6 @@ TopEmbGRN <- function(df.grn,gene.cluster=NULL,axis=c(1,2)){
 }
 
 
-
-
-
 #' Centric Plot
 #'
 #' This function will generate a plot centered in a specific gene/TF
@@ -576,7 +572,6 @@ TopEmbGRN <- function(df.grn,gene.cluster=NULL,axis=c(1,2)){
 #' @importFrom igraph V
 #' @return a ggraph plot
 #' @export
-
 NetCentPlot <- function(netobj,gene,highlights=NULL){
 d <- betweenness(netobj)
 if(is.null(highlights)){
