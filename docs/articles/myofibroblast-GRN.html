@@ -58,6 +58,9 @@
     <li>
       <a href="../articles/cardiomyocyte-GRN.html">Infer GRN for cardiomyocytes</a>
     </li>
+    <li>
+      <a href="../articles/myofibroblast-network.html">Network analysis for myofibroblast</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -86,7 +89,7 @@
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Gene-regulatory network of myofibroblast differentiation in myocardial infarction</h1>
             
-            <h4 data-toc-skip class="date">Compiled: August 04, 2022</h4>
+            <h4 data-toc-skip class="date">Compiled: August 11, 2022</h4>
       
       
       <div class="hidden name"><code>myofibroblast-GRN.Rmd</code></div>
@@ -129,10 +132,10 @@
 <p>To infer trajectory, we will perform dimension reduction using diffusion map via the function <em>RunDiffusionMap</em>. This is based on the R package <a href="https://bioconductor.org/packages/release/bioc/html/destiny.html" class="external-link">destiny</a>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">coembed.sub</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RunDiffusionMap.html">RunDiffusionMap</a></span><span class="op">(</span><span class="va">coembed.sub</span>, reduction <span class="op">=</span> <span class="st">"harmony"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## finding knns......done. Time: 252.72s</span>
+<pre><code><span class="co">## finding knns......done. Time: 251.36s</span>
 <span class="co">## Calculating transition probabilities......done. Time: 0.25s</span>
 <span class="co">## </span>
-<span class="co">## performing eigen decomposition......done. Time: 1.62s</span></code></pre>
+<span class="co">## performing eigen decomposition......done. Time: 1.63s</span></code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cols</span> <span class="op">&lt;-</span> <span class="fu">ArchR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ArchR/man/paletteDiscrete.html" class="external-link">paletteDiscrete</a></span><span class="op">(</span><span class="va">coembed.sub</span><span class="op">@</span><span class="va">meta.data</span><span class="op">[</span>, <span class="st">"RNA_snn_res.0.2"</span><span class="op">]</span><span class="op">)</span>
 
@@ -338,7 +341,9 @@
     <span class="fu"><a href="https://satijalab.org/signac/reference/subset.Motif.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">correlation</span> <span class="op">&gt;</span> <span class="fl">0.4</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/harmony/man/pipe.html" class="external-link">%&gt;%</a></span>
     <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="va">tf</span>, <span class="va">gene</span>, <span class="va">correlation</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/pkg/harmony/man/pipe.html" class="external-link">%&gt;%</a></span>
     <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>weights <span class="op">=</span> <span class="va">correlation</span><span class="op">)</span>
-    
+
+<span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">df.grn2</span>,<span class="st">"./Fibroblast/final_grn.Rds"</span><span class="op">)</span>    
+
 <span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GRNPlot.html">GRNPlot</a></span><span class="op">(</span><span class="va">df.grn2</span>, 
              tfs.timepoint <span class="op">=</span> <span class="va">tfs.timepoint</span>,
              show.tf.labels <span class="op">=</span> <span class="cn">TRUE</span>,
