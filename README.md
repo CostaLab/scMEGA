@@ -1,5 +1,8 @@
 ### scMEGA: Single-cell Multiomic Enhancer-based Gene regulAtory network inference
 
+![](https://costalab.github.io/scMEGA/reference/figures/schematic.png)
+
+
 You can install scMEGA via below commands:
 ```R
 # Install devtools
