@@ -22,7 +22,7 @@ the [ArchR](https://www.archrproject.com/) package.
 The script of cleaning the data and preparing these objects is found [here](https://costalab.ukaachen.de/open_data/scMEGA/Fibroblast/01_prepare_data.html).
 
 Run the following commands to download the data:
-```{bash, eval=FALSE}
+```{bash, eval=TRUE}
 mkdir -p Fibroblast
 wget -P Fibroblast https://costalab.ukaachen.de/open_data/scMEGA/Fibroblast/snRNA.rds
 wget -P Fibroblast https://costalab.ukaachen.de/open_data/scMEGA/Fibroblast/snATAC.rds
