@@ -17,8 +17,6 @@ navbar:
             href: "articles/myofibroblast-GRN.html"
           - text: "Infer GRN for cardiomyocytes"
             href: "articles/cardiomyocyte-GRN.html"
-          - text: "Network analysis for myofibroblast"
-            href: "articles/myofibroblast-network.html"
       - text: "Reference"
         href: "reference/index.html"
     right:
