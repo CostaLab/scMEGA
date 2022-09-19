@@ -652,21 +652,21 @@ netobj <- graph_from_data_frame(dfgrn,directed = TRUE)
 V(netobj)$type <- ifelse(V(netobj)$name %in% dfgrn$tf,"TF/Gene","Gene")
 ```
 
-ext, we will estimate distint network topological measures as node degree, node centrality and node page rank score and plot these in a principal component based embedding with a focus on transcription factors. We plot bellow the 3 first PCs. 
+Next, we will estimate distint network topological measures as node degree, node centrality and node page rank score and plot these in a principal component based embedding with a focus on transcription factors. We plot bellow the 3 first PCs. 
 
-## Network topological measures embedding: PC1 and PC2
+### Network topological measures embedding: PC1 and PC2
 ```{r,fig.width=12,fig.height=12}
 p <- TopEmbGRN(df.grn=netobj)
 ```
 
-## Network topological measures embedding: PC2 and PC3
+### Network topological measures embedding: PC2 and PC3
 ```{r,fig.width=12,fig.height=12}
 p <- TopEmbGRN(df.grn=netobj,axis=c(2,3))
 ```
 
 This reveals that RUNX1 is a central TF in this network, as it has high in/out-degree values and high mediator score. 
 
-## RUNX1 centric network. 
+### RUNX1 centric network. 
 
 To further inspect genes and TFs associated with RUNX1, we create a centric layout embedding.
 
