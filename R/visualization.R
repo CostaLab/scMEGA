@@ -7,6 +7,7 @@
 #' @param tf.use Which TF to plot.
 #' @param tf.assay Assay name for TF binding activity. Default: "chromvar"
 #' @param rna.assay Assay name for TF expression. Default: "RNA"
+#' @param atac.assay Assay name for Peaks. Default: "ATAC"
 #' @param target.assay Assay name for TF target expression. Default: "target"
 #' @param trajectory.name Trajectory name for visualization.
 #'
@@ -16,6 +17,7 @@
 PseudotimePlot <- function(object, tf.use,
                            tf.assay="chromvar",
                            rna.assay = "RNA",
+                           atac.assay = "ATAC",
                            target.assay = "target",
                            trajectory.name = "Trajectory"){
 
@@ -27,7 +29,7 @@ PseudotimePlot <- function(object, tf.use,
         log2Norm = FALSE
     ))
 
-    rownames(trajMM) <- object@assays$ATAC@motifs@motif.names
+    rownames(trajMM) <- object@assays[[atac.assay]]@motifs@motif.names
 
     df.tf.activity <- assay(trajMM)
     df.tf.activity <- t(scale(t(df.tf.activity)))
@@ -557,6 +559,12 @@ TrajectoryHeatmap <- function(trajectory,
   if (sum(rSNA > 0) > 0) {
     message("Removing rows with NA values...")
     mat <- mat[rSNA == 0, ]#Remove NA Rows
+  }
+  #colum all zero
+  rSZero <- which(matrixStats::rowSds(mat) != 0)
+  if(length(rSZero) < nrow(mat)){
+    message("Removing rows without peaks...")
+    mat <- mat[rSZero, ]#Remove 0 Rows
   }
 
   varQ <- ArchR:::.getQuantiles(matrixStats::rowVars(mat))
