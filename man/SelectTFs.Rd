@@ -8,6 +8,7 @@ SelectTFs(
   object,
   tf.assay = "chromvar",
   rna.assay = "RNA",
+  atac.assay = "ATAC",
   trajectory.name = "Trajectory",
   p.cutoff = 0.01,
   cor.cutoff = 0.3,
@@ -20,6 +21,8 @@ SelectTFs(
 \item{tf.assay}{The assay name for TF activity. Default: "chromvar"}
 
 \item{rna.assay}{The assay name for gene expression. Default: "RNA"}
+
+\item{atac.assay}{The assay name for Peaks. Default: "ATAC"}
 
 \item{trajectory.name}{The trajectory name used for computing correlation
 between TF binding activity and TF expression}

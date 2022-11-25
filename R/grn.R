@@ -8,6 +8,7 @@
 #' @param gene.use A string list to specify which genes to use for correlation computation
 #' @param tf.assay Assay that includes TF activity data. Default: "chromvar"
 #' @param gene.assay Assay that includes gene expression activity data. Default: "RNA"
+#' @param atac.assay Assay that includes peaks data. Default: "ATAC"
 #' @param trajectory.name Trajectory name
 #'
 #' @return A matrix containing TF-gene correlation
@@ -18,6 +19,7 @@ GetTFGeneCorrelation <- function(object,
                                  gene.use = NULL,
                                  tf.assay = "chromvar",
                                  gene.assay = "RNA",
+                                 atac.assay="ATAC",
                                  trajectory.name = "Trajectory") {
   ## get tf activity and gene expression along trajectory
   trajMM <- GetTrajectory(
@@ -38,7 +40,7 @@ GetTFGeneCorrelation <- function(object,
     log2Norm = TRUE
   )
 
-  rownames(trajMM) <- object@assays$ATAC@motifs@motif.names
+  rownames(trajMM) <- object@assays[[atac.assay]]@motifs@motif.names
 
   tf_activity <- suppressMessages(
     TrajectoryHeatmap(

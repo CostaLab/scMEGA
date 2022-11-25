@@ -10,6 +10,7 @@ GetTFGeneCorrelation(
   gene.use = NULL,
   tf.assay = "chromvar",
   gene.assay = "RNA",
+  atac.assay = "ATAC",
   trajectory.name = "Trajectory"
 )
 }
@@ -23,6 +24,8 @@ GetTFGeneCorrelation(
 \item{tf.assay}{Assay that includes TF activity data. Default: "chromvar"}
 
 \item{gene.assay}{Assay that includes gene expression activity data. Default: "RNA"}
+
+\item{atac.assay}{Assay that includes peaks data. Default: "ATAC"}
 
 \item{trajectory.name}{Trajectory name}
 }

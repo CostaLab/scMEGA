@@ -9,6 +9,7 @@ PseudotimePlot(
   tf.use,
   tf.assay = "chromvar",
   rna.assay = "RNA",
+  atac.assay = "ATAC",
   target.assay = "target",
   trajectory.name = "Trajectory"
 )
@@ -21,6 +22,8 @@ PseudotimePlot(
 \item{tf.assay}{Assay name for TF binding activity. Default: "chromvar"}
 
 \item{rna.assay}{Assay name for TF expression. Default: "RNA"}
+
+\item{atac.assay}{Assay name for Peaks. Default: "ATAC"}
 
 \item{target.assay}{Assay name for TF target expression. Default: "target"}
 

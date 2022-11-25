@@ -15,7 +15,8 @@ SelectGenes(
   fdr.cutoff = 1e-04,
   return.heatmap = TRUE,
   labelTop1 = 10,
-  labelTop2 = 10
+  labelTop2 = 10,
+  genome = "hg38"
 )
 }
 \arguments{

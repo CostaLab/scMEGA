@@ -3,6 +3,7 @@
 #' @param object A Seurat object
 #' @param tf.assay The assay name for TF activity. Default: "chromvar"
 #' @param rna.assay The assay name for gene expression. Default: "RNA"
+#' @param atac.assay The assay name for Peaks. Default: "ATAC"
 #' @param trajectory.name The trajectory name used for computing correlation
 #' between TF binding activity and TF expression
 #' @param p.cutoff A cutoff of p-values. Default: 0.01
@@ -16,6 +17,7 @@
 SelectTFs <- function(object,
                       tf.assay = "chromvar",
                       rna.assay = "RNA",
+                      atac.assay= "ATAC",
                       trajectory.name = "Trajectory",
                       p.cutoff = 0.01,
                       cor.cutoff = 0.3,
@@ -29,7 +31,7 @@ SelectTFs <- function(object,
     log2Norm = FALSE
   )) 
 
-  rownames(trajMM) <- object@assays$ATAC@motifs@motif.names
+  rownames(trajMM) <- object@assays[[atac.assay]]@motifs@motif.names
 
   trajRNA <- suppressMessages(GetTrajectory(
     object,
@@ -116,7 +118,9 @@ SelectGenes <- function(object,
                         fdr.cutoff = 1e-04,
                         return.heatmap = TRUE,
                         labelTop1 = 10,
-                        labelTop2 = 10) {
+                        labelTop2 = 10,
+                        genome = "hg38"
+                        ) {
   trajRNA <- GetTrajectory(
     object,
     assay = rna.assay,
@@ -159,7 +163,7 @@ SelectGenes <- function(object,
   message("Linking cis-regulatory elements to genes...")
   df.p2g <- PeakToGene(peak.mat = groupMatATAC,
                        gene.mat = groupMatRNA,
-                       genome = "hg38")
+                       genome = genome)
 
   df.p2g <- df.p2g %>%
     subset(distance > distance.cutoff) %>%
