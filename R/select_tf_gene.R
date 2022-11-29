@@ -6,6 +6,8 @@
 #' @param atac.assay The assay name for Peaks. Default: "ATAC"
 #' @param trajectory.name The trajectory name used for computing correlation
 #' between TF binding activity and TF expression
+#' @param groupEvery The number of sequential percentiles to group together when generating a trajectory.
+#' This is similar to smoothing via a non-overlapping sliding window across pseudo-time.
 #' @param p.cutoff A cutoff of p-values. Default: 0.01
 #' @param cor.cutoff A cutoff of correlation. Default: 0.3
 #' @param return.heatmap Whether or not return the heatmap for visualization
@@ -19,6 +21,7 @@ SelectTFs <- function(object,
                       rna.assay = "RNA",
                       atac.assay= "ATAC",
                       trajectory.name = "Trajectory",
+                      groupEvery = 1,
                       p.cutoff = 0.01,
                       cor.cutoff = 0.3,
                       return.heatmap = TRUE) {
@@ -26,6 +29,8 @@ SelectTFs <- function(object,
     trajMM <- suppressMessages(GetTrajectory(
     object,
     assay = tf.assay,
+    trajectory.name=trajectory.name,
+    groupEvery=groupEvery,
     slot = "data",
     smoothWindow = 7,
     log2Norm = FALSE
@@ -36,6 +41,8 @@ SelectTFs <- function(object,
   trajRNA <- suppressMessages(GetTrajectory(
     object,
     assay = rna.assay,
+    trajectory.name=trajectory.name,
+    groupEvery=groupEvery,
     slot = "data",
     smoothWindow = 7,
     log2Norm = TRUE
@@ -98,6 +105,8 @@ SelectTFs <- function(object,
 #' @param var.cutoff.gene The cutoff of variation to select genes. Default: 0.9
 #' @param trajectory.name The trajectory name used for computing correlation
 #' between TF binding activity and TF expression
+#' @param groupEvery The number of sequential percentiles to group together when generating a trajectory.
+#' This is similar to smoothing via a non-overlapping sliding window across pseudo-time.
 #' @param distance.cutoff The minimum distance between cis-regulatory elements and genes
 #' @param cor.cutoff The cutoff of peak-to-gene correlation. Default: 0
 #' @param fdr.cutoff The cutoff of peak-to-gene p-value Default: 1e-04
@@ -114,6 +123,7 @@ SelectGenes <- function(object,
                         var.cutoff.gene = 0.9,
                         trajectory.name = "Trajectory",
                         distance.cutoff = 2000,
+                        groupEvery = 1,
                         cor.cutoff = 0,
                         fdr.cutoff = 1e-04,
                         return.heatmap = TRUE,
@@ -124,6 +134,8 @@ SelectGenes <- function(object,
   trajRNA <- GetTrajectory(
     object,
     assay = rna.assay,
+    trajectory.name = trajectory.name,
+    groupEvery = groupEvery,
     slot = "data",
     smoothWindow = 7,
     log2Norm = TRUE
@@ -132,6 +144,8 @@ SelectGenes <- function(object,
   trajATAC <- GetTrajectory(
     object,
     assay = atac.assay,
+    groupEvery = groupEvery,
+    trajectory.name = trajectory.name,
     slot = "data",
     smoothWindow = 7,
     log2Norm = TRUE

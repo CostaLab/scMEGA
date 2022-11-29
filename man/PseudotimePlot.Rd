@@ -11,7 +11,8 @@ PseudotimePlot(
   rna.assay = "RNA",
   atac.assay = "ATAC",
   target.assay = "target",
-  trajectory.name = "Trajectory"
+  trajectory.name = "Trajectory",
+  groupEvery = 1
 )
 }
 \arguments{
@@ -28,6 +29,9 @@ PseudotimePlot(
 \item{target.assay}{Assay name for TF target expression. Default: "target"}
 
 \item{trajectory.name}{Trajectory name for visualization.}
+
+\item{groupEvery}{The number of sequential percentiles to group together when generating a trajectory.
+This is similar to smoothing via a non-overlapping sliding window across pseudo-time.}
 }
 \value{
 A ggplot object

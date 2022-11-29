@@ -10,6 +10,7 @@ SelectTFs(
   rna.assay = "RNA",
   atac.assay = "ATAC",
   trajectory.name = "Trajectory",
+  groupEvery = 1,
   p.cutoff = 0.01,
   cor.cutoff = 0.3,
   return.heatmap = TRUE
@@ -26,6 +27,9 @@ SelectTFs(
 
 \item{trajectory.name}{The trajectory name used for computing correlation
 between TF binding activity and TF expression}
+
+\item{groupEvery}{The number of sequential percentiles to group together when generating a trajectory.
+This is similar to smoothing via a non-overlapping sliding window across pseudo-time.}
 
 \item{p.cutoff}{A cutoff of p-values. Default: 0.01}
 
