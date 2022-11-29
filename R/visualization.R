@@ -40,7 +40,7 @@ PseudotimePlot <- function(object, tf.use,
     df.tf.activity <- assay(trajMM)
     df.tf.activity <- t(scale(t(df.tf.activity)))
     df.tf.activity <- as.data.frame(df.tf.activity)
-    colnames(df.tf.activity) <- 1:100
+    colnames(df.tf.activity) <- seq(0, 100, groupEvery)[-1]
     df.tf.activity$tf <- toupper(rownames(df.tf.activity))
     df.tf.activity <- tidyr::pivot_longer(df.tf.activity, -tf,
                                               names_to = "pseudotime",
@@ -60,7 +60,7 @@ PseudotimePlot <- function(object, tf.use,
     df.tf.expression <- assay(trajGEX)
     df.tf.expression <- t(scale(t(df.tf.expression)))
     df.tf.expression <- as.data.frame(df.tf.expression)
-    colnames(df.tf.expression) <- 1:100
+    colnames(df.tf.expression) <- seq(0, 100, groupEvery)[-1]
     df.tf.expression$tf <- toupper(rownames(df.tf.expression))
     df.tf.expression <- tidyr::pivot_longer(df.tf.expression, -tf,
                                               names_to = "pseudotime",
@@ -80,7 +80,7 @@ PseudotimePlot <- function(object, tf.use,
     df.target <- assay(traj.target)
     df.target <- t(scale(t(df.target)))
     df.target <- as.data.frame(df.target)
-    colnames(df.target) <- 1:100
+    colnames(df.target) <- seq(0, 100, groupEvery)[-1]
     df.target$tf <- toupper(rownames(df.target))
     df.target <- tidyr::pivot_longer(df.target, -tf,
                                               names_to = "pseudotime",
