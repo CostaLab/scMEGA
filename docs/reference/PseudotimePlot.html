@@ -41,9 +41,6 @@ TF expression, and TF target expression along the trajectory."><!-- mathjax --><
     <li>
       <a href="../articles/cardiomyocyte-GRN.html">Infer GRN for cardiomyocytes</a>
     </li>
-    <li>
-      <a href="../articles/myofibroblast-network.html">Network analysis for myofibroblast</a>
-    </li>
   </ul></li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -79,6 +76,7 @@ TF expression, and TF target expression along the trajectory.</p>
   <span class="va">tf.use</span>,
   tf.assay <span class="op">=</span> <span class="st">"chromvar"</span>,
   rna.assay <span class="op">=</span> <span class="st">"RNA"</span>,
+  atac.assay <span class="op">=</span> <span class="st">"ATAC"</span>,
   target.assay <span class="op">=</span> <span class="st">"target"</span>,
   trajectory.name <span class="op">=</span> <span class="st">"Trajectory"</span>
 <span class="op">)</span></code></pre></div>
@@ -94,6 +92,8 @@ TF expression, and TF target expression along the trajectory.</p>
 <dd><p>Assay name for TF binding activity. Default: "chromvar"</p></dd>
 <dt>rna.assay</dt>
 <dd><p>Assay name for TF expression. Default: "RNA"</p></dd>
+<dt>atac.assay</dt>
+<dd><p>Assay name for Peaks. Default: "ATAC"</p></dd>
 <dt>target.assay</dt>
 <dd><p>Assay name for TF target expression. Default: "target"</p></dd>
 <dt>trajectory.name</dt>

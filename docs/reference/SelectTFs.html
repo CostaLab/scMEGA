@@ -40,9 +40,6 @@
     <li>
       <a href="../articles/cardiomyocyte-GRN.html">Infer GRN for cardiomyocytes</a>
     </li>
-    <li>
-      <a href="../articles/myofibroblast-network.html">Network analysis for myofibroblast</a>
-    </li>
   </ul></li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -76,6 +73,7 @@
   <span class="va">object</span>,
   tf.assay <span class="op">=</span> <span class="st">"chromvar"</span>,
   rna.assay <span class="op">=</span> <span class="st">"RNA"</span>,
+  atac.assay <span class="op">=</span> <span class="st">"ATAC"</span>,
   trajectory.name <span class="op">=</span> <span class="st">"Trajectory"</span>,
   p.cutoff <span class="op">=</span> <span class="fl">0.01</span>,
   cor.cutoff <span class="op">=</span> <span class="fl">0.3</span>,
@@ -91,6 +89,8 @@
 <dd><p>The assay name for TF activity. Default: "chromvar"</p></dd>
 <dt>rna.assay</dt>
 <dd><p>The assay name for gene expression. Default: "RNA"</p></dd>
+<dt>atac.assay</dt>
+<dd><p>The assay name for Peaks. Default: "ATAC"</p></dd>
 <dt>trajectory.name</dt>
 <dd><p>The trajectory name used for computing correlation
 between TF binding activity and TF expression</p></dd>
