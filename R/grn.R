@@ -452,7 +452,8 @@ GRNSpatialPlot <- function(object, assay,
                            tf.use,
                            min.cutoff = "q5",
                            max.cutoff = "q95",
-                          vis.option = "B"){
+                          vis.option = "B",
+                          crop = TRUE){
     DefaultAssay(object) <- assay
 
     # select all targets for a TF
@@ -463,7 +464,8 @@ GRNSpatialPlot <- function(object, assay,
 
     p <- Seurat::SpatialFeaturePlot(object, features = "Cluster1",
                          min.cutoff = min.cutoff,
-                         max.cutoff = max.cutoff)+
+                         max.cutoff = max.cutoff,
+                         crop = crop)+
             scale_fill_viridis(option = vis.option) +
             ggtitle(glue::glue("{tf.use} targets")) +
     labs(fill='')

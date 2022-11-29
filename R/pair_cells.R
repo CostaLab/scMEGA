@@ -12,6 +12,7 @@
 #' @param reference.assay The reference assay from gene expression data
 #' @param reduction The reduction name used for function FindTransferAnchors.
 #' @param weight.reduction Dimensional reduction to use for the weighting anchors
+#' @param dims Set of dimensions to use in the anchor weighting procedure.
 #' @param verbose Print progress bars and output
 #'
 #' @return An integrated Seurat object
@@ -34,7 +35,8 @@ CoembedData <-
            reference.assay = "RNA",
            reduction = "cca",
            weight.reduction = NULL,
-           verbose = TRUE) {
+           verbose = TRUE,
+           dims = 1:30) {
     ## make sure there are the same number of cells in atac and gene activity data
     if (ncol(obj.atac) != ncol(gene.activity)) {
       stop("The number of cells in ATAC-seq and Gene activity are not the same!")
@@ -79,7 +81,7 @@ CoembedData <-
       anchorset = transfer.anchors,
       refdata = refdata,
       weight.reduction = obj.atac[[weight.reduction]],
-      dims = 1:30
+      dims = dims
     )
 
     DefaultAssay(obj.atac) <- "RNA"
