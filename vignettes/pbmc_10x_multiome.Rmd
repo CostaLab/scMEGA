@@ -139,7 +139,7 @@ wget -q -P 10x_pbmc ftp://ftp.ebi.ac.uk/pub/databases/mofa/10x_rna_atac_vignette
 
 Load data
 ```{r}
-reference <- readRDS("./raw_data/seurat.rds")
+reference <- readRDS("./10x_pbmc/seurat.rds")
 
 # we only keep cells with annotated cell type
 reference <- reference[, reference$celltype != "NA"]

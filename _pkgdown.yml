@@ -17,6 +17,8 @@ navbar:
             href: "articles/myofibroblast-GRN.html"
           - text: "Infer GRN for cardiomyocytes"
             href: "articles/cardiomyocyte-GRN.html"
+          - text: "Infer GRN for PBMC cells"
+            href: "articles/pbmc_10x_multiome.html"
       - text: "Reference"
         href: "reference/index.html"
     right:
