@@ -1,0 +1,128 @@
+---
+title: "Gene-regulatory network of CD4 T cells activaction"
+output: html_document
+date: 'Compiled: `r format(Sys.Date(), "%B %d, %Y")`'
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+In this tutorial, we'll demonstrate how to infer gene regulatory network using single-cell multimodal data which measures gene expression and chromatin accessibility profiles from the same single cells. We will use a publicly available 10x Genomic Multiome data set for [human PBMCs](https://www.10xgenomics.com/resources/datasets/pbmc-from-a-healthy-donor-granulocytes-removed-through-cell-sorting-10-k-1-standard-2-0-0).
+
+We first download the required data. 
+
+Run the following commands to download the data:
+```{bash, eval=TRUE}
+mkdir -p 10x_pbmc
+
+wget -q -P 10x_pbmc https://cf.10xgenomics.com/samples/cell-arc/2.0.0/pbmc_granulocyte_sorted_10k/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz
+
+wget -q -P 10x_pbmc https://cf.10xgenomics.com/samples/cell-arc/2.0.0/pbmc_granulocyte_sorted_10k/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz.tbi
+
+wget -q -P 10x_pbmc https://cf.10xgenomics.com/samples/cell-arc/2.0.0/pbmc_granulocyte_sorted_10k/pbmc_granulocyte_sorted_10k_filtered_feature_bc_matrix.h5
+```
+Next, we load all necessary packages:
+```{r}
+suppressMessages(library(ArchR))
+suppressMessages(library(Seurat))
+suppressMessages(library(Signac))
+suppressMessages(library(scMEGA))
+suppressMessages(library(Nebulosa))
+suppressMessages(library(BSgenome.Hsapiens.UCSC.hg38))
+suppressMessages(library(GenomeInfoDb))
+suppressMessages(library(EnsDb.Hsapiens.v86))
+suppressMessages(library(ggplot2))
+suppressMessages(library(dplyr))
+suppressMessages(library(JASPAR2020))
+suppressMessages(library(TFBSTools))
+suppressMessages(library(igraph))
+suppressMessages(library(ggraph))
+```
+
+## Data pre-processing
+
+Let's load the data into memory and extract scRNA and scATAC-seq data:
+```{r}
+inputdata.10x <- Read10X_h5("./10x_pbmc/pbmc_granulocyte_sorted_10k_filtered_feature_bc_matrix.h5")
+
+# extract RNA and ATAC data
+rna_counts <- inputdata.10x$`Gene Expression`
+atac_counts <- inputdata.10x$Peaks
+
+# filter peaks by chromosome
+atac_counts <- atac_counts[grep("chr", rownames(atac_counts)), ]
+```
+
+Next create a Seurat object and filter low-quality cells in scRNA-seq data
+```{r}
+obj.rna <- CreateSeuratObject(counts = rna_counts)
+obj.rna[["percent.mt"]] <- PercentageFeatureSet(obj.rna, pattern = "^MT-")
+```
+
+We can visualize the data quality
+```{r, fig.width=15, fig.height=5, fig.align = "center"}
+# Visualize QC metrics as a violin plot
+VlnPlot(obj.rna, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3, pt.size = 0)
+
+obj.rna <- subset(obj.rna, subset = nFeature_RNA > 200 & nFeature_RNA < 3000 & percent.mt < 20)
+
+obj.rna
+```
+
+Create Seurat object for scATAC-seq data:
+```{r}
+# create seurat object
+chrom_assay <- CreateChromatinAssay(
+    counts = atac_counts,
+    sep = c(":", "-"),
+    min.cells = 1,
+    genome = 'hg38',
+    fragments = './10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz'
+)
+
+obj.atac <- CreateSeuratObject(
+    counts = chrom_assay,
+    assay = "ATAC")
+
+# extract gene annotations from EnsDb
+annotations <- GetGRangesFromEnsDb(ensdb = EnsDb.Hsapiens.v86, verbose = FALSE)
+
+# change to UCSC style since the data was mapped to hg38
+seqlevelsStyle(annotations) <- 'UCSC'
+
+# add the gene information to the object
+Annotation(obj.atac) <- annotations
+```
+
+
+Make sure that the two modalities have the same cells:
+```{r}
+cell.sel <- intersect(colnames(obj.rna), colnames(obj.atac))
+
+obj.rna <- obj.rna[, cell.sel]
+obj.atac <- obj.atac[, cell.sel]
+```
+
+We next process the data using standard Seurat analysis pipeline:
+```{r}
+obj.rna <- obj.rna %>%
+    SCTransform(verbose = FALSE) %>%
+    RunPCA(verbose = FALSE) %>%
+    RunUMAP(dims = 1:30, verbose = FALSE)
+
+obj.atac <- obj.atac %>%
+    RunTFIDF() %>%
+    FindTopFeatures() %>%
+    RunSVD() %>%
+    RunUMAP(reduction = 'lsi', dims = 2:30, verbose = FALSE)
+```
+
+Visualize the scRNA-seq and scATAC-seq separately.
+```{r, fig.width=10, fig.height=5, fig.align='center'}
+p1 <- DimPlot(obj.rna) + NoLegend()
+p2 <- DimPlot(obj.atac) + NoLegend()
+
+p1 + p2
+```
+
