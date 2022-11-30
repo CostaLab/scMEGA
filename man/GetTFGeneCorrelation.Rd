@@ -11,7 +11,8 @@ GetTFGeneCorrelation(
   tf.assay = "chromvar",
   gene.assay = "RNA",
   atac.assay = "ATAC",
-  trajectory.name = "Trajectory"
+  trajectory.name = "Trajectory",
+  groupEvery = 1
 )
 }
 \arguments{
@@ -28,6 +29,9 @@ GetTFGeneCorrelation(
 \item{atac.assay}{Assay that includes peaks data. Default: "ATAC"}
 
 \item{trajectory.name}{Trajectory name}
+
+\item{groupEvery}{The number of sequential percentiles to group together when generating a trajectory.
+This is similar to smoothing via a non-overlapping sliding window across pseudo-time.}
 }
 \value{
 A matrix containing TF-gene correlation

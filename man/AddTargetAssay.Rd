@@ -4,7 +4,12 @@
 \alias{AddTargetAssay}
 \title{Add the TF target expression}
 \usage{
-AddTargetAssay(object, target.assay = "target", df.grn = NULL)
+AddTargetAssay(
+  object,
+  target.assay = "target",
+  rna.assay = "RNA",
+  df.grn = NULL
+)
 }
 \arguments{
 \item{object}{A Seurat object used as input}

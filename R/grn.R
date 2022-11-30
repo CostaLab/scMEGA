@@ -10,6 +10,8 @@
 #' @param gene.assay Assay that includes gene expression activity data. Default: "RNA"
 #' @param atac.assay Assay that includes peaks data. Default: "ATAC"
 #' @param trajectory.name Trajectory name
+#' @param groupEvery The number of sequential percentiles to group together when generating a trajectory.
+#' This is similar to smoothing via a non-overlapping sliding window across pseudo-time.
 #'
 #' @return A matrix containing TF-gene correlation
 #' @export
@@ -20,13 +22,15 @@ GetTFGeneCorrelation <- function(object,
                                  tf.assay = "chromvar",
                                  gene.assay = "RNA",
                                  atac.assay="ATAC",
-                                 trajectory.name = "Trajectory") {
+                                 trajectory.name = "Trajectory",
+                                 groupEvery=1) {
   ## get tf activity and gene expression along trajectory
   trajMM <- GetTrajectory(
     object,
     assay = tf.assay,
     slot = "data",
     trajectory.name = trajectory.name,
+    groupEvery=groupEvery,
     smoothWindow = 7,
     log2Norm = FALSE
   )
@@ -36,6 +40,7 @@ GetTFGeneCorrelation <- function(object,
     assay = gene.assay,
     slot = "data",
     trajectory.name = trajectory.name,
+    groupEvery=groupEvery,
     smoothWindow = 7,
     log2Norm = TRUE
   )
@@ -483,13 +488,15 @@ GRNSpatialPlot <- function(object, assay,
 #' @return A Seurat object with a new assay named by target.assay
 #' @export
 AddTargetAssay <- function(object, target.assay = "target",
+                           rna.assay = "RNA",
                            df.grn = NULL){
     if(is.na(df.grn)){
         stop("Cannot find the gene regulatory network!")
     }
 
-    df.genes <- split(df.grn2$gene,df.grn2$tf)
+    df.genes <- split(df.grn$gene,df.grn$tf)
     object <- AddModuleScore(object, features = df.genes,
+                             assay=rna.assay,
                      name = "tf_target_")
 
     target_gex <- object@meta.data %>%

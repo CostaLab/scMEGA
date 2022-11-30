@@ -10,6 +10,8 @@
 #' @param atac.assay Assay name for Peaks. Default: "ATAC"
 #' @param target.assay Assay name for TF target expression. Default: "target"
 #' @param trajectory.name Trajectory name for visualization.
+#' @param groupEvery The number of sequential percentiles to group together when generating a trajectory.
+#' This is similar to smoothing via a non-overlapping sliding window across pseudo-time.
 #'
 #' @return A ggplot object
 #' @export
@@ -19,11 +21,15 @@ PseudotimePlot <- function(object, tf.use,
                            rna.assay = "RNA",
                            atac.assay = "ATAC",
                            target.assay = "target",
-                           trajectory.name = "Trajectory"){
+                           trajectory.name = "Trajectory",
+                           groupEvery=1
+                           ){
 
     trajMM <- suppressMessages(GetTrajectory(
         object,
         assay = tf.assay,
+        trajectory.name=trajectory.name,
+        groupEvery = groupEvery,
         slot = "data",
         smoothWindow = 7,
         log2Norm = FALSE
@@ -34,7 +40,7 @@ PseudotimePlot <- function(object, tf.use,
     df.tf.activity <- assay(trajMM)
     df.tf.activity <- t(scale(t(df.tf.activity)))
     df.tf.activity <- as.data.frame(df.tf.activity)
-    colnames(df.tf.activity) <- 1:100
+    colnames(df.tf.activity) <- seq(0, 100, groupEvery)[-1]
     df.tf.activity$tf <- toupper(rownames(df.tf.activity))
     df.tf.activity <- tidyr::pivot_longer(df.tf.activity, -tf,
                                               names_to = "pseudotime",
@@ -44,6 +50,8 @@ PseudotimePlot <- function(object, tf.use,
     trajGEX <- suppressMessages(GetTrajectory(
         object,
         assay = rna.assay,
+        trajectory.name =trajectory.name,
+        groupEvery = groupEvery,
         slot = "data",
         smoothWindow = 7,
         log2Norm = TRUE
@@ -52,7 +60,7 @@ PseudotimePlot <- function(object, tf.use,
     df.tf.expression <- assay(trajGEX)
     df.tf.expression <- t(scale(t(df.tf.expression)))
     df.tf.expression <- as.data.frame(df.tf.expression)
-    colnames(df.tf.expression) <- 1:100
+    colnames(df.tf.expression) <- seq(0, 100, groupEvery)[-1]
     df.tf.expression$tf <- toupper(rownames(df.tf.expression))
     df.tf.expression <- tidyr::pivot_longer(df.tf.expression, -tf,
                                               names_to = "pseudotime",
@@ -62,6 +70,8 @@ PseudotimePlot <- function(object, tf.use,
     traj.target <- suppressMessages(GetTrajectory(
         object,
         assay = target.assay,
+        trajectory.name=trajectory.name,
+        groupEvery = groupEvery,
         slot = "data",
         smoothWindow = 7,
         log2Norm = FALSE
@@ -70,7 +80,7 @@ PseudotimePlot <- function(object, tf.use,
     df.target <- assay(traj.target)
     df.target <- t(scale(t(df.target)))
     df.target <- as.data.frame(df.target)
-    colnames(df.target) <- 1:100
+    colnames(df.target) <- seq(0, 100, groupEvery)[-1]
     df.target$tf <- toupper(rownames(df.target))
     df.target <- tidyr::pivot_longer(df.target, -tf,
                                               names_to = "pseudotime",

@@ -11,6 +11,7 @@ SelectGenes(
   var.cutoff.gene = 0.9,
   trajectory.name = "Trajectory",
   distance.cutoff = 2000,
+  groupEvery = 1,
   cor.cutoff = 0,
   fdr.cutoff = 1e-04,
   return.heatmap = TRUE,
@@ -32,6 +33,9 @@ SelectGenes(
 between TF binding activity and TF expression}
 
 \item{distance.cutoff}{The minimum distance between cis-regulatory elements and genes}
+
+\item{groupEvery}{The number of sequential percentiles to group together when generating a trajectory.
+This is similar to smoothing via a non-overlapping sliding window across pseudo-time.}
 
 \item{cor.cutoff}{The cutoff of peak-to-gene correlation. Default: 0}
 
