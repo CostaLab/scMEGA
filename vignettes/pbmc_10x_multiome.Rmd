@@ -38,6 +38,7 @@ suppressMessages(library(JASPAR2020))
 suppressMessages(library(TFBSTools))
 suppressMessages(library(igraph))
 suppressMessages(library(ggraph))
+suppressMessages(library(MOJITOO))
 ```
 
 ## Data pre-processing
@@ -86,7 +87,7 @@ obj.atac <- CreateSeuratObject(
     assay = "ATAC")
 
 # extract gene annotations from EnsDb
-annotations <- GetGRangesFromEnsDb(ensdb = EnsDb.Hsapiens.v86, verbose = FALSE)
+annotations <- suppressWarnings(GetGRangesFromEnsDb(ensdb = EnsDb.Hsapiens.v86, verbose = FALSE))
 
 # change to UCSC style since the data was mapped to hg38
 seqlevelsStyle(annotations) <- 'UCSC'
@@ -104,8 +105,9 @@ obj.rna <- obj.rna[, cell.sel]
 obj.atac <- obj.atac[, cell.sel]
 ```
 
-We next process the data using standard Seurat analysis pipeline:
+We next process the scRNA-seq and scATAC-seq data using standard Seurat and Signac analysis pipeline:
 ```{r}
+# normalization followed by dimensionality reduction
 obj.rna <- obj.rna %>%
     SCTransform(verbose = FALSE) %>%
     RunPCA(verbose = FALSE) %>%
@@ -125,4 +127,316 @@ p2 <- DimPlot(obj.atac) + NoLegend()
 
 p1 + p2
 ```
+
+## Cell type annotation
+
+We next will annotate the cell types in our multimodal data via label transfer approach implemented by Seurat. The reference dataset is found [here](https://raw.githack.com/bioFAM/MOFA2_tutorials/master/R_tutorials/10x_scRNA_scATAC.html)
+
+Download data
+```{bash, eval=TRUE}
+wget -q -P 10x_pbmc ftp://ftp.ebi.ac.uk/pub/databases/mofa/10x_rna_atac_vignette/seurat.rds
+```
+
+Load data
+```{r}
+reference <- readRDS("./raw_data/seurat.rds")
+
+# we only keep cells with annotated cell type
+reference <- reference[, reference$celltype != "NA"]
+
+# run sctransform
+reference <- reference %>%
+    SCTransform(verbose = FALSE) %>%
+    RunPCA(verbose = FALSE) %>%
+    RunUMAP(dims = 1:30, verbose = FALSE)
+```
+
+```{r, fig.height=6, fig.width=12, fig.align='center'}
+p1 <- DimPlot(reference, label = TRUE, repel = TRUE, 
+        reduction = "umap", group.by = "broad_celltype") + NoLegend()
+
+p2 <- DimPlot(reference, label = TRUE, repel = TRUE, 
+        reduction = "umap", group.by = "celltype") + NoLegend()
+
+p1 + p2
+```
+
+Transfer cell type labels from reference to query:
+```{r}
+transfer_anchors <- FindTransferAnchors(
+  reference = reference,
+  query = obj.rna,
+  normalization.method = "SCT",
+  reference.reduction = "pca",
+  dims = 1:30
+)
+
+predictions <- TransferData(
+  anchorset = transfer_anchors, 
+  refdata = reference$celltype,
+  weight.reduction = obj.rna[['pca']],
+  dims = 1:30
+)
+
+obj.rna <- AddMetaData(
+  object = obj.rna,
+  metadata = predictions
+)
+
+obj.atac <- AddMetaData(
+  object = obj.atac,
+  metadata = predictions
+)
+```
+
+Visualize the predicted cell types:
+```{r, fig.height=6, fig.width=12, fig.align='center'}
+p1 <- DimPlot(obj.rna, label = TRUE, repel = TRUE, 
+        reduction = "umap", group.by = "predicted.id") + NoLegend()
+
+p2 <- DimPlot(obj.atac, label = TRUE, repel = TRUE, 
+        reduction = "umap", group.by = "predicted.id") + NoLegend()
+
+p1 + p2
+
+```
+
+
+## Integration of multimodal single-cell data using MOJITOO
+
+We next need to project the cells into a low-dimensional space. Here we can use [MOJITOO](https://academic.oup.com/bioinformatics/article/38/Supplement_1/i282/6617520?login=true) to do this job.
+
+Let's first create a single Seurat object including both modalities and predicted cell types that we generated in the above step:
+```{r}
+meta.data <- obj.rna@meta.data %>%
+    as.data.frame()
+
+# create a Seurat object containing the RNA adata
+pbmc <- CreateSeuratObject(
+  counts = obj.rna@assays$RNA@counts,
+  assay = "RNA",
+    meta.data = meta.data
+)
+
+# create ATAC assay and add it to the object
+pbmc[["ATAC"]] <- CreateChromatinAssay(
+  counts = obj.atac@assays$ATAC@counts,
+  sep = c(":", "-"),
+    min.cells = 1,
+    genome = 'hg38',
+    fragments = './raw_data/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz'
+)
+```
+
+MOJITOO takes as input the individual low-dimensional space for each modality, so here we do this again:
+```{r}
+## RNA pre-processing and PCA dimension reduction
+DefaultAssay(pbmc) <- "RNA"
+
+pbmc <- pbmc %>%
+    NormalizeData(verbose=F) %>%
+    FindVariableFeatures(nfeatures=3000, verbose=F) %>%
+    ScaleData(verbose=F) %>%
+    RunPCA(npcs=50, reduction.name="RNA_PCA", verbose=F)
+
+## ATAC pre-processing and LSI dimension reduction
+DefaultAssay(pbmc) <- "ATAC"
+
+pbmc <- pbmc %>%
+    RunTFIDF(verbose=F) %>%
+    FindTopFeatures(min.cutoff = 'q0', verbose=F) %>%
+    RunSVD(verbose=F)
+```
+
+Run MOJITOO:
+```{r}
+pbmc <- mojitoo(
+     object = pbmc,
+     reduction.list = list("RNA_PCA", "lsi"),
+     dims.list = list(1:50, 2:50), ## exclude 1st dimension of LSI
+     reduction.name = 'MOJITOO',
+     assay = "RNA"
+)
+```
+
+We can generate another UMAP representation based on the MOJITOO results:
+```{r, fig.height=6, fig.width=6, fig.align='center'}
+DefaultAssay(pbmc) <- "RNA"
+embedd <- Embeddings(pbmc[["MOJITOO"]])
+pbmc <- RunUMAP(pbmc, 
+                reduction="MOJITOO", 
+                reduction.name="MOJITOO_UMAP", 
+                dims=1:ncol(embedd), verbose=F)
+
+DimPlot(pbmc, group.by = "predicted.id", 
+        shuffle = TRUE, label = TRUE, reduction = "MOJITOO_UMAP") + NoLegend()
+```
+
+## Trajectory analysis
+
+We next infer a trajectory from naive CD4 T cells to memory CD4 T cells to characterize  CD4+ T cell activation.
+```{r}
+pbmc <- AddTrajectory(object = pbmc, 
+                      trajectory = c("naive CD4 T cells", 
+                                     "memory CD4 T cells"),
+                      group.by = "predicted.id", 
+                          reduction = "MOJITOO_UMAP",
+                          dims = 1:2, 
+                          use.all = FALSE)
+
+# we only plot the cells that are in this trajectory
+pbmc.t.cells <- pbmc[, !is.na(pbmc$Trajectory)]
+```
+
+The results can be visualized as:
+```{r, fig.width=12, fig.height=5, fig.align='center'}
+p1 <- DimPlot(object = pbmc.t.cells, 
+              group.by = "predicted.id", 
+              reduction = "MOJITOO_UMAP",
+             label = TRUE) + NoLegend()
+
+p2 <- TrajectoryPlot(object = pbmc.t.cells, 
+                    reduction = "MOJITOO_UMAP",
+                    continuousSet = "blueYellow",
+                    size = 1,
+                   addArrow = FALSE)
+p1 + p2
+```
+
+## TF and gene selection
+We next select candidate TFs and genes for building a meaningful gene regulatory network.
+
+### Select TFs
+To identify potential regulator (i.e., TFs), we first estimate an acitivty score for each TF in each cell. This is done by first performing motif matching and then computing deviation scores using [chromVAR](https://greenleaflab.github.io/chromVAR/index.html).
+
+```{r, fig.width=10, fig.height=10, fig.align='center'}
+# Get a list of motif position frequency matrices from the JASPAR database
+pfm <- getMatrixSet(
+  x = JASPAR2020,
+  opts = list(collection = "CORE", tax_group = 'vertebrates', all_versions = FALSE)
+)
+
+# add motif information
+pbmc.t.cells <- AddMotifs(
+  object = pbmc.t.cells,
+  genome = BSgenome.Hsapiens.UCSC.hg38,
+  pfm = pfm,
+    assay = "ATAC"
+)
+
+# run chromVAR
+pbmc.t.cells <- RunChromVAR(
+  object = pbmc.t.cells,
+  genome = BSgenome.Hsapiens.UCSC.hg38,
+    assay = "ATAC"
+)
+
+sel.tfs <- SelectTFs(object = pbmc.t.cells, 
+                 return.heatmap = TRUE,
+                cor.cutoff = 0.4)
+
+df.cor <- sel.tfs$tfs
+ht <- sel.tfs$heatmap
+
+draw(ht)
+```
+
+### Select genes
+```{r, fig.height=10, fig.width=10, fig.align='center'}
+sel.genes <- SelectGenes(object = pbmc.t.cells,
+                  labelTop1 = 0,
+                  labelTop2 = 0)
+
+df.p2g <- sel.genes$p2g
+ht <- sel.genes$heatmap
+
+draw(ht)
+```
+
+## Gene regulatory network inference and visualization
+
+We here will try to predict a gene regulatory network based on the correlation of the TF binding activity as estimated from snATAC-seq and gene expression as measured by snRNA-seq along the trajectory.
+
+```{r}
+tf.gene.cor <- GetTFGeneCorrelation(object = pbmc.t.cells, 
+                                    tf.use = df.cor$tfs, 
+                                    gene.use = unique(df.p2g$gene),
+                                    tf.assay = "chromvar", 
+                                    gene.assay = "RNA",
+                                    trajectory.name = "Trajectory")
+```
+
+We can then visualize this correlation matrix by heatmap. Also, we can cluster the genes and TFs to identify different regulatory modules for the predefined sub-populations.
+```{r, fig.height=10, fig.width=12, fig.align='center'}
+ht <- GRNHeatmap(tf.gene.cor, 
+                 tf.timepoint = df.cor$time_point)
+
+ht
+```
+
+
+To associate genes to TFs, we will use the peak-to-gene links and TF binding sites information. Specifically, if a gene is regulated by a peak and this peak is bound by a TF, then we consider this gene to be a target of this TF.
+
+```{r}
+motif.matching <- pbmc.t.cells@assays$ATAC@motifs@data
+colnames(motif.matching) <- pbmc.t.cells@assays$ATAC@motifs@motif.names
+motif.matching <-
+    motif.matching[unique(df.p2g$peak), unique(tf.gene.cor$tf)]
+
+
+df.grn <- GetGRN(motif.matching = motif.matching, 
+                 df.cor = tf.gene.cor, 
+                 df.p2g = df.p2g)
+```
+
+Finally, we can visualize our network as the last step of this analysis
+
+```{r, fig.height=20, fig.width=20, fig.align='center'}
+# define colors for nodes representing TFs (i.e., regulators)
+df.cor <- df.cor[order(df.cor$time_point), ]
+tfs.timepoint <- df.cor$time_point
+names(tfs.timepoint) <- df.cor$tfs
+
+# plot the graph, here we can highlight some genes
+df.grn2 <- df.grn %>%
+    subset(correlation > 0.5) %>%
+    select(c(tf, gene, correlation)) %>%
+    rename(weights = correlation)
+
+p <- GRNPlot(df.grn2, 
+             tfs.timepoint = tfs.timepoint,
+             show.tf.labels = TRUE,
+             seed = 42, 
+             plot.importance = FALSE,
+            min.importance = 2,
+            remove.isolated = FALSE)
+
+print(p)
+
+```
+
+## GRN visualization
+
+Once we generated the gene regulatory network, we can visualize individual TFs in terms of binding activity, expression, and target expression along the pseudotime trajectory.
+
+Here we select two TFs for visualization.
+
+```{r, fig.height = 4, fig.width = 12, fig.align = "center"}
+obj <- AddTargetAssay(object = pbmc.t.cells, df.grn = df.grn2)
+
+p1 <- PseudotimePlot(object = pbmc.t.cells, tf.use = "SOX4")
+p2 <- PseudotimePlot(object = pbmc.t.cells, tf.use = "TBX21")
+
+p1 + p2
+```
+
+The x-axis in above plots present pseudotime point along the trajectory, and the y-axis represent TF binding acitivty, TF expression, and TF target expression after z-score transformation.
+
+
+```{r}
+# Check session information
+sessionInfo()
+```
+
+
 
