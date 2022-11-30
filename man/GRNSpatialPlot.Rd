@@ -11,7 +11,8 @@ GRNSpatialPlot(
   tf.use,
   min.cutoff = "q5",
   max.cutoff = "q95",
-  vis.option = "B"
+  vis.option = "B",
+  crop = TRUE
 )
 }
 \arguments{

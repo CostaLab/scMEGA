@@ -75,6 +75,7 @@
   rna.assay <span class="op">=</span> <span class="st">"RNA"</span>,
   atac.assay <span class="op">=</span> <span class="st">"ATAC"</span>,
   trajectory.name <span class="op">=</span> <span class="st">"Trajectory"</span>,
+  groupEvery <span class="op">=</span> <span class="fl">1</span>,
   p.cutoff <span class="op">=</span> <span class="fl">0.01</span>,
   cor.cutoff <span class="op">=</span> <span class="fl">0.3</span>,
   return.heatmap <span class="op">=</span> <span class="cn">TRUE</span>
@@ -94,6 +95,9 @@
 <dt>trajectory.name</dt>
 <dd><p>The trajectory name used for computing correlation
 between TF binding activity and TF expression</p></dd>
+<dt>groupEvery</dt>
+<dd><p>The number of sequential percentiles to group together when generating a trajectory.
+This is similar to smoothing via a non-overlapping sliding window across pseudo-time.</p></dd>
 <dt>p.cutoff</dt>
 <dd><p>A cutoff of p-values. Default: 0.01</p></dd>
 <dt>cor.cutoff</dt>

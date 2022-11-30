@@ -76,6 +76,7 @@
   var.cutoff.gene <span class="op">=</span> <span class="fl">0.9</span>,
   trajectory.name <span class="op">=</span> <span class="st">"Trajectory"</span>,
   distance.cutoff <span class="op">=</span> <span class="fl">2000</span>,
+  groupEvery <span class="op">=</span> <span class="fl">1</span>,
   cor.cutoff <span class="op">=</span> <span class="fl">0</span>,
   fdr.cutoff <span class="op">=</span> <span class="fl">1e-04</span>,
   return.heatmap <span class="op">=</span> <span class="cn">TRUE</span>,
@@ -100,6 +101,9 @@
 between TF binding activity and TF expression</p></dd>
 <dt>distance.cutoff</dt>
 <dd><p>The minimum distance between cis-regulatory elements and genes</p></dd>
+<dt>groupEvery</dt>
+<dd><p>The number of sequential percentiles to group together when generating a trajectory.
+This is similar to smoothing via a non-overlapping sliding window across pseudo-time.</p></dd>
 <dt>cor.cutoff</dt>
 <dd><p>The cutoff of peak-to-gene correlation. Default: 0</p></dd>
 <dt>fdr.cutoff</dt>

@@ -43,9 +43,6 @@ AddModuleScore from Seurat."><!-- mathjax --><script src="https://cdnjs.cloudfla
     <li>
       <a href="../articles/cardiomyocyte-GRN.html">Infer GRN for cardiomyocytes</a>
     </li>
-    <li>
-      <a href="../articles/myofibroblast-network.html">Network analysis for myofibroblast</a>
-    </li>
   </ul></li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -78,7 +75,12 @@ the average expression of all targets calculated by using the function
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">AddTargetAssay</span><span class="op">(</span><span class="va">object</span>, target.assay <span class="op">=</span> <span class="st">"target"</span>, df.grn <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">AddTargetAssay</span><span class="op">(</span>
+  <span class="va">object</span>,
+  target.assay <span class="op">=</span> <span class="st">"target"</span>,
+  rna.assay <span class="op">=</span> <span class="st">"RNA"</span>,
+  df.grn <span class="op">=</span> <span class="cn">NULL</span>
+<span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">

@@ -11,7 +11,8 @@ CoembedData(
   reference.assay = "RNA",
   reduction = "cca",
   weight.reduction = NULL,
-  verbose = TRUE
+  verbose = TRUE,
+  dims = 1:30
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ CoembedData(
 \item{weight.reduction}{Dimensional reduction to use for the weighting anchors}
 
 \item{verbose}{Print progress bars and output}
+
+\item{dims}{Set of dimensions to use in the anchor weighting procedure.}
 }
 \value{
 An integrated Seurat object

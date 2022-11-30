@@ -9,6 +9,7 @@ vignettes/.ipynb_checkpoints/
 vignettes/Fibroblast
 vignettes/Cardiomyocyte
 vignettes/VisiumSpatial
+vignettes/10x_pbmc
 vignettes/*.pdf
 .ipynb_checkpoints/
 R/.ipynb_checkpoints/

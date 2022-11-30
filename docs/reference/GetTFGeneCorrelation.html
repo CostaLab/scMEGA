@@ -78,7 +78,8 @@ gene expression along the trajectory.</p>
   tf.assay <span class="op">=</span> <span class="st">"chromvar"</span>,
   gene.assay <span class="op">=</span> <span class="st">"RNA"</span>,
   atac.assay <span class="op">=</span> <span class="st">"ATAC"</span>,
-  trajectory.name <span class="op">=</span> <span class="st">"Trajectory"</span>
+  trajectory.name <span class="op">=</span> <span class="st">"Trajectory"</span>,
+  groupEvery <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -98,6 +99,9 @@ gene expression along the trajectory.</p>
 <dd><p>Assay that includes peaks data. Default: "ATAC"</p></dd>
 <dt>trajectory.name</dt>
 <dd><p>Trajectory name</p></dd>
+<dt>groupEvery</dt>
+<dd><p>The number of sequential percentiles to group together when generating a trajectory.
+This is similar to smoothing via a non-overlapping sliding window across pseudo-time.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>

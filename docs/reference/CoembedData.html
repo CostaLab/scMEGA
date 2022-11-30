@@ -44,9 +44,6 @@ https://satijalab.org/seurat/articles/atacseq_integration_vignette.html"><!-- ma
     <li>
       <a href="../articles/cardiomyocyte-GRN.html">Infer GRN for cardiomyocytes</a>
     </li>
-    <li>
-      <a href="../articles/myofibroblast-network.html">Network analysis for myofibroblast</a>
-    </li>
   </ul></li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -87,7 +84,8 @@ The details can be found:
   reference.assay <span class="op">=</span> <span class="st">"RNA"</span>,
   reduction <span class="op">=</span> <span class="st">"cca"</span>,
   weight.reduction <span class="op">=</span> <span class="cn">NULL</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>
+  verbose <span class="op">=</span> <span class="cn">TRUE</span>,
+  dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -107,6 +105,8 @@ The details can be found:
 <dd><p>Dimensional reduction to use for the weighting anchors</p></dd>
 <dt>verbose</dt>
 <dd><p>Print progress bars and output</p></dd>
+<dt>dims</dt>
+<dd><p>Set of dimensions to use in the anchor weighting procedure.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>

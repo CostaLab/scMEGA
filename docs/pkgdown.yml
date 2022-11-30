@@ -5,7 +5,8 @@ articles:
   cardiomyocyte-GRN: cardiomyocyte-GRN.html
   install: install.html
   myofibroblast-GRN: myofibroblast-GRN.html
-last_built: 2022-11-29T03:30Z
+  pbmc_10x_multiome: pbmc_10x_multiome.html
+last_built: 2022-11-30T06:07Z
 urls:
   reference: https://costalab.github.io/scMEGA/reference
   article: https://costalab.github.io/scMEGA/articles
