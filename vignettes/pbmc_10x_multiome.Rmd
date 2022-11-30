@@ -224,7 +224,7 @@ pbmc[["ATAC"]] <- CreateChromatinAssay(
   sep = c(":", "-"),
     min.cells = 1,
     genome = 'hg38',
-    fragments = './raw_data/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz'
+    fragments = './10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz'
 )
 ```
 
