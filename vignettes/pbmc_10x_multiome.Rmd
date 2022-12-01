@@ -422,7 +422,7 @@ Once we generated the gene regulatory network, we can visualize individual TFs i
 Here we select two TFs for visualization.
 
 ```{r, fig.height = 4, fig.width = 12, fig.align = "center"}
-obj <- AddTargetAssay(object = pbmc.t.cells, df.grn = df.grn2)
+pbmc.t.cells <- AddTargetAssay(object = pbmc.t.cells, df.grn = df.grn2)
 
 p1 <- PseudotimePlot(object = pbmc.t.cells, tf.use = "SOX4")
 p2 <- PseudotimePlot(object = pbmc.t.cells, tf.use = "TBX21")
