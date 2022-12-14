@@ -15,10 +15,10 @@ devtools::install_github("CostaLab/scMEGA")
 
 We provided the following tutorials to show how to use scMEGA to build GRN by using single-cell multiomics/multimodal data:
 
-* [Myofibroblasts differentiation] (https://costalab.github.io/scMEGA/articles/myofibroblast-GRN.html)
+* [Myofibroblasts differentiation](https://costalab.github.io/scMEGA/articles/myofibroblast-GRN.html)
 
-* [Cardiomyocytes remodelling] (https://costalab.github.io/scMEGA/articles/cardiomyocyte-GRN.html)
+* [Cardiomyocytes remodelling](https://costalab.github.io/scMEGA/articles/cardiomyocyte-GRN.html)
 
-* [CD4 T cells activcation using 10X multiome data] (https://costalab.github.io/scMEGA/articles/pbmc_10x_multiome.html)
+* [CD4 T cells activcation using 10X multiome data](https://costalab.github.io/scMEGA/articles/pbmc_10x_multiome.html)
 
 
