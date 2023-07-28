@@ -18,7 +18,7 @@ different samples"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/aja
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">scMEGA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -42,7 +42,7 @@ different samples"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/aja
       <a href="../articles/cardiomyocyte-GRN.html">Infer GRN for cardiomyocytes</a>
     </li>
     <li>
-      <a href="../articles/myofibroblast-network.html">Network analysis for myofibroblast</a>
+      <a href="../articles/pbmc_10x_multiome.html">Infer GRN for PBMC cells</a>
     </li>
   </ul></li>
 <li>
@@ -74,36 +74,53 @@ different samples</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">CellPropPlot</span><span class="op">(</span><span class="va">object</span>, group.by <span class="op">=</span> <span class="cn">NULL</span>, prop.in <span class="op">=</span> <span class="cn">NULL</span>, cols <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">CellPropPlot</span><span class="op">(</span><span class="va">object</span>, group.by <span class="op">=</span> <span class="cn">NULL</span>, prop.in <span class="op">=</span> <span class="cn">NULL</span>, cols <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>Seurat object</p></dd>
+
+
 <dt>group.by</dt>
 <dd><p>Name of one metadata column to group the cells</p></dd>
+
+
 <dt>prop.in</dt>
 <dd><p>Name of one metadata column to compute the cell proportion</p></dd>
+
+
 <dt>cols</dt>
 <dd><p>Specific colors for plotting</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A ggplot object</p>
+    
+
+<p>A ggplot object</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching SeuratObject</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching sp</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">pbmc_small</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">CellPropPlot</span><span class="op">(</span></span>
-<span class="r-in"><span class="va">pbmc_small</span>,</span>
-<span class="r-in">group.by <span class="op">=</span> <span class="st">"RNA_snn_res.1"</span>,</span>
-<span class="r-in">prop.in <span class="op">=</span> <span class="st">"groups"</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: SeuratObject</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: sp</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘SeuratObject’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:base’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     intersect, saveRDS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading Seurat v5 beta version </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> To maintain compatibility with previous workflows, new Seurat objects will use the previous object structure by default</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> To use new Seurat v5 assays: Please run: options(Seurat.object.assay.version = 'v5')</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">pbmc_small</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">CellPropPlot</span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="va">pbmc_small</span>,</span></span>
+<span class="r-in"><span>group.by <span class="op">=</span> <span class="st">"RNA_snn_res.1"</span>,</span></span>
+<span class="r-in"><span>prop.in <span class="op">=</span> <span class="st">"groups"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="CellPropPlot-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
@@ -119,7 +136,7 @@ different samples</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

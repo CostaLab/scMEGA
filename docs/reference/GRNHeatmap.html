@@ -18,7 +18,7 @@ by the GetTFGeneCorrelation"><!-- mathjax --><script src="https://cdnjs.cloudfla
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">scMEGA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -42,7 +42,7 @@ by the GetTFGeneCorrelation"><!-- mathjax --><script src="https://cdnjs.cloudfla
       <a href="../articles/cardiomyocyte-GRN.html">Infer GRN for cardiomyocytes</a>
     </li>
     <li>
-      <a href="../articles/myofibroblast-network.html">Network analysis for myofibroblast</a>
+      <a href="../articles/pbmc_10x_multiome.html">Infer GRN for PBMC cells</a>
     </li>
   </ul></li>
 <li>
@@ -74,21 +74,28 @@ by the <code><a href="GetTFGeneCorrelation.html">GetTFGeneCorrelation</a></code>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">GRNHeatmap</span><span class="op">(</span><span class="va">tf.gene.cor</span>, tf.timepoint <span class="op">=</span> <span class="cn">NULL</span>, km <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">GRNHeatmap</span><span class="op">(</span><span class="va">tf.gene.cor</span>, tf.timepoint <span class="op">=</span> <span class="cn">NULL</span>, km <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>tf.gene.cor</dt>
 <dd><p>A matrix representing TF-gene correlation</p></dd>
+
+
 <dt>tf.timepoint</dt>
 <dd><p>A list of TF time point along the trajectory</p></dd>
+
+
 <dt>km</dt>
 <dd><p>Number of clusters</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A heatmap</p>
+    
+
+<p>A heatmap</p>
     </div>
 
   </div>
@@ -103,7 +110,7 @@ by the <code><a href="GetTFGeneCorrelation.html">GetTFGeneCorrelation</a></code>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

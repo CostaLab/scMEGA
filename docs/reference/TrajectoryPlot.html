@@ -20,7 +20,7 @@ For more details, check here https://www.archrproject.com/reference/plotTrajecto
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">scMEGA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -44,7 +44,7 @@ For more details, check here https://www.archrproject.com/reference/plotTrajecto
       <a href="../articles/cardiomyocyte-GRN.html">Infer GRN for cardiomyocytes</a>
     </li>
     <li>
-      <a href="../articles/myofibroblast-network.html">Network analysis for myofibroblast</a>
+      <a href="../articles/pbmc_10x_multiome.html">Infer GRN for PBMC cells</a>
     </li>
   </ul></li>
 <li>
@@ -78,36 +78,46 @@ For more details, check here <a href="https://www.archrproject.com/reference/plo
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">TrajectoryPlot</span><span class="op">(</span>
-  object <span class="op">=</span> <span class="cn">NULL</span>,
-  trajectory <span class="op">=</span> <span class="st">"Trajectory"</span>,
-  reduction <span class="op">=</span> <span class="cn">NULL</span>,
-  size <span class="op">=</span> <span class="fl">0.2</span>,
-  rastr <span class="op">=</span> <span class="cn">FALSE</span>,
-  quantCut <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.99</span><span class="op">)</span>,
-  continuousSet <span class="op">=</span> <span class="cn">NULL</span>,
-  discreteSet <span class="op">=</span> <span class="cn">NULL</span>,
-  randomize <span class="op">=</span> <span class="cn">TRUE</span>,
-  keepAxis <span class="op">=</span> <span class="cn">FALSE</span>,
-  baseSize <span class="op">=</span> <span class="fl">6</span>,
-  addArrow <span class="op">=</span> <span class="cn">FALSE</span>,
-  smoothWindow <span class="op">=</span> <span class="fl">5</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">TrajectoryPlot</span><span class="op">(</span></span>
+<span>  object <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  trajectory <span class="op">=</span> <span class="st">"Trajectory"</span>,</span>
+<span>  reduction <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  size <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>  rastr <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  quantCut <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.99</span><span class="op">)</span>,</span>
+<span>  continuousSet <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  discreteSet <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  randomize <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  keepAxis <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  baseSize <span class="op">=</span> <span class="fl">6</span>,</span>
+<span>  addArrow <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  smoothWindow <span class="op">=</span> <span class="fl">5</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>Seurat object</p></dd>
+
+
 <dt>trajectory</dt>
 <dd><p>Name of one metadata column to group the cells, usually this refers to
 the clustering results</p></dd>
+
+
 <dt>reduction</dt>
 <dd><p>Which dimension reduction is used to visualize the trajectory</p></dd>
+
+
 <dt>size</dt>
 <dd><p>A number indicating the size of the points to plot</p></dd>
+
+
 <dt>rastr</dt>
 <dd><p>Whether the plot should be rasterized</p></dd>
+
+
 <dt>quantCut</dt>
 <dd><p>If this is not NULL, a quantile cut is performed to threshold
 the top and bottom of the distribution of numerical values.
@@ -116,42 +126,59 @@ The format of this should be c(x,y) where x is the lower threshold and y is
 the upper threshold. For example, quantileCut = c(0.025,0.975) will take the
 2.5th percentile and 97.5 percentile of values and set values below/above to
 the value of the 2.5th and 97.5th percentile values respectively.</p></dd>
+
+
 <dt>continuousSet</dt>
 <dd><p>The name of a continuous palette from ArchRPalettes
 for visualizing colorBy in the embedding if a continuous color set is desired.</p></dd>
+
+
 <dt>discreteSet</dt>
 <dd><p>The name of a discrete palette from ArchRPalettes for
 visualizing colorBy in the embedding if a discrete color set is desired.</p></dd>
+
+
 <dt>randomize</dt>
 <dd><p>A boolean value that indicates whether to randomize points
 prior to plotting to prevent cells from one cluster being present at the front of the plot.</p></dd>
+
+
 <dt>keepAxis</dt>
 <dd><p>A boolean value that indicates whether the x and y
 axis ticks and labels should be plotted.</p></dd>
+
+
 <dt>baseSize</dt>
 <dd><p>The base font size to use in the plot.</p></dd>
+
+
 <dt>addArrow</dt>
 <dd><p>A boolean value that indicates whether to add a smoothed
 arrow in the embedding based on the aligned trajectory.</p></dd>
+
+
 <dt>smoothWindow</dt>
 <dd><p>An integer value indicating the
 smoothing window for creating inferred Arrow overlay on to embedding.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A ggplot object</p>
+    
+
+<p>A ggplot object</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">TrajectoryPlot</span><span class="op">(</span></span>
-<span class="r-in">   object <span class="op">=</span> <span class="va">obj</span>,</span>
-<span class="r-in">   reduction <span class="op">=</span> <span class="st">"dm"</span>,</span>
-<span class="r-in">   continuousSet <span class="op">=</span> <span class="st">"blueYellow"</span>,</span>
-<span class="r-in">   size <span class="op">=</span> <span class="fl">1</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">TrajectoryPlot</span><span class="op">(</span></span></span>
+<span class="r-in"><span>   object <span class="op">=</span> <span class="va">obj</span>,</span></span>
+<span class="r-in"><span>   reduction <span class="op">=</span> <span class="st">"dm"</span>,</span></span>
+<span class="r-in"><span>   continuousSet <span class="op">=</span> <span class="st">"blueYellow"</span>,</span></span>
+<span class="r-in"><span>   size <span class="op">=</span> <span class="fl">1</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -166,7 +193,7 @@ smoothing window for creating inferred Arrow overlay on to embedding.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

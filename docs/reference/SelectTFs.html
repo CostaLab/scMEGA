@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">scMEGA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -39,6 +39,9 @@
     </li>
     <li>
       <a href="../articles/cardiomyocyte-GRN.html">Infer GRN for cardiomyocytes</a>
+    </li>
+    <li>
+      <a href="../articles/pbmc_10x_multiome.html">Infer GRN for PBMC cells</a>
     </li>
   </ul></li>
 <li>
@@ -69,45 +72,64 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">SelectTFs</span><span class="op">(</span>
-  <span class="va">object</span>,
-  tf.assay <span class="op">=</span> <span class="st">"chromvar"</span>,
-  rna.assay <span class="op">=</span> <span class="st">"RNA"</span>,
-  atac.assay <span class="op">=</span> <span class="st">"ATAC"</span>,
-  trajectory.name <span class="op">=</span> <span class="st">"Trajectory"</span>,
-  groupEvery <span class="op">=</span> <span class="fl">1</span>,
-  p.cutoff <span class="op">=</span> <span class="fl">0.01</span>,
-  cor.cutoff <span class="op">=</span> <span class="fl">0.3</span>,
-  return.heatmap <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">SelectTFs</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  tf.assay <span class="op">=</span> <span class="st">"chromvar"</span>,</span>
+<span>  rna.assay <span class="op">=</span> <span class="st">"RNA"</span>,</span>
+<span>  atac.assay <span class="op">=</span> <span class="st">"ATAC"</span>,</span>
+<span>  trajectory.name <span class="op">=</span> <span class="st">"Trajectory"</span>,</span>
+<span>  groupEvery <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  p.cutoff <span class="op">=</span> <span class="fl">0.01</span>,</span>
+<span>  cor.cutoff <span class="op">=</span> <span class="fl">0.3</span>,</span>
+<span>  return.heatmap <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>A Seurat object</p></dd>
+
+
 <dt>tf.assay</dt>
 <dd><p>The assay name for TF activity. Default: "chromvar"</p></dd>
+
+
 <dt>rna.assay</dt>
 <dd><p>The assay name for gene expression. Default: "RNA"</p></dd>
+
+
 <dt>atac.assay</dt>
 <dd><p>The assay name for Peaks. Default: "ATAC"</p></dd>
+
+
 <dt>trajectory.name</dt>
 <dd><p>The trajectory name used for computing correlation
 between TF binding activity and TF expression</p></dd>
+
+
 <dt>groupEvery</dt>
 <dd><p>The number of sequential percentiles to group together when generating a trajectory.
 This is similar to smoothing via a non-overlapping sliding window across pseudo-time.</p></dd>
+
+
 <dt>p.cutoff</dt>
 <dd><p>A cutoff of p-values. Default: 0.01</p></dd>
+
+
 <dt>cor.cutoff</dt>
 <dd><p>A cutoff of correlation. Default: 0.3</p></dd>
+
+
 <dt>return.heatmap</dt>
 <dd><p>Whether or not return the heatmap for visualization</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list containing a dataframe of TF activity and expression correlation
+    
+
+<p>A list containing a dataframe of TF activity and expression correlation
 and a heatmap</p>
     </div>
 
@@ -123,7 +145,7 @@ and a heatmap</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

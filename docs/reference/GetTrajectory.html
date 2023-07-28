@@ -21,7 +21,7 @@ For more details, check here https://www.archrproject.com/reference/getTrajector
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">scMEGA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -45,7 +45,7 @@ For more details, check here https://www.archrproject.com/reference/getTrajector
       <a href="../articles/cardiomyocyte-GRN.html">Infer GRN for cardiomyocytes</a>
     </li>
     <li>
-      <a href="../articles/myofibroblast-network.html">Network analysis for myofibroblast</a>
+      <a href="../articles/pbmc_10x_multiome.html">Infer GRN for PBMC cells</a>
     </li>
   </ul></li>
 <li>
@@ -80,59 +80,76 @@ For more details, check here <a href="https://www.archrproject.com/reference/get
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">GetTrajectory</span><span class="op">(</span>
-  object <span class="op">=</span> <span class="cn">NULL</span>,
-  trajectory.name <span class="op">=</span> <span class="st">"Trajectory"</span>,
-  assay <span class="op">=</span> <span class="cn">NULL</span>,
-  slot <span class="op">=</span> <span class="st">"counts"</span>,
-  groupEvery <span class="op">=</span> <span class="fl">1</span>,
-  log2Norm <span class="op">=</span> <span class="cn">TRUE</span>,
-  scaleTo <span class="op">=</span> <span class="fl">10000</span>,
-  smoothWindow <span class="op">=</span> <span class="fl">11</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">GetTrajectory</span><span class="op">(</span></span>
+<span>  object <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  trajectory.name <span class="op">=</span> <span class="st">"Trajectory"</span>,</span>
+<span>  assay <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  slot <span class="op">=</span> <span class="st">"counts"</span>,</span>
+<span>  groupEvery <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  log2Norm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  scaleTo <span class="op">=</span> <span class="fl">10000</span>,</span>
+<span>  smoothWindow <span class="op">=</span> <span class="fl">11</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>Seurat object</p></dd>
+
+
 <dt>trajectory.name</dt>
 <dd><p>The name of trajectory inferred by <code><a href="AddTrajectory.html">AddTrajectory</a></code></p></dd>
+
+
 <dt>assay</dt>
 <dd><p>Which assay is used for data collection</p></dd>
+
+
 <dt>slot</dt>
 <dd><p>Name of slot used to collect data. Usually set as "counts" or "data".</p></dd>
+
+
 <dt>groupEvery</dt>
 <dd><p>The number of sequential percentiles to group together when generating a trajectory.
 This is similar to smoothing via a non-overlapping sliding window across pseudo-time.</p></dd>
+
+
 <dt>log2Norm</dt>
 <dd><p>Whether or not the data should be log2 transformed. This can be set to TRUE
 if gene expression or chromatin accessibility data is used,
 otherwise FALSE if data from TF activity is used.</p></dd>
+
+
 <dt>scaleTo</dt>
 <dd><p>Once the sequential trajectory matrix is created,
 each column in that matrix will be normalized to a column sum indicated by scaleTo.</p></dd>
+
+
 <dt>smoothWindow</dt>
 <dd><p>An integer value indicating the smoothing window in size
 (relative to groupEvery) for the sequential trajectory matrix to better reveal
 temporal dynamics.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A SummarizedExperiment object</p>
+    
+
+<p>A SummarizedExperiment object</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">trajRNA</span> <span class="op">&lt;-</span> <span class="fu">GetTrajectory</span><span class="op">(</span></span>
-<span class="r-in">   object <span class="op">=</span> <span class="va">obj</span>,</span>
-<span class="r-in">   assay <span class="op">=</span> <span class="st">"RNA"</span>,</span>
-<span class="r-in">   slot <span class="op">=</span> <span class="st">"data"</span>,</span>
-<span class="r-in">   smoothWindow <span class="op">=</span> <span class="fl">7</span>,</span>
-<span class="r-in">   log2Norm <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">trajRNA</span> <span class="op">&lt;-</span> <span class="fu">GetTrajectory</span><span class="op">(</span></span></span>
+<span class="r-in"><span>   object <span class="op">=</span> <span class="va">obj</span>,</span></span>
+<span class="r-in"><span>   assay <span class="op">=</span> <span class="st">"RNA"</span>,</span></span>
+<span class="r-in"><span>   slot <span class="op">=</span> <span class="st">"data"</span>,</span></span>
+<span class="r-in"><span>   smoothWindow <span class="op">=</span> <span class="fl">7</span>,</span></span>
+<span class="r-in"><span>   log2Norm <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -147,7 +164,7 @@ temporal dynamics.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

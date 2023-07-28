@@ -18,7 +18,7 @@ for a particular TF using spatial transcriptome data. It is based on"><!-- mathj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">scMEGA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -40,6 +40,9 @@ for a particular TF using spatial transcriptome data. It is based on"><!-- mathj
     </li>
     <li>
       <a href="../articles/cardiomyocyte-GRN.html">Infer GRN for cardiomyocytes</a>
+    </li>
+    <li>
+      <a href="../articles/pbmc_10x_multiome.html">Infer GRN for PBMC cells</a>
     </li>
   </ul></li>
 <li>
@@ -71,38 +74,53 @@ for a particular TF using spatial transcriptome data. It is based on</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">GRNSpatialPlot</span><span class="op">(</span>
-  <span class="va">object</span>,
-  <span class="va">assay</span>,
-  <span class="va">df.grn</span>,
-  <span class="va">tf.use</span>,
-  min.cutoff <span class="op">=</span> <span class="st">"q5"</span>,
-  max.cutoff <span class="op">=</span> <span class="st">"q95"</span>,
-  vis.option <span class="op">=</span> <span class="st">"B"</span>,
-  crop <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">GRNSpatialPlot</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  <span class="va">assay</span>,</span>
+<span>  <span class="va">df.grn</span>,</span>
+<span>  <span class="va">tf.use</span>,</span>
+<span>  min.cutoff <span class="op">=</span> <span class="st">"q5"</span>,</span>
+<span>  max.cutoff <span class="op">=</span> <span class="st">"q95"</span>,</span>
+<span>  vis.option <span class="op">=</span> <span class="st">"B"</span>,</span>
+<span>  crop <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>A Seurat object of spatial transcriptome data</p></dd>
+
+
 <dt>assay</dt>
 <dd><p>Which assay to plot</p></dd>
+
+
 <dt>df.grn</dt>
 <dd><p>A data frame including the inferred gene regulatory network</p></dd>
+
+
 <dt>tf.use</dt>
 <dd><p>Which TF to use</p></dd>
+
+
 <dt>min.cutoff</dt>
 <dd><p>Minimum cutoff values for each feature</p></dd>
+
+
 <dt>max.cutoff</dt>
 <dd><p>Maximum cutoff values for each feature</p></dd>
+
+
 <dt>vis.option</dt>
 <dd><p>Options for visualization. Default: "B"</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A ggplot object</p>
+    
+
+<p>A ggplot object</p>
     </div>
 
   </div>
@@ -117,7 +135,7 @@ for a particular TF using spatial transcriptome data. It is based on</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

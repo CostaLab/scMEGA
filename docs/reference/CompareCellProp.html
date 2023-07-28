@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">scMEGA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -41,7 +41,7 @@
       <a href="../articles/cardiomyocyte-GRN.html">Infer GRN for cardiomyocytes</a>
     </li>
     <li>
-      <a href="../articles/myofibroblast-network.html">Network analysis for myofibroblast</a>
+      <a href="../articles/pbmc_10x_multiome.html">Infer GRN for PBMC cells</a>
     </li>
   </ul></li>
 <li>
@@ -72,55 +72,70 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">CompareCellProp</span><span class="op">(</span>
-  <span class="va">object</span>,
-  group.by <span class="op">=</span> <span class="cn">NULL</span>,
-  prop.in <span class="op">=</span> <span class="cn">NULL</span>,
-  sample.annotation <span class="op">=</span> <span class="cn">NULL</span>,
-  cols <span class="op">=</span> <span class="cn">NULL</span>,
-  comparisons <span class="op">=</span> <span class="cn">NULL</span>,
-  method.test <span class="op">=</span> <span class="st">"wilcox.test"</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">CompareCellProp</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  group.by <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  prop.in <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sample.annotation <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cols <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  comparisons <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  method.test <span class="op">=</span> <span class="st">"wilcox.test"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>Seurat object</p></dd>
+
+
 <dt>group.by</dt>
 <dd><p>Name of one metadata column to group the cells, usually this refers to
 the clustering results.</p></dd>
+
+
 <dt>prop.in</dt>
 <dd><p>Name of one metadata column to compute the cell proportion, usually
 this refers to the sample identify</p></dd>
+
+
 <dt>sample.annotation</dt>
 <dd><p>Name of one metadata column to group the samples for comparison</p></dd>
+
+
 <dt>cols</dt>
 <dd><p>Specific colors for plotting</p></dd>
+
+
 <dt>comparisons</dt>
 <dd><p>A list of length-2 vectors used to compare the proportion.
 This parameter is passed to the function stat_compare_means.</p></dd>
+
+
 <dt>method.test</dt>
 <dd><p>Name of method for statistical test. Default: "wilcox.test"</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A ggplot object</p>
+    
+
+<p>A ggplot object</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">CompareCellProp</span><span class="op">(</span></span>
-<span class="r-in">   object <span class="op">=</span> <span class="va">coembed</span>,</span>
-<span class="r-in">   group.by <span class="op">=</span> <span class="st">"RNA_snn_res.0.2"</span>,</span>
-<span class="r-in">   prop.in <span class="op">=</span> <span class="st">"patient_region_id"</span>,</span>
-<span class="r-in">   sample.annotation <span class="op">=</span> <span class="st">"patient_group"</span>,</span>
-<span class="r-in">    comparisons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"myogenic"</span>, <span class="st">"ischemic"</span><span class="op">)</span>,</span>
-<span class="r-in">                       <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ischemic"</span>, <span class="st">"fibrotic"</span><span class="op">)</span>,</span>
-<span class="r-in">                       <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"myogenic"</span>, <span class="st">"fibrotic"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">CompareCellProp</span><span class="op">(</span></span></span>
+<span class="r-in"><span>   object <span class="op">=</span> <span class="va">coembed</span>,</span></span>
+<span class="r-in"><span>   group.by <span class="op">=</span> <span class="st">"RNA_snn_res.0.2"</span>,</span></span>
+<span class="r-in"><span>   prop.in <span class="op">=</span> <span class="st">"patient_region_id"</span>,</span></span>
+<span class="r-in"><span>   sample.annotation <span class="op">=</span> <span class="st">"patient_group"</span>,</span></span>
+<span class="r-in"><span>    comparisons <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"myogenic"</span>, <span class="st">"ischemic"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                       <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ischemic"</span>, <span class="st">"fibrotic"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                       <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"myogenic"</span>, <span class="st">"fibrotic"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -135,7 +150,7 @@ This parameter is passed to the function stat_compare_means.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

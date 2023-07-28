@@ -29,6 +29,10 @@ jobs:
           devtools::install_github("satijalab/seurat", "seurat5")
           install.packages("Signac")
         shell: Rscript {0}
+      - name: Render Rmarkdown files
+        run: |
+          pkgdown::build_site()
+        shell: Rscript {0}
 
 
 

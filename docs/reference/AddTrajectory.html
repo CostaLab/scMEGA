@@ -21,7 +21,7 @@ Author: Jeffrey Granja"><!-- mathjax --><script src="https://cdnjs.cloudflare.co
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">scMEGA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -45,7 +45,7 @@ Author: Jeffrey Granja"><!-- mathjax --><script src="https://cdnjs.cloudflare.co
       <a href="../articles/cardiomyocyte-GRN.html">Infer GRN for cardiomyocytes</a>
     </li>
     <li>
-      <a href="../articles/myofibroblast-network.html">Network analysis for myofibroblast</a>
+      <a href="../articles/pbmc_10x_multiome.html">Infer GRN for PBMC cells</a>
     </li>
   </ul></li>
 <li>
@@ -80,73 +80,98 @@ Author: Jeffrey Granja</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">AddTrajectory</span><span class="op">(</span>
-  <span class="va">object</span>,
-  name <span class="op">=</span> <span class="st">"Trajectory"</span>,
-  trajectory <span class="op">=</span> <span class="cn">NULL</span>,
-  group.by <span class="op">=</span> <span class="cn">NULL</span>,
-  reduction <span class="op">=</span> <span class="cn">NULL</span>,
-  dims <span class="op">=</span> <span class="cn">NULL</span>,
-  pre.filter.quantile <span class="op">=</span> <span class="fl">0.9</span>,
-  post.filter.quantile <span class="op">=</span> <span class="fl">0.9</span>,
-  use.all <span class="op">=</span> <span class="cn">FALSE</span>,
-  dof <span class="op">=</span> <span class="fl">250</span>,
-  spar <span class="op">=</span> <span class="fl">1</span>,
-  seed <span class="op">=</span> <span class="fl">42</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">AddTrajectory</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  name <span class="op">=</span> <span class="st">"Trajectory"</span>,</span>
+<span>  trajectory <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  group.by <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  reduction <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dims <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  pre.filter.quantile <span class="op">=</span> <span class="fl">0.9</span>,</span>
+<span>  post.filter.quantile <span class="op">=</span> <span class="fl">0.9</span>,</span>
+<span>  use.all <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  dof <span class="op">=</span> <span class="fl">250</span>,</span>
+<span>  spar <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">42</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>A Seurat object</p></dd>
+
+
 <dt>name</dt>
 <dd><p>A string indicating the name of the fitted trajectory to be added in meta.data</p></dd>
+
+
 <dt>trajectory</dt>
 <dd><p>The order of cell groups to be used for constraining
 the initial supervised fitting procedure</p></dd>
+
+
 <dt>group.by</dt>
 <dd><p>The column name in metadata that contains the cell group
 definitions used in <code>trajectory</code></p></dd>
+
+
 <dt>reduction</dt>
 <dd><p>Name of dimension reduction used to infer the trajectory</p></dd>
+
+
 <dt>dims</dt>
 <dd><p>How many dimensions to use</p></dd>
+
+
 <dt>pre.filter.quantile</dt>
 <dd><p>Prior to the initial supervised trajectory fitting,
 cells whose euclidean distance from the cell-grouping center is
 above the provided quantile will be excluded.</p></dd>
+
+
 <dt>post.filter.quantile</dt>
 <dd><p>After initial supervised trajectory fitting, cells
 whose euclidean distance from the cell-grouping center is above the provided
 quantile will be excluded.</p></dd>
+
+
 <dt>use.all</dt>
 <dd><p>Whether or not to use cells ourside of trajectory groups for
 post-fitting procedure</p></dd>
+
+
 <dt>dof</dt>
 <dd><p>The number of degrees of freedom to be used in the spline fit</p></dd>
+
+
 <dt>spar</dt>
 <dd><p>The sparsity to be used in the spline fit.</p></dd>
+
+
 <dt>seed</dt>
 <dd><p>Random seed</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Seurat object with inferred trajectory</p>
+    
+
+<p>Seurat object with inferred trajectory</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu">AddTrajectory</span><span class="op">(</span></span>
-<span class="r-in">   object <span class="op">=</span> <span class="va">obj</span>,</span>
-<span class="r-in">   trajectory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>,</span>
-<span class="r-in">   group.by <span class="op">=</span> <span class="st">"RNA_snn_res.0.2"</span>,</span>
-<span class="r-in">   reduction <span class="op">=</span> <span class="st">"dm"</span>,</span>
-<span class="r-in">   dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>,</span>
-<span class="r-in">   use.all <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu">AddTrajectory</span><span class="op">(</span></span></span>
+<span class="r-in"><span>   object <span class="op">=</span> <span class="va">obj</span>,</span></span>
+<span class="r-in"><span>   trajectory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>   group.by <span class="op">=</span> <span class="st">"RNA_snn_res.0.2"</span>,</span></span>
+<span class="r-in"><span>   reduction <span class="op">=</span> <span class="st">"dm"</span>,</span></span>
+<span class="r-in"><span>   dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>,</span></span>
+<span class="r-in"><span>   use.all <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -161,7 +186,7 @@ post-fitting procedure</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

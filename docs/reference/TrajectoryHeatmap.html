@@ -19,7 +19,7 @@ For more details, check here https://www.archrproject.com/reference/plotTrajecto
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">scMEGA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -43,7 +43,7 @@ For more details, check here https://www.archrproject.com/reference/plotTrajecto
       <a href="../articles/cardiomyocyte-GRN.html">Infer GRN for cardiomyocytes</a>
     </li>
     <li>
-      <a href="../articles/myofibroblast-network.html">Network analysis for myofibroblast</a>
+      <a href="../articles/pbmc_10x_multiome.html">Infer GRN for PBMC cells</a>
     </li>
   </ul></li>
 <li>
@@ -76,63 +76,88 @@ For more details, check here <a href="https://www.archrproject.com/reference/plo
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">TrajectoryHeatmap</span><span class="op">(</span>
-  <span class="va">trajectory</span>,
-  varCutOff <span class="op">=</span> <span class="fl">0.9</span>,
-  maxFeatures <span class="op">=</span> <span class="fl">25000</span>,
-  scaleRows <span class="op">=</span> <span class="cn">TRUE</span>,
-  rowOrder <span class="op">=</span> <span class="cn">NULL</span>,
-  limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.5</span>, <span class="fl">1.5</span><span class="op">)</span>,
-  labelRows <span class="op">=</span> <span class="cn">FALSE</span>,
-  pal <span class="op">=</span> <span class="cn">NULL</span>,
-  labelMarkers <span class="op">=</span> <span class="cn">NULL</span>,
-  labelTop <span class="op">=</span> <span class="fl">50</span>,
-  name <span class="op">=</span> <span class="st">"Heatmap"</span>,
-  returnMatrix <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">TrajectoryHeatmap</span><span class="op">(</span></span>
+<span>  <span class="va">trajectory</span>,</span>
+<span>  varCutOff <span class="op">=</span> <span class="fl">0.9</span>,</span>
+<span>  maxFeatures <span class="op">=</span> <span class="fl">25000</span>,</span>
+<span>  scaleRows <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  rowOrder <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.5</span>, <span class="fl">1.5</span><span class="op">)</span>,</span>
+<span>  labelRows <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  pal <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  labelMarkers <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  labelTop <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>  name <span class="op">=</span> <span class="st">"Heatmap"</span>,</span>
+<span>  returnMatrix <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>trajectory</dt>
 <dd><p>A SummarizedExperiment object that results from calling <code><a href="GetTrajectory.html">GetTrajectory</a></code></p></dd>
+
+
 <dt>varCutOff</dt>
 <dd><p>The "Variance Quantile Cutoff" to be used for identifying
 the top variable features across the given trajectory.
 Only features with a variance above the provided quantile will be retained.</p></dd>
+
+
 <dt>maxFeatures</dt>
 <dd><p>The maximum number of features, ordered by variance,
 to consider from useMatrix when generating a trajectory</p></dd>
+
+
 <dt>scaleRows</dt>
 <dd><p>A boolean value that indicates whether row-wise z-scores
 should be computed on the matrix</p></dd>
+
+
 <dt>rowOrder</dt>
 <dd><p>If wanting to set the order of rows to be plotted, the
 indices (integer or character correpsonding to rownmaes) can be provided here.</p></dd>
+
+
 <dt>limits</dt>
 <dd><p>A numeric vector of two numbers that represent the lower and
 upper limits of the heatmap color scheme.</p></dd>
+
+
 <dt>labelRows</dt>
 <dd><p>A boolean value that indicates whether all rows should be
 labeled on the side of the heatmap.</p></dd>
+
+
 <dt>pal</dt>
 <dd><p>A custom continuous palette used to override the default
 continuous palette for the heatmap.</p></dd>
+
+
 <dt>labelMarkers</dt>
 <dd><p>A character vector listing the rownames that should be
 labeled on the side of the heatmap.</p></dd>
+
+
 <dt>labelTop</dt>
 <dd><p>A number indicating how many of the top N features,
 based on variance of the matrix</p></dd>
+
+
 <dt>name</dt>
 <dd><p>Name of the matrix</p></dd>
+
+
 <dt>returnMatrix</dt>
 <dd><p>A boolean value that indicates whether the final heatmap
 matrix should be returned in lieu of plotting the actual heatmap.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a heatmap</p>
+    
+
+<p>a heatmap</p>
     </div>
 
   </div>
@@ -147,7 +172,7 @@ matrix should be returned in lieu of plotting the actual heatmap.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

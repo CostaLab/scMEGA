@@ -18,7 +18,7 @@ gene expression along the trajectory."><!-- mathjax --><script src="https://cdnj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">scMEGA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -40,6 +40,9 @@ gene expression along the trajectory."><!-- mathjax --><script src="https://cdnj
     </li>
     <li>
       <a href="../articles/cardiomyocyte-GRN.html">Infer GRN for cardiomyocytes</a>
+    </li>
+    <li>
+      <a href="../articles/pbmc_10x_multiome.html">Infer GRN for PBMC cells</a>
     </li>
   </ul></li>
 <li>
@@ -71,41 +74,58 @@ gene expression along the trajectory.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">GetTFGeneCorrelation</span><span class="op">(</span>
-  <span class="va">object</span>,
-  tf.use <span class="op">=</span> <span class="cn">NULL</span>,
-  gene.use <span class="op">=</span> <span class="cn">NULL</span>,
-  tf.assay <span class="op">=</span> <span class="st">"chromvar"</span>,
-  gene.assay <span class="op">=</span> <span class="st">"RNA"</span>,
-  atac.assay <span class="op">=</span> <span class="st">"ATAC"</span>,
-  trajectory.name <span class="op">=</span> <span class="st">"Trajectory"</span>,
-  groupEvery <span class="op">=</span> <span class="fl">1</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">GetTFGeneCorrelation</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  tf.use <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  gene.use <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tf.assay <span class="op">=</span> <span class="st">"chromvar"</span>,</span>
+<span>  gene.assay <span class="op">=</span> <span class="st">"RNA"</span>,</span>
+<span>  atac.assay <span class="op">=</span> <span class="st">"ATAC"</span>,</span>
+<span>  trajectory.name <span class="op">=</span> <span class="st">"Trajectory"</span>,</span>
+<span>  groupEvery <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>A Seurat object</p></dd>
+
+
 <dt>tf.use</dt>
 <dd><p>A string list to specify which TFs to use for correlation computation</p></dd>
+
+
 <dt>gene.use</dt>
 <dd><p>A string list to specify which genes to use for correlation computation</p></dd>
+
+
 <dt>tf.assay</dt>
 <dd><p>Assay that includes TF activity data. Default: "chromvar"</p></dd>
+
+
 <dt>gene.assay</dt>
 <dd><p>Assay that includes gene expression activity data. Default: "RNA"</p></dd>
+
+
 <dt>atac.assay</dt>
 <dd><p>Assay that includes peaks data. Default: "ATAC"</p></dd>
+
+
 <dt>trajectory.name</dt>
 <dd><p>Trajectory name</p></dd>
+
+
 <dt>groupEvery</dt>
 <dd><p>The number of sequential percentiles to group together when generating a trajectory.
 This is similar to smoothing via a non-overlapping sliding window across pseudo-time.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A matrix containing TF-gene correlation</p>
+    
+
+<p>A matrix containing TF-gene correlation</p>
     </div>
 
   </div>
@@ -120,7 +140,7 @@ This is similar to smoothing via a non-overlapping sliding window across pseudo-
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

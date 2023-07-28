@@ -1,12 +1,12 @@
-pandoc: 2.16.2
-pkgdown: 2.0.3
+pandoc: 3.1.1
+pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   cardiomyocyte-GRN: cardiomyocyte-GRN.html
   install: install.html
   myofibroblast-GRN: myofibroblast-GRN.html
   pbmc_10x_multiome: pbmc_10x_multiome.html
-last_built: 2022-12-01T00:55Z
+last_built: 2023-07-28T21:36Z
 urls:
   reference: https://costalab.github.io/scMEGA/reference
   article: https://costalab.github.io/scMEGA/articles

@@ -20,7 +20,7 @@ AddModuleScore from Seurat."><!-- mathjax --><script src="https://cdnjs.cloudfla
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">scMEGA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -42,6 +42,9 @@ AddModuleScore from Seurat."><!-- mathjax --><script src="https://cdnjs.cloudfla
     </li>
     <li>
       <a href="../articles/cardiomyocyte-GRN.html">Infer GRN for cardiomyocytes</a>
+    </li>
+    <li>
+      <a href="../articles/pbmc_10x_multiome.html">Infer GRN for PBMC cells</a>
     </li>
   </ul></li>
 <li>
@@ -75,26 +78,33 @@ the average expression of all targets calculated by using the function
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">AddTargetAssay</span><span class="op">(</span>
-  <span class="va">object</span>,
-  target.assay <span class="op">=</span> <span class="st">"target"</span>,
-  rna.assay <span class="op">=</span> <span class="st">"RNA"</span>,
-  df.grn <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">AddTargetAssay</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  target.assay <span class="op">=</span> <span class="st">"target"</span>,</span>
+<span>  rna.assay <span class="op">=</span> <span class="st">"RNA"</span>,</span>
+<span>  df.grn <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>A Seurat object used as input</p></dd>
+
+
 <dt>target.assay</dt>
 <dd><p>Name for the new assay. Default: "target"</p></dd>
+
+
 <dt>df.grn</dt>
 <dd><p>A data frame containing the predicted gene regulatory network.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A Seurat object with a new assay named by target.assay</p>
+    
+
+<p>A Seurat object with a new assay named by target.assay</p>
     </div>
 
   </div>
@@ -109,7 +119,7 @@ the average expression of all targets calculated by using the function
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

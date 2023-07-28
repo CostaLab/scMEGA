@@ -22,7 +22,7 @@ Affiliation: Buenrostro Lab, Department of Stem Cell and Regenerative Biology, H
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">scMEGA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -46,7 +46,7 @@ Affiliation: Buenrostro Lab, Department of Stem Cell and Regenerative Biology, H
       <a href="../articles/cardiomyocyte-GRN.html">Infer GRN for cardiomyocytes</a>
     </li>
     <li>
-      <a href="../articles/myofibroblast-network.html">Network analysis for myofibroblast</a>
+      <a href="../articles/pbmc_10x_multiome.html">Infer GRN for PBMC cells</a>
     </li>
   </ul></li>
 <li>
@@ -82,21 +82,28 @@ Affiliation: Buenrostro Lab, Department of Stem Cell and Regenerative Biology, H
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">GetPairList</span><span class="op">(</span><span class="va">cell_matches</span>, <span class="va">ATAC_barcodes</span>, <span class="va">RNA_barcodes</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">GetPairList</span><span class="op">(</span><span class="va">cell_matches</span>, <span class="va">ATAC_barcodes</span>, <span class="va">RNA_barcodes</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>cell_matches</dt>
 <dd><p>The output object of <code>fullmatch</code> in the package optmatch</p></dd>
+
+
 <dt>ATAC_barcodes</dt>
 <dd><p>Barcode of ATAC cells, must match the order of IDs in cell_matches.</p></dd>
+
+
 <dt>RNA_barcodes</dt>
 <dd><p>Barcode of RNA cells, must match the order of IDs in cell_matches.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data frame containing the cell pairs</p>
+    
+
+<p>A data frame containing the cell pairs</p>
     </div>
 
   </div>
@@ -111,7 +118,7 @@ Affiliation: Buenrostro Lab, Department of Stem Cell and Regenerative Biology, H
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
