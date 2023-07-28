@@ -37,14 +37,13 @@ suppressMessages(library(Signac))
 suppressMessages(library(scMEGA))
 suppressMessages(library(harmony))
 suppressMessages(library(Nebulosa))
-suppressMessages(library(BSgenome.Hsapiens.UCSC.hg38))
 suppressMessages(library(ggplot2))
 suppressMessages(library(dplyr))
-suppressMessages(library(BSgenome.Hsapiens.UCSC.hg38))
 suppressMessages(library(JASPAR2020))
 suppressMessages(library(TFBSTools))
 suppressMessages(library(igraph))
 suppressMessages(library(ggraph))
+suppressMessages(library(BSgenome.Hsapiens.UCSC.hg38))
 ```
 
 ## Data integration
