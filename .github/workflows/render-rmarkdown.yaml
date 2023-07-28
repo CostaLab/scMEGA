@@ -29,7 +29,7 @@ jobs:
           devtools::install_github("satijalab/seurat", "seurat5")
           install.packages("Signac")
         shell: Rscript {0}
-      -name: Install pacakges for tutorial
+      - name: Install pacakges for tutorial
         run: |
           devtools::install_github("CostaLab/scMEGA")
           devtools::install_github("immunogenomics/harmony")
