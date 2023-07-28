@@ -15,7 +15,7 @@ jobs:
       - name: Render document
         uses: lc5415/rmarkdown-action@v1
         with:
-          input_file: vignettes/install.Rmd
+          input_file: ./vignettes/install.Rmd
 	  output_format: html
       - name: Commit files
         run: |
