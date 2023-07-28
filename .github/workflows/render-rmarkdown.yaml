@@ -29,26 +29,26 @@ jobs:
           devtools::install_github("satijalab/seurat", "seurat5")
           install.packages("Signac")
         shell: Rscript {0}
+      -name: Install pacakges for tutorial
+        run: |
+          devtools::install_github("CostaLab/scMEGA")
+          devtools::install_github("immunogenomics/harmony")
+          BiocManager::install("Nebulosa")
+          BiocManager::install("JASPAR2020")
+          BiocManager::install("TFBSTools")
+          BiocManager::install("BSgenome.Hsapiens.UCSC.hg38")
+          BiocManager::install("EnsDb.Hsapiens.v86")
+          install.pacakges('ggraph')
+          install.pacakges('igraph')
+          devtools::install_github("CostaLab/MOJITOO")
+        shell: Rscript {0}
       - name: Render Rmarkdown files
         run: |
           pkgdown::build_site()
         shell: Rscript {0}
-
-
-
-       # with:
-      #    fetch-depth: 0
-
-      #- name: Render Rmarkdown files
-      #  uses: r-lib/actions/setup-pandoc@v2
-      #  uses: r-lib/actions/setup-r@v2
-      #  uses: r-lib/actions/setup-renv@v2
-      #  run: |
-      #    RMD_PATH=($(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '[.]Rmd$'))
-      #    Rscript -e 'for (f in commandArgs(TRUE)) if (file.exists(f)) rmarkdown::render(f)' ${RMD_PATH[*]}
-          # RMD_PATH=($(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '[.]Rmd$'))
-          # Rscript -e 'for (f in commandArgs(TRUE)) if (file.exists(f)) rmarkdown::render(f)' ${RMD_PATH[*]}
-          # git config --local user.name "$GITHUB_ACTOR"
-          # git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
-          # git commit ${RMD_PATH[*]/.Rmd/.md} -m 'Re-build Rmarkdown files' || echo "No changes to commit"
-          # git push origin || echo "No changes to commit"
+      - name: Commit files
+        run: |
+          git config --local user.name "$GITHUB_ACTOR"
+          git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git commit -am "Re-build Rmarkdown files"
+          git push origin || echo "No changes to commit"
