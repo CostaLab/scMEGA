@@ -18,6 +18,7 @@ jobs:
         run: |
           install.packages("devtools")
           install.packages("rmarkdown")
+          devtools::install_github("satijalab/seurat", "seurat5")
         shell: Rscript {0}
 
 

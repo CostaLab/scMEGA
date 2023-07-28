@@ -17,10 +17,11 @@ Suggests:
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
 LinkingTo: Rcpp
+Remotes:
+    satijalab/seurat@seurat5
 Imports: 
     Rcpp,
     ArchR,
-    Seurat,
     SeuratObject,
     dplyr,
     optmatch,
