@@ -1,11 +1,10 @@
 Package: scMEGA
 Type: Package
 Title: Single-cell Multiomic Enhancer-based Gene Regulatory Network Inference
-Version: 0.2.0
+Version: 1.0.1
 Author: Zhijian Li
 Maintainer: Zhijian Li <lzj1769@gmail.com>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: Infering gene regulatory network from single-cell multi-omics data.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

@@ -9,6 +9,9 @@ You can install scMEGA via below commands:
 if (!requireNamespace("devtools", quietly = TRUE))
     install.packages("devtools")
     
+# First install Seurate v5
+devtools::install_github("satijalab/seurat", "seurat5", quiet = TRUE)  
+    
 # Install scMEGA
 devtools::install_github("CostaLab/scMEGA")
 ```
@@ -21,4 +24,17 @@ We provided the following tutorials to show how to use scMEGA to build GRN by us
 
 * [CD4 T cells activcation using 10X multiome data](https://costalab.github.io/scMEGA/articles/pbmc_10x_multiome.html)
 
+Please consider citing our paper if you used scMEGA:
+```
+@article{li2023scmega,
+  title={scMEGA: single-cell multi-omic enhancer-based gene regulatory network inference},
+  author={Li, Zhijian and Nagai, James S and Kuppe, Christoph and Kramann, Rafael and Costa, Ivan G},
+  journal={Bioinformatics Advances},
+  volume={3},
+  number={1},
+  pages={vbad003},
+  year={2023},
+  publisher={Oxford University Press}
+}
+```
 
