@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: |
           Rscript -e 'install.packages("curl")'
-          #Rscript -e 'install.packages("devtools")'
+          Rscript -e 'install.packages("devtools")'
           #install.packages("rmarkdown")
           #devtools::install_github("satijalab/seurat", "seurat5")
 
