@@ -20,11 +20,15 @@ jobs:
           sudo apt-get install libharfbuzz-dev libfribidi-dev libfreetype6-dev libfontconfig1-dev
       - name: Install dependencies
         run: |
-          Rscript -e 'install.packages("textshaping")'
-          Rscript -e 'install.packages("curl")'
-          Rscript -e 'install.packages("devtools")'
-          #Rscript -e 'install.packages("rmarkdown")'
-          #devtools::install_github("satijalab/seurat", "seurat5")
+          install.packages("textshaping")
+          install.packages("curl")
+          install.packages("devtools")
+          install.packages("BiocManager")
+          install.packages("rmarkdown")
+          devtools::install_github("GreenleafLab/ArchR", ref="master", repos = BiocManager::repositories())
+          devtools::install_github("satijalab/seurat", "seurat5")
+          install.packages("Signac")
+        shell: Rscript {0}
 
 
 
