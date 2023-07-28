@@ -22,7 +22,7 @@ jobs:
         run: |
           Rscript -e 'install.packages("textshaping")'
           Rscript -e 'install.packages("curl")'
-          #Rscript -e 'install.packages("devtools")'
+          Rscript -e 'install.packages("devtools")'
           #Rscript -e 'install.packages("rmarkdown")'
           #devtools::install_github("satijalab/seurat", "seurat5")
 
