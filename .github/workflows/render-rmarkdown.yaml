@@ -17,11 +17,13 @@ jobs:
       - name: Install libraries
         run: |
           sudo apt-get install build-essential libcurl4-gnutls-dev libxml2-dev libssl-dev
+          sudo apt-get install libharfbuzz-dev libfribidi-dev libfreetype6-dev libfontconfig1-dev
       - name: Install dependencies
         run: |
+          Rscript -e 'install.packages("textshaping")'
           Rscript -e 'install.packages("curl")'
-          Rscript -e 'install.packages("devtools")'
-          #install.packages("rmarkdown")
+          #Rscript -e 'install.packages("devtools")'
+          #Rscript -e 'install.packages("rmarkdown")'
           #devtools::install_github("satijalab/seurat", "seurat5")
 
 
