@@ -28,19 +28,22 @@ jobs:
           devtools::install_github("GreenleafLab/ArchR", ref="master", repos = BiocManager::repositories())
           devtools::install_github("satijalab/seurat", "seurat5")
           install.packages("Signac")
+          BiocManager::install("destiny")
         shell: Rscript {0}
       - name: Install packages for tutorial
         run: |
-          devtools::install_github("CostaLab/scMEGA")
           devtools::install_github("immunogenomics/harmony")
           BiocManager::install("Nebulosa")
           BiocManager::install("JASPAR2020")
-          BiocManager::install("TFBSTools")
           BiocManager::install("BSgenome.Hsapiens.UCSC.hg38")
           BiocManager::install("EnsDb.Hsapiens.v86")
           devtools::install_github("CostaLab/MOJITOO")
           install.packages('ggraph')
           install.packages('igraph')
+        shell: Rscript {0}
+      - name: Install scMEGA
+        run: |
+          devtools::install_github("CostaLab/scMEGA")
         shell: Rscript {0}
       - name: Render Rmarkdown files
         run: |
