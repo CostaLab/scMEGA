@@ -29,7 +29,7 @@ jobs:
           devtools::install_github("satijalab/seurat", "seurat5")
           install.packages("Signac")
         shell: Rscript {0}
-      - name: Install pacakges for tutorial
+      - name: Install packages for tutorial
         run: |
           devtools::install_github("CostaLab/scMEGA")
           devtools::install_github("immunogenomics/harmony")
@@ -38,9 +38,9 @@ jobs:
           BiocManager::install("TFBSTools")
           BiocManager::install("BSgenome.Hsapiens.UCSC.hg38")
           BiocManager::install("EnsDb.Hsapiens.v86")
-          install.pacakges('ggraph')
-          install.pacakges('igraph')
           devtools::install_github("CostaLab/MOJITOO")
+          install.packages('ggraph')
+          install.packages('igraph')
         shell: Rscript {0}
       - name: Render Rmarkdown files
         run: |
