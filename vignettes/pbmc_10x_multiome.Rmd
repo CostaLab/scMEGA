@@ -13,15 +13,20 @@ In this tutorial, we'll demonstrate how to infer gene regulatory network using s
 We first download the required data. 
 
 Run the following commands to download the data:
-```{bash, eval=TRUE}
-mkdir -p 10x_pbmc
+```{r}
+dir.create('./10x_pbmc')
 
-wget -q -P 10x_pbmc https://cf.10xgenomics.com/samples/cell-arc/2.0.0/pbmc_granulocyte_sorted_10k/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz
+download.file('https://cf.10xgenomics.com/samples/cell-arc/2.0.0/pbmc_granulocyte_sorted_10k/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz', 
+              './10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz')
 
-wget -q -P 10x_pbmc https://cf.10xgenomics.com/samples/cell-arc/2.0.0/pbmc_granulocyte_sorted_10k/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz.tbi
+download.file('https://cf.10xgenomics.com/samples/cell-arc/2.0.0/pbmc_granulocyte_sorted_10k/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz.tbi', 
+              './10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz.tbi')
 
-wget -q -P 10x_pbmc https://cf.10xgenomics.com/samples/cell-arc/2.0.0/pbmc_granulocyte_sorted_10k/pbmc_granulocyte_sorted_10k_filtered_feature_bc_matrix.h5
+download.file('https://cf.10xgenomics.com/samples/cell-arc/2.0.0/pbmc_granulocyte_sorted_10k/pbmc_granulocyte_sorted_10k_filtered_feature_bc_matrix.h5', 
+              './10x_pbmc/pbmc_granulocyte_sorted_10k_filtered_feature_bc_matrix.h5')
 ```
+
+
 Next, we load all necessary packages:
 ```{r}
 suppressMessages(library(ArchR))
@@ -87,7 +92,8 @@ obj.atac <- CreateSeuratObject(
     assay = "ATAC")
 
 # extract gene annotations from EnsDb
-annotations <- suppressWarnings(GetGRangesFromEnsDb(ensdb = EnsDb.Hsapiens.v86, verbose = FALSE))
+annotations <- GetGRangesFromEnsDb(ensdb = EnsDb.Hsapiens.v86, 
+                                   verbose = FALSE)
 
 # change to UCSC style since the data was mapped to hg38
 seqlevelsStyle(annotations) <- 'UCSC'
@@ -268,8 +274,11 @@ pbmc <- RunUMAP(pbmc,
                 reduction.name="MOJITOO_UMAP", 
                 dims=1:ncol(embedd), verbose=F)
 
-DimPlot(pbmc, group.by = "predicted.id", 
-        shuffle = TRUE, label = TRUE, reduction = "MOJITOO_UMAP") + NoLegend()
+DimPlot(pbmc, 
+        group.by = "predicted.id", 
+        shuffle = TRUE, 
+        label = TRUE, 
+        reduction = "MOJITOO_UMAP") + NoLegend()
 ```
 
 ## Trajectory analysis
