@@ -16,14 +16,17 @@ Run the following commands to download the data:
 ```{r}
 dir.create('./10x_pbmc')
 
-download.file('https://cf.10xgenomics.com/samples/cell-arc/2.0.0/pbmc_granulocyte_sorted_10k/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz', 
-              './10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz')
+download.file(url = 'https://cf.10xgenomics.com/samples/cell-arc/2.0.0/pbmc_granulocyte_sorted_10k/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz', 
+              destfile = './10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz', 
+              method = 'wget', extra = '--no-check-certificate')
 
-download.file('https://cf.10xgenomics.com/samples/cell-arc/2.0.0/pbmc_granulocyte_sorted_10k/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz.tbi', 
-              './10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz.tbi')
-
-download.file('https://cf.10xgenomics.com/samples/cell-arc/2.0.0/pbmc_granulocyte_sorted_10k/pbmc_granulocyte_sorted_10k_filtered_feature_bc_matrix.h5', 
-              './10x_pbmc/pbmc_granulocyte_sorted_10k_filtered_feature_bc_matrix.h5')
+download.file(url = 'https://cf.10xgenomics.com/samples/cell-arc/2.0.0/pbmc_granulocyte_sorted_10k/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz.tbi', 
+               destfile = './10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz.tbi', 
+               method = 'wget', extra = '--no-check-certificate')
+              
+download.file(url = 'https://cf.10xgenomics.com/samples/cell-arc/2.0.0/pbmc_granulocyte_sorted_10k/pbmc_granulocyte_sorted_10k_filtered_feature_bc_matrix.h5', 
+              destfile = './10x_pbmc/pbmc_granulocyte_sorted_10k_filtered_feature_bc_matrix.h5', 
+              method = 'wget', extra = '--no-check-certificate')
 ```
 
 
@@ -107,8 +110,8 @@ Make sure that the two modalities have the same cells:
 ```{r}
 cell.sel <- intersect(colnames(obj.rna), colnames(obj.atac))
 
-obj.rna <- obj.rna[, cell.sel]
-obj.atac <- obj.atac[, cell.sel]
+obj.rna <- subset(obj.rna, cells = cell.sel)
+obj.atac <- subset(obj.atac, cells = cell.sel)
 ```
 
 We next process the scRNA-seq and scATAC-seq data using standard Seurat and Signac analysis pipeline:
@@ -140,7 +143,9 @@ We next will annotate the cell types in our multimodal data via label transfer a
 
 Download data
 ```{bash, eval=TRUE}
-wget -q -P 10x_pbmc ftp://ftp.ebi.ac.uk/pub/databases/mofa/10x_rna_atac_vignette/seurat.rds
+download.file(url = 'ftp://ftp.ebi.ac.uk/pub/databases/mofa/10x_rna_atac_vignette/seurat.rds', 
+              destfile = './10x_pbmc/seurat.rds', 
+              method = 'wget', extra = '--no-check-certificate')
 ```
 
 Load data
