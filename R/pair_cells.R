@@ -93,6 +93,8 @@ CoembedData <-
 
     # merge the objects
     coembed <- merge(x = obj.atac, y = obj.rna)
+      
+    coembed <- JoinLayers(coembed)
 
     #Finally, we run PCA and UMAP on this combined object, to visualize the co-embedding of both datasets
     message("Coemebdding the data...")
