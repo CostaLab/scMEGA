@@ -1,4 +1,4 @@
-pandoc: 2.19.2
+pandoc: 3.1.3
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
@@ -6,7 +6,7 @@ articles:
   install: install.html
   myofibroblast-GRN: myofibroblast-GRN.html
   pbmc_10x_multiome: pbmc_10x_multiome.html
-last_built: 2023-09-14T20:10Z
+last_built: 2023-09-15T19:34Z
 urls:
   reference: https://costalab.github.io/scMEGA/reference
   article: https://costalab.github.io/scMEGA/articles

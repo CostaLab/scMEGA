@@ -23,14 +23,21 @@ The script of cleaning the data and preparing these objects is found [here](http
 
 Run the following commands to download the data:
 ```{r}
-dir.create('./Cardiomyocyte')
+if(!dir.exists('./Cardiomyocyte')){
+    dir.create('./Cardiomyocyte')
+}
 
-download.file('https://costalab.ukaachen.de/open_data/scMEGA/Cardiomyocyte/snRNA.rds', 
-              './Cardiomyocyte/snRNA.rds')
-download.file('https://costalab.ukaachen.de/open_data/scMEGA/Cardiomyocyte/snATAC.rds', 
-              './Cardiomyocyte/snATAC.rds')
-download.file('https://costalab.ukaachen.de/open_data/scMEGA/Cardiomyocyte/gene.activity.rds', 
-              './Cardiomyocyte/gene.activity.rds')
+download.file(url = 'https://costalab.ukaachen.de/open_data/scMEGA/Cardiomyocyte/snRNA.rds', 
+               destfile = './Cardiomyocyte/snRNA.rds', 
+               method = 'wget', extra = '--no-check-certificate')
+
+download.file(url = 'https://costalab.ukaachen.de/open_data/scMEGA/Cardiomyocyte/snATAC.rds', 
+               destfile = './Cardiomyocyte/snATAC.rds', 
+               method = 'wget', extra = '--no-check-certificate')
+              
+download.file(url = 'https://costalab.ukaachen.de/open_data/scMEGA/Cardiomyocyte/gene.activity.rds', 
+              destfile = './Cardiomyocyte/gene.activity.rds', 
+              method = 'wget', extra = '--no-check-certificate')
 ```
 
 Next, we load all necessary packages:

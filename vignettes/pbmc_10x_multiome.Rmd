@@ -14,7 +14,9 @@ We first download the required data.
 
 Run the following commands to download the data:
 ```{r}
-dir.create('./10x_pbmc')
+if(!dir.exists('./10x_pbmc')){
+    dir.create('./10x_pbmc')
+}
 
 download.file(url = 'https://cf.10xgenomics.com/samples/cell-arc/2.0.0/pbmc_granulocyte_sorted_10k/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz', 
               destfile = './10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz', 

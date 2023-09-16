@@ -61,6 +61,8 @@ CoembedData <-
       FindVariableFeatures(verbose = verbose) %>%
       ScaleData(verbose = verbose)
 
+    obj.rna <- subset(obj.rna, features = gene.use)  
+      
     transfer.anchors <- FindTransferAnchors(
       reference = obj.rna,
       query = obj.atac,
@@ -73,7 +75,7 @@ CoembedData <-
 
     # we here restrict the imputation to the selected genes
     refdata <-
-      GetAssayData(obj.rna, assay = reference.assay, slot = "data")[gene.use,]
+      GetAssayData(obj.rna, assay = reference.assay, slot = "data")
 
     # refdata (input) contains a scRNA-seq expression matrix for the scRNA-seq cells.
     # imputation (output) will contain an imputed scRNA-seq matrix for each of the ATAC cells
@@ -95,8 +97,7 @@ CoembedData <-
     #Finally, we run PCA and UMAP on this combined object, to visualize the co-embedding of both datasets
     message("Coemebdding the data...")
     coembed <- coembed %>%
-      ScaleData(features = gene.use, do.scale = FALSE) %>%
-      FindVariableFeatures() %>%
+      ScaleData(do.scale = FALSE) %>%
       RunPCA(verbose = FALSE) %>%
       RunUMAP(dims = 1:30, verbose = FALSE)
 
