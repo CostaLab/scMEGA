@@ -61,8 +61,8 @@ CoembedData <-
       FindVariableFeatures(verbose = verbose) %>%
       ScaleData(verbose = verbose)
 
-    obj.rna <- subset(obj.rna, features = gene.use)  
-      
+    obj.rna <- subset(obj.rna, features = gene.use)
+
     transfer.anchors <- FindTransferAnchors(
       reference = obj.rna,
       query = obj.atac,
@@ -93,7 +93,7 @@ CoembedData <-
 
     # merge the objects
     coembed <- merge(x = obj.atac, y = obj.rna)
-      
+
     coembed <- JoinLayers(coembed)
 
     #Finally, we run PCA and UMAP on this combined object, to visualize the co-embedding of both datasets
@@ -123,7 +123,7 @@ CoembedData <-
 #' @param ident1 Specify how to split the object, must be an value of pair.by
 #' @param ident2 Specify how to split the object, must be an value of pair.by
 #' @param assay Assay name based on which a KNN graph is constructed
-#' @param pair.mode Pair mode. Currently only "geodesic" is available
+#' @param pair.mode Pair mode. Available options are: "greedy" and "geodesic".
 #' @param tol Tol times the number of subjects to be matched specifies the extent to which fullmatch's
 #' @param search.range This determines the size of the search knn. search_range * total number of cells = size of knn.
 #' @param max.multimatch Maximum number of cells allowed to be matched to each cell
@@ -150,7 +150,7 @@ PairCells <- function(object,
                       ident1 = "ATAC",
                       ident2 = "RNA",
                       assay = "RNA",
-                      pair.mode = "geodesic",
+                      pair.mode = "greedy",
                       tol = 0.0001,
                       search.range = 0.2,
                       max.multimatch = 5,
@@ -196,8 +196,6 @@ PairCells <- function(object,
 
     adjmatrix <- object@graphs$RNA_nn
     diag(adjmatrix) <- 0
-    #adj.matrix <- as.matrix(x = obj.coembed@graphs$RNA_nn)
-    #adj.matrix <- adj.matrix + t(adj.matrix)
     knn.graph <-
       igraph::graph_from_adjacency_matrix(adjmatrix = adjmatrix,
                                           mode = "max",
@@ -340,7 +338,12 @@ PairCells <- function(object,
       # Append the results for this subgraph to the list of all results
       all.pairs <- rbind(all.pairs, pair.list)
     }
+  } else if(pair.mode == "greedy"){
+
+
+
   }
+
 
   # pairs are sometimes repreated, here we make the results unique
   all.pairs <- all.pairs[!duplicated(all.pairs$ATAC),]
