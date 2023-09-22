@@ -10,7 +10,7 @@ Encoding: UTF-8
 LazyData: true
 URL: https://costalab.github.io/scMEGA/
 Depends:
-    R (>= 4.2.0)
+    R (>= 4.3.0)
 Suggests: 
     knitr,
     rmarkdown,

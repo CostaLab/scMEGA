@@ -150,7 +150,7 @@ PairCells <- function(object,
                       ident1 = "ATAC",
                       ident2 = "RNA",
                       assay = "RNA",
-                      pair.mode = "greedy",
+                      pair.mode = "knn",
                       tol = 0.0001,
                       search.range = 0.2,
                       max.multimatch = 5,
@@ -339,11 +339,22 @@ PairCells <- function(object,
       all.pairs <- rbind(all.pairs, pair.list)
     }
   } else if(pair.mode == "greedy"){
+    n_ATAC <- dim(embedding.atac)[1]
+    n_RNA <- dim(embedding.rna)[1]
 
-
-
+    if (n_ATAC >= n_RNA){
+      print("Pairing all RNA cells to nearest ATAC cells")
+      pair_knn <- FNN::get.knnx(data = embedding.atac, query = embedding.rna, k = 1)
+      ATAC_paired <- rownames(embedding.atac)[pair_knn$nn.index]
+      RNA_paired <- rownames(embedding.rna)
+    } else{
+      print("Pairing all ATAC cells to nearest RNA cells")
+      pair_knn <- FNN::get.knnx(data = embedding.rna, query = embedding.atac, k = 1)
+      ATAC_paired <- rownames(embedding.rna)[pair_knn$nn.index]
+      RNA_paired <- rownames(embedding.atac)
+    }
+    all.pairs <- data.frame(ATAC=ATAC_paired, RNA=RNA_paired, stringsAsFactors=FALSE)
   }
-
 
   # pairs are sometimes repreated, here we make the results unique
   all.pairs <- all.pairs[!duplicated(all.pairs$ATAC),]
