@@ -150,7 +150,7 @@ PairCells <- function(object,
                       ident1 = "ATAC",
                       ident2 = "RNA",
                       assay = "RNA",
-                      pair.mode = "knn",
+                      pair.mode = "greedy",
                       tol = 0.0001,
                       search.range = 0.2,
                       max.multimatch = 5,
@@ -347,17 +347,19 @@ PairCells <- function(object,
       pair_knn <- FNN::get.knnx(data = embedding.atac, query = embedding.rna, k = 1)
       ATAC_paired <- rownames(embedding.atac)[pair_knn$nn.index]
       RNA_paired <- rownames(embedding.rna)
+      all.pairs <- all.pairs[!duplicated(all.pairs$RNA),]
+
     } else{
       print("Pairing all ATAC cells to nearest RNA cells")
       pair_knn <- FNN::get.knnx(data = embedding.rna, query = embedding.atac, k = 1)
-      ATAC_paired <- rownames(embedding.rna)[pair_knn$nn.index]
-      RNA_paired <- rownames(embedding.atac)
+      ATAC_paired <- rownames(embedding.atac)[pair_knn$nn.index]
+      RNA_paired <- rownames(embedding.rna)
     }
-    all.pairs <- data.frame(ATAC=ATAC_paired, RNA=RNA_paired, stringsAsFactors=FALSE)
+    all.pairs <- data.frame(ATAC=ATAC_paired,
+                            RNA=RNA_paired, stringsAsFactors=FALSE)
+    all.pairs <- all.pairs[!duplicated(all.pairs$ATAC),]
   }
 
-  # pairs are sometimes repreated, here we make the results unique
-  all.pairs <- all.pairs[!duplicated(all.pairs$ATAC),]
   all.pairs$cell_name <- paste0("cell_", 1:nrow(all.pairs))
 
   return(all.pairs)
@@ -390,33 +392,29 @@ PairCells <- function(object,
 #' )
 #' }
 CreatePairedObject <- function(df.pair,
-                               object,
-                               use.assay1 = NULL,
-                               use.assay2 = NULL,
+                               obj.rna = NULL,
+                               obj.atac = NULL,
+                               rna.assay = NULL,
+                               atac.assay = NULL,
                                sep = c("-", "-")) {
-  if (is.null(use.assay1)) {
-    stop("Please provide the name for assay from RNA object")
-  }
-
-  if (is.null(use.assay2)) {
-    stop("Please provide the name for assay from ATAC object")
-  }
-
   message("Merging objects...")
+  obj.rna <- subset(obj.rna, cell = df.pair$RNA)
+  obj.atac <- subset(obj.atac, cell = df.pair$ATAC)
+
   rna.counts <-
-    GetAssayData(object, assay = use.assay1, slot = "counts")[, df.pair$RNA]
+    GetAssayData(obj.rna, assay = rna.assay, slot = "counts")
   atac.counts <-
-    GetAssayData(object, assay = use.assay2, slot = "counts")[, df.pair$ATAC]
+    GetAssayData(obj.atac, assay = atac.assay, slot = "counts")
 
   colnames(rna.counts) <- df.pair$cell_name
   colnames(atac.counts) <- df.pair$cell_name
 
   # create a Seurat object containing the RNA adata
   obj.pair <- CreateSeuratObject(counts = rna.counts,
-                                 assay = use.assay1)
+                                 assay = rna.assay)
 
   # create ATAC assay and add it to the object
-  obj.pair[[use.assay2]] <-
+  obj.pair[[atac.assay]] <-
     CreateChromatinAssay(counts = atac.counts,
                          sep = sep,
                          min.cells = 10)
