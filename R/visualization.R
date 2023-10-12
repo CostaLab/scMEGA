@@ -25,7 +25,7 @@ PseudotimePlot <- function(object, tf.use,
                            groupEvery=1
                            ){
 
-    trajMM <- suppressMessages(GetTrajectory(
+    trajMM <- GetTrajectory(
         object,
         assay = tf.assay,
         trajectory.name=trajectory.name,
@@ -33,7 +33,7 @@ PseudotimePlot <- function(object, tf.use,
         slot = "data",
         smoothWindow = 7,
         log2Norm = FALSE
-    ))
+    )
 
     rownames(trajMM) <- object@assays[[atac.assay]]@motifs@motif.names
 
@@ -47,7 +47,7 @@ PseudotimePlot <- function(object, tf.use,
                                               values_to = "value")
     df.tf.activity$pseudotime <- as.numeric(df.tf.activity$pseudotime)
 
-    trajGEX <- suppressMessages(GetTrajectory(
+    trajGEX <- GetTrajectory(
         object,
         assay = rna.assay,
         trajectory.name =trajectory.name,
@@ -55,7 +55,7 @@ PseudotimePlot <- function(object, tf.use,
         slot = "data",
         smoothWindow = 7,
         log2Norm = TRUE
-    ))
+    )
 
     df.tf.expression <- assay(trajGEX)
     df.tf.expression <- t(scale(t(df.tf.expression)))
@@ -67,7 +67,7 @@ PseudotimePlot <- function(object, tf.use,
                                               values_to = "value")
     df.tf.expression$pseudotime <- as.numeric(df.tf.expression$pseudotime)
 
-    traj.target <- suppressMessages(GetTrajectory(
+    traj.target <- GetTrajectory(
         object,
         assay = target.assay,
         trajectory.name=trajectory.name,
@@ -75,7 +75,7 @@ PseudotimePlot <- function(object, tf.use,
         slot = "data",
         smoothWindow = 7,
         log2Norm = FALSE
-    ))
+    )
 
     df.target <- assay(traj.target)
     df.target <- t(scale(t(df.target)))

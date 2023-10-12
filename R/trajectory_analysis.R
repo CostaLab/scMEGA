@@ -283,7 +283,7 @@ GetTrajectory <- function(object = NULL,
     paste0("T.", breaks[-length(breaks)], "_", breaks[-1])
 
   message("Creating Trajectory Group Matrix..")
-  data.use <- GetAssayData(object, assay = assay, slot = slot)
+  data.use <- LayerData(object, assay = assay, layer = slot)
 
   groupMat <- lapply(1:length(groupList), function(x) {
     cell_names <- groupList[[x]]

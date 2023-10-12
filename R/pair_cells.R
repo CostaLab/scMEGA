@@ -61,8 +61,8 @@ CoembedData <-
       FindVariableFeatures(verbose = verbose) %>%
       ScaleData(verbose = verbose)
 
-    obj.rna <- subset(obj.rna, features = gene.use)  
-      
+    obj.rna <- subset(obj.rna, features = gene.use)
+
     transfer.anchors <- FindTransferAnchors(
       reference = obj.rna,
       query = obj.atac,
@@ -74,8 +74,11 @@ CoembedData <-
     )
 
     # we here restrict the imputation to the selected genes
-    refdata <-
-      GetAssayData(obj.rna, assay = reference.assay, slot = "data")
+    #refdata <-
+    #  GetAssayData(obj.rna, assay = reference.assay, slot = "data")
+
+    # Seurat V5
+    refdata <- LayerData(obj.rna, assay = reference.assay, layer = "data")
 
     # refdata (input) contains a scRNA-seq expression matrix for the scRNA-seq cells.
     # imputation (output) will contain an imputed scRNA-seq matrix for each of the ATAC cells
@@ -93,7 +96,7 @@ CoembedData <-
 
     # merge the objects
     coembed <- merge(x = obj.atac, y = obj.rna)
-      
+
     coembed <- JoinLayers(coembed)
 
     #Finally, we run PCA and UMAP on this combined object, to visualize the co-embedding of both datasets
@@ -123,7 +126,7 @@ CoembedData <-
 #' @param ident1 Specify how to split the object, must be an value of pair.by
 #' @param ident2 Specify how to split the object, must be an value of pair.by
 #' @param assay Assay name based on which a KNN graph is constructed
-#' @param pair.mode Pair mode. Currently only "geodesic" is available
+#' @param pair.mode Pair mode. Available options are: "greedy" and "geodesic".
 #' @param tol Tol times the number of subjects to be matched specifies the extent to which fullmatch's
 #' @param search.range This determines the size of the search knn. search_range * total number of cells = size of knn.
 #' @param max.multimatch Maximum number of cells allowed to be matched to each cell
@@ -145,18 +148,18 @@ CoembedData <-
 #'   )
 #' }
 PairCells <- function(object,
-                      reduction = NULL,
-                      pair.by = NULL,
-                      ident1 = "ATAC",
-                      ident2 = "RNA",
-                      assay = "RNA",
-                      pair.mode = "geodesic",
-                      tol = 0.0001,
-                      search.range = 0.2,
-                      max.multimatch = 5,
-                      min_subgraph_size = 50,
-                      seed = 42,
-                      k = 300) {
+                       reduction = NULL,
+                       pair.by = NULL,
+                       ident1 = "ATAC",
+                       ident2 = "RNA",
+                       assay = "RNA",
+                       pair.mode = "greedy",
+                       tol = 0.0001,
+                       search.range = 0.2,
+                       max.multimatch = 5,
+                       min_subgraph_size = 50,
+                       seed = 42,
+                       k = 300) {
   if (is.null(reduction)) {
     stop("Please specify dimensional reduction to use for the pairing cells!")
   }
@@ -196,8 +199,6 @@ PairCells <- function(object,
 
     adjmatrix <- object@graphs$RNA_nn
     diag(adjmatrix) <- 0
-    #adj.matrix <- as.matrix(x = obj.coembed@graphs$RNA_nn)
-    #adj.matrix <- adj.matrix + t(adj.matrix)
     knn.graph <-
       igraph::graph_from_adjacency_matrix(adjmatrix = adjmatrix,
                                           mode = "max",
@@ -340,10 +341,49 @@ PairCells <- function(object,
       # Append the results for this subgraph to the list of all results
       all.pairs <- rbind(all.pairs, pair.list)
     }
-  }
+  } else if(pair.mode == "greedy"){
+    n_ATAC <- dim(embedding.atac)[1]
+    n_RNA <- dim(embedding.rna)[1]
 
-  # pairs are sometimes repreated, here we make the results unique
-  all.pairs <- all.pairs[!duplicated(all.pairs$ATAC),]
+    if (n_ATAC >= n_RNA){
+      print("Pairing all RNA cells to nearest ATAC cells")
+
+      ATAC_paired <- vector("character", length = n_RNA)
+
+      for(i in 1:n_RNA){
+        query <- t(as.matrix(embedding.rna[i, ]))
+        pair_knn <- FNN::get.knnx(data = embedding.atac,
+                                  query = query,
+                                  k = 1)
+        ATAC_paired[i] <- rownames(embedding.atac)[pair_knn$nn.index]
+        embedding.atac <- embedding.atac[-pair_knn$nn.index, ]
+
+      }
+      RNA_paired <- rownames(embedding.rna)
+
+
+    } else{
+      print("Pairing all ATAC cells to nearest RNA cells")
+
+      RNA_paired <- vector("character", length = n_ATAC)
+
+      for(i in 1:n_ATAC){
+        query <- t(as.matrix(embedding.atac[i, ]))
+        pair_knn <- FNN::get.knnx(data = embedding.rna,
+                                  query = query,
+                                  k = 1)
+        RNA_paired[i] <- rownames(embedding.rna)[pair_knn$nn.index]
+        embedding.rna <- embedding.rna[-pair_knn$nn.index, ]
+      }
+
+      ATAC_paired <- rownames(embedding.atac)
+    }
+
+    message("Finished!\n")
+
+    all.pairs <- data.frame(ATAC=ATAC_paired, RNA=RNA_paired, stringsAsFactors=FALSE)
+
+  }
   all.pairs$cell_name <- paste0("cell_", 1:nrow(all.pairs))
 
   return(all.pairs)
@@ -376,40 +416,34 @@ PairCells <- function(object,
 #' )
 #' }
 CreatePairedObject <- function(df.pair,
-                               object,
-                               use.assay1 = NULL,
-                               use.assay2 = NULL,
-                               sep = c("-", "-")) {
-  if (is.null(use.assay1)) {
-    stop("Please provide the name for assay from RNA object")
-  }
-
-  if (is.null(use.assay2)) {
-    stop("Please provide the name for assay from ATAC object")
-  }
-
+                                obj.coembed = NULL,
+                                obj.rna = NULL,
+                                obj.atac = NULL,
+                                rna.assay = NULL,
+                                atac.assay = NULL,
+                                sep = c("-", "-")) {
   message("Merging objects...")
   rna.counts <-
-    GetAssayData(object, assay = use.assay1, slot = "counts")[, df.pair$RNA]
+    LayerData(obj.rna, assay = rna.assay, layer = "counts", cells = df.pair$RNA)
   atac.counts <-
-    GetAssayData(object, assay = use.assay2, slot = "counts")[, df.pair$ATAC]
+    LayerData(obj.atac, assay = atac.assay, layer = "counts", cells = df.pair$ATAC)
 
   colnames(rna.counts) <- df.pair$cell_name
   colnames(atac.counts) <- df.pair$cell_name
 
   # create a Seurat object containing the RNA adata
   obj.pair <- CreateSeuratObject(counts = rna.counts,
-                                 assay = use.assay1)
+                                 assay = rna.assay)
 
   # create ATAC assay and add it to the object
-  obj.pair[[use.assay2]] <-
+  obj.pair[[atac.assay]] <-
     CreateChromatinAssay(counts = atac.counts,
                          sep = sep,
                          min.cells = 10)
 
-  for (reduction in names(object@reductions)) {
+  for (reduction in names(obj.coembed@reductions)) {
     embedding <-
-      Embeddings(object, reduction = reduction)[df.pair$RNA,]
+      Embeddings(obj.coembed, reduction = reduction)[df.pair$RNA,]
     rownames(embedding) <- df.pair$cell_name
     obj.pair[[reduction]] <-
       CreateDimReducObject(embeddings = embedding,
@@ -417,7 +451,7 @@ CreatePairedObject <- function(df.pair,
   }
 
   # add metadata, here we use the metadata from RNA assay
-  meta.data <- object@meta.data[df.pair$RNA,]
+  meta.data <- obj.coembed@meta.data[df.pair$RNA,]
   rownames(meta.data) <- df.pair$cell_name
 
   obj.pair <- AddMetaData(obj.pair, metadata = meta.data)

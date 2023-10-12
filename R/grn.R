@@ -487,17 +487,15 @@ GRNSpatialPlot <- function(object, assay,
 #'
 #' @return A Seurat object with a new assay named by target.assay
 #' @export
-AddTargetAssay <- function(object, target.assay = "target",
+AddTargetAssay <- function(object,
+                           target.assay = "target",
                            rna.assay = "RNA",
                            df.grn = NULL){
-    if(is.na(df.grn)){
-        stop("Cannot find the gene regulatory network!")
-    }
 
     df.genes <- split(df.grn$gene,df.grn$tf)
     object <- AddModuleScore(object, features = df.genes,
                              assay=rna.assay,
-                     name = "tf_target_")
+                             name = "tf_target_")
 
     target_gex <- object@meta.data %>%
         as.data.frame() %>%
