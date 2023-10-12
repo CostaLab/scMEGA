@@ -18,15 +18,15 @@ if(!dir.exists('./10x_pbmc')){
     dir.create('./10x_pbmc')
 }
 
-download.file(url = 'https://cf.10xgenomics.com/samples/cell-arc/2.0.0/pbmc_granulocyte_sorted_10k/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz', 
+download.file(url = 'https://costalab.ukaachen.de/open_data/scMEGA/10x_multiome/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz', 
               destfile = './10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz', 
               method = 'wget', extra = '--no-check-certificate')
 
-download.file(url = 'https://cf.10xgenomics.com/samples/cell-arc/2.0.0/pbmc_granulocyte_sorted_10k/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz.tbi', 
+download.file(url = 'https://costalab.ukaachen.de/open_data/scMEGA/10x_multiome/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz.tbi', 
                destfile = './10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz.tbi', 
                method = 'wget', extra = '--no-check-certificate')
               
-download.file(url = 'https://cf.10xgenomics.com/samples/cell-arc/2.0.0/pbmc_granulocyte_sorted_10k/pbmc_granulocyte_sorted_10k_filtered_feature_bc_matrix.h5', 
+download.file(url = 'https://costalab.ukaachen.de/open_data/scMEGA/10x_multiome/pbmc_granulocyte_sorted_10k_filtered_feature_bc_matrix.h5', 
               destfile = './10x_pbmc/pbmc_granulocyte_sorted_10k_filtered_feature_bc_matrix.h5', 
               method = 'wget', extra = '--no-check-certificate')
 ```
@@ -54,7 +54,7 @@ suppressMessages(library(MOJITOO))
 ## Data pre-processing
 
 Let's load the data into memory and extract scRNA and scATAC-seq data:
-```{r}
+```{r load_data}
 inputdata.10x <- Read10X_h5("./10x_pbmc/pbmc_granulocyte_sorted_10k_filtered_feature_bc_matrix.h5")
 
 # extract RNA and ATAC data
@@ -120,7 +120,9 @@ We next process the scRNA-seq and scATAC-seq data using standard Seurat and Sign
 ```{r}
 # normalization followed by dimensionality reduction
 obj.rna <- obj.rna %>%
-    SCTransform(verbose = FALSE) %>%
+    NormalizeData(verbose=FALSE) %>%
+    FindVariableFeatures(nfeatures=3000, verbose=F) %>%
+    ScaleData() %>%
     RunPCA(verbose = FALSE) %>%
     RunUMAP(dims = 1:30, verbose = FALSE)
 
@@ -144,8 +146,8 @@ p1 + p2
 We next will annotate the cell types in our multimodal data via label transfer approach implemented by Seurat. The reference dataset is found [here](https://raw.githack.com/bioFAM/MOFA2_tutorials/master/R_tutorials/10x_scRNA_scATAC.html)
 
 Download data
-```{bash, eval=TRUE}
-download.file(url = 'ftp://ftp.ebi.ac.uk/pub/databases/mofa/10x_rna_atac_vignette/seurat.rds', 
+```{r}
+download.file(url = 'https://costalab.ukaachen.de/open_data/scMEGA/10x_multiome/seurat.rds', 
               destfile = './10x_pbmc/seurat.rds', 
               method = 'wget', extra = '--no-check-certificate')
 ```
@@ -154,12 +156,18 @@ Load data
 ```{r}
 reference <- readRDS("./10x_pbmc/seurat.rds")
 
+reference <- UpdateSeuratObject(object = reference)
+
+reference[["RNA"]] <- as(reference[["RNA"]], "Assay5")
+
 # we only keep cells with annotated cell type
-reference <- reference[, reference$celltype != "NA"]
+reference <- subset(reference, subset = celltype != "NA")
 
 # run sctransform
 reference <- reference %>%
-    SCTransform(verbose = FALSE) %>%
+    NormalizeData(verbose=FALSE) %>%
+    FindVariableFeatures(nfeatures=3000, verbose=F) %>%
+    ScaleData() %>%
     RunPCA(verbose = FALSE) %>%
     RunUMAP(dims = 1:30, verbose = FALSE)
 ```
@@ -179,7 +187,6 @@ Transfer cell type labels from reference to query:
 transfer_anchors <- FindTransferAnchors(
   reference = reference,
   query = obj.rna,
-  normalization.method = "SCT",
   reference.reduction = "pca",
   dims = 1:30
 )
@@ -281,11 +288,8 @@ pbmc <- RunUMAP(pbmc,
                 reduction.name="MOJITOO_UMAP", 
                 dims=1:ncol(embedd), verbose=F)
 
-DimPlot(pbmc, 
-        group.by = "predicted.id", 
-        shuffle = TRUE, 
-        label = TRUE, 
-        reduction = "MOJITOO_UMAP") + NoLegend()
+DimPlot(pbmc, group.by = "predicted.id", 
+        shuffle = TRUE, label = TRUE, reduction = "MOJITOO_UMAP") + NoLegend()
 ```
 
 ## Trajectory analysis

@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">scMEGA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -87,9 +87,11 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Gene-regulatory network of CD4 T cells activaction</h1>
+      <h1 data-toc-skip>Gene-regulatory network of CD4 T cells
+activaction</h1>
             
-            <h4 data-toc-skip class="date">Compiled: December 01, 2022</h4>
+            <h4 data-toc-skip class="date">Compiled: September 23,
+2023</h4>
       
       
       <div class="hidden name"><code>pbmc_10x_multiome.Rmd</code></div>
@@ -98,614 +100,798 @@
 
     
     
-<p>In this tutorial, we’ll demonstrate how to infer gene regulatory network using single-cell multimodal data which measures gene expression and chromatin accessibility profiles from the same single cells. We will use a publicly available 10x Genomic Multiome data set for <a href="https://www.10xgenomics.com/resources/datasets/pbmc-from-a-healthy-donor-granulocytes-removed-through-cell-sorting-10-k-1-standard-2-0-0" class="external-link">human PBMCs</a>.</p>
+<p>In this tutorial, we’ll demonstrate how to infer gene regulatory
+network using single-cell multimodal data which measures gene expression
+and chromatin accessibility profiles from the same single cells. We will
+use a publicly available 10x Genomic Multiome data set for <a href="https://www.10xgenomics.com/resources/datasets/pbmc-from-a-healthy-donor-granulocytes-removed-through-cell-sorting-10-k-1-standard-2-0-0" class="external-link">human
+PBMCs</a>.</p>
 <p>We first download the required data.</p>
 <p>Run the following commands to download the data:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> 10x_pbmc</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> <span class="at">-q</span> <span class="at">-P</span> 10x_pbmc https://cf.10xgenomics.com/samples/cell-arc/2.0.0/pbmc_granulocyte_sorted_10k/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> <span class="at">-q</span> <span class="at">-P</span> 10x_pbmc https://cf.10xgenomics.com/samples/cell-arc/2.0.0/pbmc_granulocyte_sorted_10k/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz.tbi</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> <span class="at">-q</span> <span class="at">-P</span> 10x_pbmc https://cf.10xgenomics.com/samples/cell-arc/2.0.0/pbmc_granulocyte_sorted_10k/pbmc_granulocyte_sorted_10k_filtered_feature_bc_matrix.h5</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.exists</a></span><span class="op">(</span><span class="st">'./10x_pbmc'</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="st">'./10x_pbmc'</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">'https://costalab.ukaachen.de/open_data/scMEGA/10x_multiome/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz'</span>, </span>
+<span>              destfile <span class="op">=</span> <span class="st">'./10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz'</span>, </span>
+<span>              method <span class="op">=</span> <span class="st">'wget'</span>, extra <span class="op">=</span> <span class="st">'--no-check-certificate'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">'https://costalab.ukaachen.de/open_data/scMEGA/10x_multiome/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz.tbi'</span>, </span>
+<span>               destfile <span class="op">=</span> <span class="st">'./10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz.tbi'</span>, </span>
+<span>               method <span class="op">=</span> <span class="st">'wget'</span>, extra <span class="op">=</span> <span class="st">'--no-check-certificate'</span><span class="op">)</span></span>
+<span>              </span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">'https://costalab.ukaachen.de/open_data/scMEGA/10x_multiome/pbmc_granulocyte_sorted_10k_filtered_feature_bc_matrix.h5'</span>, </span>
+<span>              destfile <span class="op">=</span> <span class="st">'./10x_pbmc/pbmc_granulocyte_sorted_10k_filtered_feature_bc_matrix.h5'</span>, </span>
+<span>              method <span class="op">=</span> <span class="st">'wget'</span>, extra <span class="op">=</span> <span class="st">'--no-check-certificate'</span><span class="op">)</span></span></code></pre></div>
 <p>Next, we load all necessary packages:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ArchR</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stuart-lab/signac" class="external-link">Signac</a></span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://costalab.github.io/scMEGA/">scMEGA</a></span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/powellgenomicslab/Nebulosa" class="external-link">Nebulosa</a></span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">BSgenome.Hsapiens.UCSC.hg38</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/GenomeInfoDb" class="external-link">GenomeInfoDb</a></span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">EnsDb.Hsapiens.v86</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://jaspar.genereg.net/" class="external-link">JASPAR2020</a></span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ge11232002/TFBSTools" class="external-link">TFBSTools</a></span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://igraph.org" class="external-link">igraph</a></span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggraph.data-imaginist.com" class="external-link">ggraph</a></span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">MOJITOO</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ArchR</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stuart-lab/signac" class="external-link">Signac</a></span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://costalab.github.io/scMEGA/">scMEGA</a></span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/powellgenomicslab/Nebulosa" class="external-link">Nebulosa</a></span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">BSgenome.Hsapiens.UCSC.hg38</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/GenomeInfoDb" class="external-link">GenomeInfoDb</a></span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">EnsDb.Hsapiens.v86</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://jaspar.genereg.net/" class="external-link">JASPAR2020</a></span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ge11232002/TFBSTools" class="external-link">TFBSTools</a></span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r.igraph.org/" class="external-link">igraph</a></span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggraph.data-imaginist.com" class="external-link">ggraph</a></span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">MOJITOO</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="data-pre-processing">Data pre-processing<a class="anchor" aria-label="anchor" href="#data-pre-processing"></a>
 </h2>
-<p>Let’s load the data into memory and extract scRNA and scATAC-seq data:</p>
+<p>Let’s load the data into memory and extract scRNA and scATAC-seq
+data:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">inputdata.10x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/Read10X_h5.html" class="external-link">Read10X_h5</a></span><span class="op">(</span><span class="st">"./10x_pbmc/pbmc_granulocyte_sorted_10k_filtered_feature_bc_matrix.h5"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Genome matrix has multiple modalities, returning a list of matrices for this genome</span></code></pre>
+<code class="sourceCode R"><span><span class="va">inputdata.10x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/Read10X_h5.html" class="external-link">Read10X_h5</a></span><span class="op">(</span><span class="st">"./10x_pbmc/pbmc_granulocyte_sorted_10k_filtered_feature_bc_matrix.h5"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Genome matrix has multiple modalities, returning a list of matrices for this genome</span></span></code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># extract RNA and ATAC data</span>
-<span class="va">rna_counts</span> <span class="op">&lt;-</span> <span class="va">inputdata.10x</span><span class="op">$</span><span class="va">`Gene Expression`</span>
-<span class="va">atac_counts</span> <span class="op">&lt;-</span> <span class="va">inputdata.10x</span><span class="op">$</span><span class="va">Peaks</span>
-
-<span class="co"># filter peaks by chromosome</span>
-<span class="va">atac_counts</span> <span class="op">&lt;-</span> <span class="va">atac_counts</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"chr"</span>, <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">atac_counts</span><span class="op">)</span><span class="op">)</span>, <span class="op">]</span></code></pre></div>
-<p>Next create a Seurat object and filter low-quality cells in scRNA-seq data</p>
+<code class="sourceCode R"><span><span class="co"># extract RNA and ATAC data</span></span>
+<span><span class="va">rna_counts</span> <span class="op">&lt;-</span> <span class="va">inputdata.10x</span><span class="op">$</span><span class="va">`Gene Expression`</span></span>
+<span><span class="va">atac_counts</span> <span class="op">&lt;-</span> <span class="va">inputdata.10x</span><span class="op">$</span><span class="va">Peaks</span></span>
+<span></span>
+<span><span class="co"># filter peaks by chromosome</span></span>
+<span><span class="va">atac_counts</span> <span class="op">&lt;-</span> <span class="va">atac_counts</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"chr"</span>, <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">atac_counts</span><span class="op">)</span><span class="op">)</span>, <span class="op">]</span></span></code></pre></div>
+<p>Next create a Seurat object and filter low-quality cells in scRNA-seq
+data</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">obj.rna</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/CreateSeuratObject.html" class="external-link">CreateSeuratObject</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="va">rna_counts</span><span class="op">)</span>
-<span class="va">obj.rna</span><span class="op">[[</span><span class="st">"percent.mt"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/PercentageFeatureSet.html" class="external-link">PercentageFeatureSet</a></span><span class="op">(</span><span class="va">obj.rna</span>, pattern <span class="op">=</span> <span class="st">"^MT-"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">obj.rna</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/CreateSeuratObject.html" class="external-link">CreateSeuratObject</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="va">rna_counts</span><span class="op">)</span></span>
+<span><span class="va">obj.rna</span><span class="op">[[</span><span class="st">"percent.mt"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/PercentageFeatureSet.html" class="external-link">PercentageFeatureSet</a></span><span class="op">(</span><span class="va">obj.rna</span>, pattern <span class="op">=</span> <span class="st">"^MT-"</span><span class="op">)</span></span></code></pre></div>
 <p>We can visualize the data quality</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Visualize QC metrics as a violin plot</span>
-<span class="fu"><a href="https://satijalab.org/seurat/reference/VlnPlot.html" class="external-link">VlnPlot</a></span><span class="op">(</span><span class="va">obj.rna</span>, features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"nFeature_RNA"</span>, <span class="st">"nCount_RNA"</span>, <span class="st">"percent.mt"</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">3</span>, pt.size <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></code></pre></div>
-<p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-5-1.png" width="1440" style="display: block; margin: auto;"></p>
+<code class="sourceCode R"><span><span class="co"># Visualize QC metrics as a violin plot</span></span>
+<span><span class="fu"><a href="https://satijalab.org/seurat/reference/VlnPlot.html" class="external-link">VlnPlot</a></span><span class="op">(</span><span class="va">obj.rna</span>, features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"nFeature_RNA"</span>, <span class="st">"nCount_RNA"</span>, <span class="st">"percent.mt"</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">3</span>, pt.size <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+<p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-4-1.png" width="1440" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">obj.rna</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">obj.rna</span>, subset <span class="op">=</span> <span class="va">nFeature_RNA</span> <span class="op">&gt;</span> <span class="fl">200</span> <span class="op">&amp;</span> <span class="va">nFeature_RNA</span> <span class="op">&lt;</span> <span class="fl">3000</span> <span class="op">&amp;</span> <span class="va">percent.mt</span> <span class="op">&lt;</span> <span class="fl">20</span><span class="op">)</span>
-
-<span class="va">obj.rna</span></code></pre></div>
-<pre><code><span class="co">## An object of class Seurat </span>
-<span class="co">## 36601 features across 10504 samples within 1 assay </span>
-<span class="co">## Active assay: RNA (36601 features, 0 variable features)</span></code></pre>
+<code class="sourceCode R"><span><span class="va">obj.rna</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">obj.rna</span>, subset <span class="op">=</span> <span class="va">nFeature_RNA</span> <span class="op">&gt;</span> <span class="fl">200</span> <span class="op">&amp;</span> <span class="va">nFeature_RNA</span> <span class="op">&lt;</span> <span class="fl">3000</span> <span class="op">&amp;</span> <span class="va">percent.mt</span> <span class="op">&lt;</span> <span class="fl">20</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">obj.rna</span></span></code></pre></div>
+<pre><code><span><span class="co">## An object of class Seurat </span></span>
+<span><span class="co">## 36601 features across 10504 samples within 1 assay </span></span>
+<span><span class="co">## Active assay: RNA (36601 features, 0 variable features)</span></span>
+<span><span class="co">##  2 layers present: counts, data</span></span></code></pre>
 <p>Create Seurat object for scATAC-seq data:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># create seurat object</span>
-<span class="va">chrom_assay</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/signac/reference/CreateChromatinAssay.html" class="external-link">CreateChromatinAssay</a></span><span class="op">(</span>
-    counts <span class="op">=</span> <span class="va">atac_counts</span>,
-    sep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">":"</span>, <span class="st">"-"</span><span class="op">)</span>,
-    min.cells <span class="op">=</span> <span class="fl">1</span>,
-    genome <span class="op">=</span> <span class="st">'hg38'</span>,
-    fragments <span class="op">=</span> <span class="st">'./10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz'</span>
-<span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Computing hash</span></code></pre>
+<code class="sourceCode R"><span><span class="co"># create seurat object</span></span>
+<span><span class="va">chrom_assay</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://stuartlab.org/signac/reference/CreateChromatinAssay.html" class="external-link">CreateChromatinAssay</a></span><span class="op">(</span></span>
+<span>    counts <span class="op">=</span> <span class="va">atac_counts</span>,</span>
+<span>    sep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">":"</span>, <span class="st">"-"</span><span class="op">)</span>,</span>
+<span>    min.cells <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    genome <span class="op">=</span> <span class="st">'hg38'</span>,</span>
+<span>    fragments <span class="op">=</span> <span class="st">'./10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz'</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Computing hash</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">obj.atac</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/CreateSeuratObject.html" class="external-link">CreateSeuratObject</a></span><span class="op">(</span>
-    counts <span class="op">=</span> <span class="va">chrom_assay</span>,
-    assay <span class="op">=</span> <span class="st">"ATAC"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Warning: Keys should be one or more alphanumeric characters followed by an</span>
-<span class="co">## underscore, setting key from atac to atac_</span></code></pre>
+<code class="sourceCode R"><span><span class="va">obj.atac</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/CreateSeuratObject.html" class="external-link">CreateSeuratObject</a></span><span class="op">(</span></span>
+<span>    counts <span class="op">=</span> <span class="va">chrom_assay</span>,</span>
+<span>    assay <span class="op">=</span> <span class="st">"ATAC"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># extract gene annotations from EnsDb</span></span>
+<span><span class="va">annotations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://stuartlab.org/signac/reference/GetGRangesFromEnsDb.html" class="external-link">GetGRangesFromEnsDb</a></span><span class="op">(</span>ensdb <span class="op">=</span> <span class="va">EnsDb.Hsapiens.v86</span>, </span>
+<span>                                   verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
+<span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
+<span></span>
+<span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
+<span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
+<span></span>
+<span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
+<span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
+<span></span>
+<span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
+<span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
+<span></span>
+<span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
+<span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
+<span></span>
+<span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
+<span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
+<span></span>
+<span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
+<span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
+<span></span>
+<span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
+<span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
+<span></span>
+<span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
+<span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
+<span></span>
+<span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
+<span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
+<span></span>
+<span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
+<span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
+<span></span>
+<span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
+<span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
+<span></span>
+<span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
+<span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
+<span></span>
+<span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
+<span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
+<span></span>
+<span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
+<span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
+<span></span>
+<span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
+<span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
+<span></span>
+<span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
+<span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
+<span></span>
+<span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
+<span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
+<span></span>
+<span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
+<span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
+<span></span>
+<span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
+<span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
+<span></span>
+<span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
+<span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
+<span></span>
+<span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
+<span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
+<span></span>
+<span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
+<span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
+<span></span>
+<span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
+<span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span></code></pre>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># extract gene annotations from EnsDb</span>
-<span class="va">annotations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.org/signac/reference/GetGRangesFromEnsDb.html" class="external-link">GetGRangesFromEnsDb</a></span><span class="op">(</span>ensdb <span class="op">=</span> <span class="va">EnsDb.Hsapiens.v86</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># change to UCSC style since the data was mapped to hg38</span>
-<span class="fu"><a href="https://rdrr.io/pkg/GenomeInfoDb/man/seqlevelsStyle.html" class="external-link">seqlevelsStyle</a></span><span class="op">(</span><span class="va">annotations</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">'UCSC'</span>
-
-<span class="co"># add the gene information to the object</span>
-<span class="fu"><a href="https://satijalab.org/signac/reference/Annotation.html" class="external-link">Annotation</a></span><span class="op">(</span><span class="va">obj.atac</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">annotations</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># change to UCSC style since the data was mapped to hg38</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/GenomeInfoDb/man/seqlevelsStyle.html" class="external-link">seqlevelsStyle</a></span><span class="op">(</span><span class="va">annotations</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">'UCSC'</span></span>
+<span></span>
+<span><span class="co"># add the gene information to the object</span></span>
+<span><span class="fu"><a href="https://stuartlab.org/signac/reference/Annotation.html" class="external-link">Annotation</a></span><span class="op">(</span><span class="va">obj.atac</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">annotations</span></span></code></pre></div>
 <p>Make sure that the two modalities have the same cells:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">cell.sel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/setops.html" class="external-link">intersect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">obj.rna</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">obj.atac</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">obj.rna</span> <span class="op">&lt;-</span> <span class="va">obj.rna</span><span class="op">[</span>, <span class="va">cell.sel</span><span class="op">]</span>
-<span class="va">obj.atac</span> <span class="op">&lt;-</span> <span class="va">obj.atac</span><span class="op">[</span>, <span class="va">cell.sel</span><span class="op">]</span></code></pre></div>
-<p>We next process the scRNA-seq and scATAC-seq data using standard Seurat and Signac analysis pipeline:</p>
+<code class="sourceCode R"><span><span class="va">cell.sel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/setops.html" class="external-link">intersect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">obj.rna</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">obj.atac</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">obj.rna</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">obj.rna</span>, cells <span class="op">=</span> <span class="va">cell.sel</span><span class="op">)</span></span>
+<span><span class="va">obj.atac</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">obj.atac</span>, cells <span class="op">=</span> <span class="va">cell.sel</span><span class="op">)</span></span></code></pre></div>
+<p>We next process the scRNA-seq and scATAC-seq data using standard
+Seurat and Signac analysis pipeline:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># normalization followed by dimensionality reduction</span>
-<span class="va">obj.rna</span> <span class="op">&lt;-</span> <span class="va">obj.rna</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://satijalab.org/seurat/reference/SCTransform.html" class="external-link">SCTransform</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://satijalab.org/seurat/reference/RunPCA.html" class="external-link">RunPCA</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://satijalab.org/seurat/reference/RunUMAP.html" class="external-link">RunUMAP</a></span><span class="op">(</span>dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric</span>
-<span class="co">## To use Python UMAP via reticulate, set umap.method to 'umap-learn' and metric to 'correlation'</span>
-<span class="co">## This message will be shown once per session</span></code></pre>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">obj.atac</span> <span class="op">&lt;-</span> <span class="va">obj.atac</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://satijalab.org/signac/reference/RunTFIDF.html" class="external-link">RunTFIDF</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://satijalab.org/signac/reference/FindTopFeatures.html" class="external-link">FindTopFeatures</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://satijalab.org/signac/reference/RunSVD.html" class="external-link">RunSVD</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://satijalab.org/seurat/reference/RunUMAP.html" class="external-link">RunUMAP</a></span><span class="op">(</span>reduction <span class="op">=</span> <span class="st">'lsi'</span>, dims <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">30</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Performing TF-IDF normalization</span></code></pre>
-<pre><code><span class="co">## Running SVD</span></code></pre>
-<pre><code><span class="co">## Scaling cell embeddings</span></code></pre>
+<code class="sourceCode R"><span><span class="co"># normalization followed by dimensionality reduction</span></span>
+<span><span class="va">obj.rna</span> <span class="op">&lt;-</span> <span class="va">obj.rna</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/NormalizeData.html" class="external-link">NormalizeData</a></span><span class="op">(</span>verbose<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/FindVariableFeatures.html" class="external-link">FindVariableFeatures</a></span><span class="op">(</span>nfeatures<span class="op">=</span><span class="fl">3000</span>, verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/ScaleData.html" class="external-link">ScaleData</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/RunPCA.html" class="external-link">RunPCA</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/RunUMAP.html" class="external-link">RunUMAP</a></span><span class="op">(</span>dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: The following arguments are not used: nselect</span></span></code></pre>
+<pre><code><span><span class="co">## Centering and scaling data matrix</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric</span></span>
+<span><span class="co">## To use Python UMAP via reticulate, set umap.method to 'umap-learn' and metric to 'correlation'</span></span>
+<span><span class="co">## This message will be shown once per session</span></span></code></pre>
+<pre><code><span><span class="co">## Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></span></code></pre>
+<pre><code><span><span class="co">## Also defined by 'spam'</span></span></code></pre>
+<pre><code><span><span class="co">## Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></span></code></pre>
+<pre><code><span><span class="co">## Also defined by 'spam'</span></span></code></pre>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">obj.atac</span> <span class="op">&lt;-</span> <span class="va">obj.atac</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://stuartlab.org/signac/reference/RunTFIDF.html" class="external-link">RunTFIDF</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://stuartlab.org/signac/reference/FindTopFeatures.html" class="external-link">FindTopFeatures</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://stuartlab.org/signac/reference/RunSVD.html" class="external-link">RunSVD</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/RunUMAP.html" class="external-link">RunUMAP</a></span><span class="op">(</span>reduction <span class="op">=</span> <span class="st">'lsi'</span>, dims <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">30</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Performing TF-IDF normalization</span></span></code></pre>
+<pre><code><span><span class="co">## Running SVD</span></span></code></pre>
+<pre><code><span><span class="co">## Scaling cell embeddings</span></span></code></pre>
+<pre><code><span><span class="co">## Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></span></code></pre>
+<pre><code><span><span class="co">## Also defined by 'spam'</span></span></code></pre>
+<pre><code><span><span class="co">## Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></span></code></pre>
+<pre><code><span><span class="co">## Also defined by 'spam'</span></span></code></pre>
 <p>Visualize the scRNA-seq and scATAC-seq separately.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.rna</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoLegend</a></span><span class="op">(</span><span class="op">)</span>
-<span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.atac</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoLegend</a></span><span class="op">(</span><span class="op">)</span>
-
-<span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></code></pre></div>
-<p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-9-1.png" width="960" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.rna</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoLegend</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.atac</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoLegend</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code></pre></div>
+<p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-8-1.png" width="960" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2">
 <h2 id="cell-type-annotation">Cell type annotation<a class="anchor" aria-label="anchor" href="#cell-type-annotation"></a>
 </h2>
-<p>We next will annotate the cell types in our multimodal data via label transfer approach implemented by Seurat. The reference dataset is found <a href="https://raw.githack.com/bioFAM/MOFA2_tutorials/master/R_tutorials/10x_scRNA_scATAC.html" class="external-link">here</a></p>
+<p>We next will annotate the cell types in our multimodal data via label
+transfer approach implemented by Seurat. The reference dataset is found
+<a href="https://raw.githack.com/bioFAM/MOFA2_tutorials/master/R_tutorials/10x_scRNA_scATAC.html" class="external-link">here</a></p>
 <p>Download data</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> <span class="at">-q</span> <span class="at">-P</span> 10x_pbmc ftp://ftp.ebi.ac.uk/pub/databases/mofa/10x_rna_atac_vignette/seurat.rds</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">'https://costalab.ukaachen.de/open_data/scMEGA/10x_multiome/seurat.rds'</span>, </span>
+<span>              destfile <span class="op">=</span> <span class="st">'./10x_pbmc/seurat.rds'</span>, </span>
+<span>              method <span class="op">=</span> <span class="st">'wget'</span>, extra <span class="op">=</span> <span class="st">'--no-check-certificate'</span><span class="op">)</span></span></code></pre></div>
 <p>Load data</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">reference</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"./10x_pbmc/seurat.rds"</span><span class="op">)</span>
-
-<span class="co"># we only keep cells with annotated cell type</span>
-<span class="va">reference</span> <span class="op">&lt;-</span> <span class="va">reference</span><span class="op">[</span>, <span class="va">reference</span><span class="op">$</span><span class="va">celltype</span> <span class="op">!=</span> <span class="st">"NA"</span><span class="op">]</span>
-
-<span class="co"># run sctransform</span>
-<span class="va">reference</span> <span class="op">&lt;-</span> <span class="va">reference</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://satijalab.org/seurat/reference/SCTransform.html" class="external-link">SCTransform</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://satijalab.org/seurat/reference/RunPCA.html" class="external-link">RunPCA</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://satijalab.org/seurat/reference/RunUMAP.html" class="external-link">RunUMAP</a></span><span class="op">(</span>dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">reference</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, repel <span class="op">=</span> <span class="cn">TRUE</span>, 
-        reduction <span class="op">=</span> <span class="st">"umap"</span>, group.by <span class="op">=</span> <span class="st">"broad_celltype"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoLegend</a></span><span class="op">(</span><span class="op">)</span>
-
-<span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">reference</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, repel <span class="op">=</span> <span class="cn">TRUE</span>, 
-        reduction <span class="op">=</span> <span class="st">"umap"</span>, group.by <span class="op">=</span> <span class="st">"celltype"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoLegend</a></span><span class="op">(</span><span class="op">)</span>
-
-<span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></code></pre></div>
-<p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-12-1.png" width="1152" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">reference</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"./10x_pbmc/seurat.rds"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">reference</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/UpdateSeuratObject.html" class="external-link">UpdateSeuratObject</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">reference</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Validating object structure</span></span></code></pre>
+<pre><code><span><span class="co">## Updating object slots</span></span></code></pre>
+<pre><code><span><span class="co">## Ensuring keys are in the proper structure</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: Assay RNA changing from Assay to Assay</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: Assay ATAC changing from Assay to Assay</span></span></code></pre>
+<pre><code><span><span class="co">## Ensuring keys are in the proper structure</span></span></code></pre>
+<pre><code><span><span class="co">## Ensuring feature names don't have underscores or pipes</span></span></code></pre>
+<pre><code><span><span class="co">## Updating slots in RNA</span></span></code></pre>
+<pre><code><span><span class="co">## Updating slots in ATAC</span></span></code></pre>
+<pre><code><span><span class="co">## Validating object structure for Assay 'RNA'</span></span></code></pre>
+<pre><code><span><span class="co">## Validating object structure for Assay 'ATAC'</span></span></code></pre>
+<pre><code><span><span class="co">## Object representation is consistent with the most current Seurat version</span></span></code></pre>
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">reference</span><span class="op">[[</span><span class="st">"RNA"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/methods/as.html" class="external-link">as</a></span><span class="op">(</span><span class="va">reference</span><span class="op">[[</span><span class="st">"RNA"</span><span class="op">]</span><span class="op">]</span>, <span class="st">"Assay5"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: Assay RNA changing from Assay to Assay5</span></span></code></pre>
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># we only keep cells with annotated cell type</span></span>
+<span><span class="va">reference</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">reference</span>, subset <span class="op">=</span> <span class="va">celltype</span> <span class="op">!=</span> <span class="st">"NA"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: Removing 1877 cells missing data for vars requested</span></span></code></pre>
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># run sctransform</span></span>
+<span><span class="va">reference</span> <span class="op">&lt;-</span> <span class="va">reference</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/NormalizeData.html" class="external-link">NormalizeData</a></span><span class="op">(</span>verbose<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/FindVariableFeatures.html" class="external-link">FindVariableFeatures</a></span><span class="op">(</span>nfeatures<span class="op">=</span><span class="fl">3000</span>, verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/ScaleData.html" class="external-link">ScaleData</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/RunPCA.html" class="external-link">RunPCA</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/RunUMAP.html" class="external-link">RunUMAP</a></span><span class="op">(</span>dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: The following arguments are not used: layer</span></span></code></pre>
+<pre><code><span><span class="co">## Centering and scaling data matrix</span></span></code></pre>
+<pre><code><span><span class="co">## Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></span></code></pre>
+<pre><code><span><span class="co">## Also defined by 'spam'</span></span></code></pre>
+<pre><code><span><span class="co">## Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></span></code></pre>
+<pre><code><span><span class="co">## Also defined by 'spam'</span></span></code></pre>
+<pre><code><span><span class="co">## Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></span></code></pre>
+<pre><code><span><span class="co">## Also defined by 'spam'</span></span></code></pre>
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">reference</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, repel <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>        reduction <span class="op">=</span> <span class="st">"umap"</span>, group.by <span class="op">=</span> <span class="st">"broad_celltype"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoLegend</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">reference</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, repel <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>        reduction <span class="op">=</span> <span class="st">"umap"</span>, group.by <span class="op">=</span> <span class="st">"celltype"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoLegend</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code></pre></div>
+<p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-11-1.png" width="1152" style="display: block; margin: auto;"></p>
 <p>Transfer cell type labels from reference to query:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">transfer_anchors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindTransferAnchors.html" class="external-link">FindTransferAnchors</a></span><span class="op">(</span>
-  reference <span class="op">=</span> <span class="va">reference</span>,
-  query <span class="op">=</span> <span class="va">obj.rna</span>,
-  normalization.method <span class="op">=</span> <span class="st">"SCT"</span>,
-  reference.reduction <span class="op">=</span> <span class="st">"pca"</span>,
-  dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>
-<span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Normalizing query using reference SCT model</span></code></pre>
-<pre><code><span class="co">## Projecting cell embeddings</span></code></pre>
-<pre><code><span class="co">## Finding neighborhoods</span></code></pre>
-<pre><code><span class="co">## Finding anchors</span></code></pre>
-<pre><code><span class="co">##  Found 28714 anchors</span></code></pre>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">predictions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/TransferData.html" class="external-link">TransferData</a></span><span class="op">(</span>
-  anchorset <span class="op">=</span> <span class="va">transfer_anchors</span>, 
-  refdata <span class="op">=</span> <span class="va">reference</span><span class="op">$</span><span class="va">celltype</span>,
-  weight.reduction <span class="op">=</span> <span class="va">obj.rna</span><span class="op">[[</span><span class="st">'pca'</span><span class="op">]</span><span class="op">]</span>,
-  dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>
-<span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Finding integration vectors</span></code></pre>
-<pre><code><span class="co">## Finding integration vector weights</span></code></pre>
-<pre><code><span class="co">## Predicting cell labels</span></code></pre>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">obj.rna</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/AddMetaData.html" class="external-link">AddMetaData</a></span><span class="op">(</span>
-  object <span class="op">=</span> <span class="va">obj.rna</span>,
-  metadata <span class="op">=</span> <span class="va">predictions</span>
-<span class="op">)</span>
-
-<span class="va">obj.atac</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/AddMetaData.html" class="external-link">AddMetaData</a></span><span class="op">(</span>
-  object <span class="op">=</span> <span class="va">obj.atac</span>,
-  metadata <span class="op">=</span> <span class="va">predictions</span>
-<span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">transfer_anchors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindTransferAnchors.html" class="external-link">FindTransferAnchors</a></span><span class="op">(</span></span>
+<span>  reference <span class="op">=</span> <span class="va">reference</span>,</span>
+<span>  query <span class="op">=</span> <span class="va">obj.rna</span>,</span>
+<span>  reference.reduction <span class="op">=</span> <span class="st">"pca"</span>,</span>
+<span>  dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Projecting cell embeddings</span></span></code></pre>
+<pre><code><span><span class="co">## Finding neighborhoods</span></span></code></pre>
+<pre><code><span><span class="co">## Finding anchors</span></span></code></pre>
+<pre><code><span><span class="co">##  Found 26315 anchors</span></span></code></pre>
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">predictions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/TransferData.html" class="external-link">TransferData</a></span><span class="op">(</span></span>
+<span>  anchorset <span class="op">=</span> <span class="va">transfer_anchors</span>, </span>
+<span>  refdata <span class="op">=</span> <span class="va">reference</span><span class="op">$</span><span class="va">celltype</span>,</span>
+<span>  weight.reduction <span class="op">=</span> <span class="va">obj.rna</span><span class="op">[[</span><span class="st">'pca'</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>  dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Finding integration vectors</span></span></code></pre>
+<pre><code><span><span class="co">## Finding integration vector weights</span></span></code></pre>
+<pre><code><span><span class="co">## Predicting cell labels</span></span></code></pre>
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">obj.rna</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/AddMetaData.html" class="external-link">AddMetaData</a></span><span class="op">(</span></span>
+<span>  object <span class="op">=</span> <span class="va">obj.rna</span>,</span>
+<span>  metadata <span class="op">=</span> <span class="va">predictions</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">obj.atac</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/AddMetaData.html" class="external-link">AddMetaData</a></span><span class="op">(</span></span>
+<span>  object <span class="op">=</span> <span class="va">obj.atac</span>,</span>
+<span>  metadata <span class="op">=</span> <span class="va">predictions</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Visualize the predicted cell types:</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.rna</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, repel <span class="op">=</span> <span class="cn">TRUE</span>, 
-        reduction <span class="op">=</span> <span class="st">"umap"</span>, group.by <span class="op">=</span> <span class="st">"predicted.id"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoLegend</a></span><span class="op">(</span><span class="op">)</span>
-
-<span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.atac</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, repel <span class="op">=</span> <span class="cn">TRUE</span>, 
-        reduction <span class="op">=</span> <span class="st">"umap"</span>, group.by <span class="op">=</span> <span class="st">"predicted.id"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoLegend</a></span><span class="op">(</span><span class="op">)</span>
-
-<span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></code></pre></div>
-<p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-14-1.png" width="1152" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.rna</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, repel <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>        reduction <span class="op">=</span> <span class="st">"umap"</span>, group.by <span class="op">=</span> <span class="st">"predicted.id"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoLegend</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.atac</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, repel <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>        reduction <span class="op">=</span> <span class="st">"umap"</span>, group.by <span class="op">=</span> <span class="st">"predicted.id"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoLegend</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code></pre></div>
+<p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-13-1.png" width="1152" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2">
 <h2 id="integration-of-multimodal-single-cell-data-using-mojitoo">Integration of multimodal single-cell data using MOJITOO<a class="anchor" aria-label="anchor" href="#integration-of-multimodal-single-cell-data-using-mojitoo"></a>
 </h2>
-<p>We next need to project the cells into a low-dimensional space. Here we can use <a href="https://academic.oup.com/bioinformatics/article/38/Supplement_1/i282/6617520?login=true" class="external-link">MOJITOO</a> to do this job.</p>
-<p>Let’s first create a single Seurat object including both modalities and predicted cell types that we generated in the above step:</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">meta.data</span> <span class="op">&lt;-</span> <span class="va">obj.rna</span><span class="op">@</span><span class="va">meta.data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span>
-
-<span class="co"># create a Seurat object containing the RNA adata</span>
-<span class="va">pbmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/CreateSeuratObject.html" class="external-link">CreateSeuratObject</a></span><span class="op">(</span>
-  counts <span class="op">=</span> <span class="va">obj.rna</span><span class="op">@</span><span class="va">assays</span><span class="op">$</span><span class="va">RNA</span><span class="op">@</span><span class="va">counts</span>,
-  assay <span class="op">=</span> <span class="st">"RNA"</span>,
-    meta.data <span class="op">=</span> <span class="va">meta.data</span>
-<span class="op">)</span>
-
-<span class="co"># create ATAC assay and add it to the object</span>
-<span class="va">pbmc</span><span class="op">[[</span><span class="st">"ATAC"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/signac/reference/CreateChromatinAssay.html" class="external-link">CreateChromatinAssay</a></span><span class="op">(</span>
-  counts <span class="op">=</span> <span class="va">obj.atac</span><span class="op">@</span><span class="va">assays</span><span class="op">$</span><span class="va">ATAC</span><span class="op">@</span><span class="va">counts</span>,
-  sep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">":"</span>, <span class="st">"-"</span><span class="op">)</span>,
-    min.cells <span class="op">=</span> <span class="fl">1</span>,
-    genome <span class="op">=</span> <span class="st">'hg38'</span>,
-    fragments <span class="op">=</span> <span class="st">'./10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz'</span>
-<span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Computing hash</span></code></pre>
-<p>MOJITOO takes as input the individual low-dimensional space for each modality, so here we do this again:</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## RNA pre-processing and PCA dimension reduction</span>
-<span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/DefaultAssay.html" class="external-link">DefaultAssay</a></span><span class="op">(</span><span class="va">pbmc</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"RNA"</span>
-
-<span class="va">pbmc</span> <span class="op">&lt;-</span> <span class="va">pbmc</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://satijalab.org/seurat/reference/NormalizeData.html" class="external-link">NormalizeData</a></span><span class="op">(</span>verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://satijalab.org/seurat/reference/FindVariableFeatures.html" class="external-link">FindVariableFeatures</a></span><span class="op">(</span>nfeatures<span class="op">=</span><span class="fl">3000</span>, verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://satijalab.org/seurat/reference/ScaleData.html" class="external-link">ScaleData</a></span><span class="op">(</span>verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://satijalab.org/seurat/reference/RunPCA.html" class="external-link">RunPCA</a></span><span class="op">(</span>npcs<span class="op">=</span><span class="fl">50</span>, reduction.name<span class="op">=</span><span class="st">"RNA_PCA"</span>, verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span>
-
-<span class="co">## ATAC pre-processing and LSI dimension reduction</span>
-<span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/DefaultAssay.html" class="external-link">DefaultAssay</a></span><span class="op">(</span><span class="va">pbmc</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"ATAC"</span>
-
-<span class="va">pbmc</span> <span class="op">&lt;-</span> <span class="va">pbmc</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://satijalab.org/signac/reference/RunTFIDF.html" class="external-link">RunTFIDF</a></span><span class="op">(</span>verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://satijalab.org/signac/reference/FindTopFeatures.html" class="external-link">FindTopFeatures</a></span><span class="op">(</span>min.cutoff <span class="op">=</span> <span class="st">'q0'</span>, verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://satijalab.org/signac/reference/RunSVD.html" class="external-link">RunSVD</a></span><span class="op">(</span>verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span></code></pre></div>
+<p>We next need to project the cells into a low-dimensional space. Here
+we can use <a href="https://academic.oup.com/bioinformatics/article/38/Supplement_1/i282/6617520?login=true" class="external-link">MOJITOO</a>
+to do this job.</p>
+<p>Let’s first create a single Seurat object including both modalities
+and predicted cell types that we generated in the above step:</p>
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">meta.data</span> <span class="op">&lt;-</span> <span class="va">obj.rna</span><span class="op">@</span><span class="va">meta.data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># create a Seurat object containing the RNA adata</span></span>
+<span><span class="va">pbmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/CreateSeuratObject.html" class="external-link">CreateSeuratObject</a></span><span class="op">(</span></span>
+<span>  counts <span class="op">=</span> <span class="va">obj.rna</span><span class="op">@</span><span class="va">assays</span><span class="op">$</span><span class="va">RNA</span><span class="op">@</span><span class="va">counts</span>,</span>
+<span>  assay <span class="op">=</span> <span class="st">"RNA"</span>,</span>
+<span>    meta.data <span class="op">=</span> <span class="va">meta.data</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># create ATAC assay and add it to the object</span></span>
+<span><span class="va">pbmc</span><span class="op">[[</span><span class="st">"ATAC"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://stuartlab.org/signac/reference/CreateChromatinAssay.html" class="external-link">CreateChromatinAssay</a></span><span class="op">(</span></span>
+<span>  counts <span class="op">=</span> <span class="va">obj.atac</span><span class="op">@</span><span class="va">assays</span><span class="op">$</span><span class="va">ATAC</span><span class="op">@</span><span class="va">counts</span>,</span>
+<span>  sep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">":"</span>, <span class="st">"-"</span><span class="op">)</span>,</span>
+<span>    min.cells <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    genome <span class="op">=</span> <span class="st">'hg38'</span>,</span>
+<span>    fragments <span class="op">=</span> <span class="st">'./10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz'</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Computing hash</span></span></code></pre>
+<p>MOJITOO takes as input the individual low-dimensional space for each
+modality, so here we do this again:</p>
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## RNA pre-processing and PCA dimension reduction</span></span>
+<span><span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/DefaultAssay.html" class="external-link">DefaultAssay</a></span><span class="op">(</span><span class="va">pbmc</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"RNA"</span></span>
+<span></span>
+<span><span class="va">pbmc</span> <span class="op">&lt;-</span> <span class="va">pbmc</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/NormalizeData.html" class="external-link">NormalizeData</a></span><span class="op">(</span>verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/FindVariableFeatures.html" class="external-link">FindVariableFeatures</a></span><span class="op">(</span>nfeatures<span class="op">=</span><span class="fl">3000</span>, verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/ScaleData.html" class="external-link">ScaleData</a></span><span class="op">(</span>verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/RunPCA.html" class="external-link">RunPCA</a></span><span class="op">(</span>npcs<span class="op">=</span><span class="fl">50</span>, reduction.name<span class="op">=</span><span class="st">"RNA_PCA"</span>, verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: The following arguments are not used: nselect</span></span></code></pre>
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## ATAC pre-processing and LSI dimension reduction</span></span>
+<span><span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/DefaultAssay.html" class="external-link">DefaultAssay</a></span><span class="op">(</span><span class="va">pbmc</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"ATAC"</span></span>
+<span></span>
+<span><span class="va">pbmc</span> <span class="op">&lt;-</span> <span class="va">pbmc</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://stuartlab.org/signac/reference/RunTFIDF.html" class="external-link">RunTFIDF</a></span><span class="op">(</span>verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://stuartlab.org/signac/reference/FindTopFeatures.html" class="external-link">FindTopFeatures</a></span><span class="op">(</span>min.cutoff <span class="op">=</span> <span class="st">'q0'</span>, verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://stuartlab.org/signac/reference/RunSVD.html" class="external-link">RunSVD</a></span><span class="op">(</span>verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span></span></code></pre></div>
 <p>Run MOJITOO:</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MOJITOO/man/mojitoo.html" class="external-link">mojitoo</a></span><span class="op">(</span>
-     object <span class="op">=</span> <span class="va">pbmc</span>,
-     reduction.list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"RNA_PCA"</span>, <span class="st">"lsi"</span><span class="op">)</span>,
-     dims.list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span>, <span class="fl">2</span><span class="op">:</span><span class="fl">50</span><span class="op">)</span>, <span class="co">## exclude 1st dimension of LSI</span>
-     reduction.name <span class="op">=</span> <span class="st">'MOJITOO'</span>,
-     assay <span class="op">=</span> <span class="st">"RNA"</span>
-<span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## processing RNA_PCA</span></code></pre>
-<pre><code><span class="co">## adding lsi</span></code></pre>
-<pre><code><span class="co">## 1 round cc 45</span></code></pre>
-<pre><code><span class="co">## Warning: Keys should be one or more alphanumeric characters followed by an</span>
-<span class="co">## underscore, setting key from MOJITOO to MOJITOO_</span></code></pre>
-<pre><code><span class="co">## Warning: All keys should be one or more alphanumeric characters followed by an</span>
-<span class="co">## underscore '_', setting key to MOJITOO_</span></code></pre>
-<p>We can generate another UMAP representation based on the MOJITOO results:</p>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/DefaultAssay.html" class="external-link">DefaultAssay</a></span><span class="op">(</span><span class="va">pbmc</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"RNA"</span>
-<span class="va">embedd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/Embeddings.html" class="external-link">Embeddings</a></span><span class="op">(</span><span class="va">pbmc</span><span class="op">[[</span><span class="st">"MOJITOO"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
-<span class="va">pbmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/RunUMAP.html" class="external-link">RunUMAP</a></span><span class="op">(</span><span class="va">pbmc</span>, 
-                reduction<span class="op">=</span><span class="st">"MOJITOO"</span>, 
-                reduction.name<span class="op">=</span><span class="st">"MOJITOO_UMAP"</span>, 
-                dims<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">embedd</span><span class="op">)</span>, verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span>
-
-<span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">pbmc</span>, group.by <span class="op">=</span> <span class="st">"predicted.id"</span>, 
-        shuffle <span class="op">=</span> <span class="cn">TRUE</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, reduction <span class="op">=</span> <span class="st">"MOJITOO_UMAP"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoLegend</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-18-1.png" width="576" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pbmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MOJITOO/man/mojitoo.html" class="external-link">mojitoo</a></span><span class="op">(</span></span>
+<span>     object <span class="op">=</span> <span class="va">pbmc</span>,</span>
+<span>     reduction.list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"RNA_PCA"</span>, <span class="st">"lsi"</span><span class="op">)</span>,</span>
+<span>     dims.list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span>, <span class="fl">2</span><span class="op">:</span><span class="fl">50</span><span class="op">)</span>, <span class="co">## exclude 1st dimension of LSI</span></span>
+<span>     reduction.name <span class="op">=</span> <span class="st">'MOJITOO'</span>,</span>
+<span>     assay <span class="op">=</span> <span class="st">"RNA"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## processing RNA_PCA</span></span></code></pre>
+<pre><code><span><span class="co">## adding lsi</span></span></code></pre>
+<pre><code><span><span class="co">## 1 round cc 45</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: Keys should be one or more alphanumeric characters followed by an</span></span>
+<span><span class="co">## underscore, setting key from MOJITOO to MOJITOO_</span></span></code></pre>
+<p>We can generate another UMAP representation based on the MOJITOO
+results:</p>
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/DefaultAssay.html" class="external-link">DefaultAssay</a></span><span class="op">(</span><span class="va">pbmc</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"RNA"</span></span>
+<span><span class="va">embedd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/Embeddings.html" class="external-link">Embeddings</a></span><span class="op">(</span><span class="va">pbmc</span><span class="op">[[</span><span class="st">"MOJITOO"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">pbmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/RunUMAP.html" class="external-link">RunUMAP</a></span><span class="op">(</span><span class="va">pbmc</span>, </span>
+<span>                reduction<span class="op">=</span><span class="st">"MOJITOO"</span>, </span>
+<span>                reduction.name<span class="op">=</span><span class="st">"MOJITOO_UMAP"</span>, </span>
+<span>                dims<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">embedd</span><span class="op">)</span>, verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></span></code></pre>
+<pre><code><span><span class="co">## Also defined by 'spam'</span></span></code></pre>
+<pre><code><span><span class="co">## Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></span></code></pre>
+<pre><code><span><span class="co">## Also defined by 'spam'</span></span></code></pre>
+<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">pbmc</span>, group.by <span class="op">=</span> <span class="st">"predicted.id"</span>, </span>
+<span>        shuffle <span class="op">=</span> <span class="cn">TRUE</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, reduction <span class="op">=</span> <span class="st">"MOJITOO_UMAP"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoLegend</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-17-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2">
 <h2 id="trajectory-analysis">Trajectory analysis<a class="anchor" aria-label="anchor" href="#trajectory-analysis"></a>
 </h2>
-<p>We next infer a trajectory from naive CD4 T cells to memory CD4 T cells to characterize CD4+ T cell activation.</p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddTrajectory.html">AddTrajectory</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc</span>, 
-                      trajectory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"naive CD4 T cells"</span>, 
-                                     <span class="st">"memory CD4 T cells"</span><span class="op">)</span>,
-                      group.by <span class="op">=</span> <span class="st">"predicted.id"</span>, 
-                          reduction <span class="op">=</span> <span class="st">"MOJITOO_UMAP"</span>,
-                          dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, 
-                          use.all <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="co"># we only plot the cells that are in this trajectory</span>
-<span class="va">pbmc.t.cells</span> <span class="op">&lt;-</span> <span class="va">pbmc</span><span class="op">[</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">pbmc</span><span class="op">$</span><span class="va">Trajectory</span><span class="op">)</span><span class="op">]</span></code></pre></div>
+<p>We next infer a trajectory from naive CD4 T cells to memory CD4 T
+cells to characterize CD4+ T cell activation.</p>
+<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pbmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddTrajectory.html">AddTrajectory</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc</span>, </span>
+<span>                      trajectory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"naive CD4 T cells"</span>, </span>
+<span>                                     <span class="st">"memory CD4 T cells"</span><span class="op">)</span>,</span>
+<span>                      group.by <span class="op">=</span> <span class="st">"predicted.id"</span>, </span>
+<span>                          reduction <span class="op">=</span> <span class="st">"MOJITOO_UMAP"</span>,</span>
+<span>                          dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, </span>
+<span>                          use.all <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># we only plot the cells that are in this trajectory</span></span>
+<span><span class="va">pbmc.t.cells</span> <span class="op">&lt;-</span> <span class="va">pbmc</span><span class="op">[</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">pbmc</span><span class="op">$</span><span class="va">Trajectory</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <p>The results can be visualized as:</p>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>, 
-              group.by <span class="op">=</span> <span class="st">"predicted.id"</span>, 
-              reduction <span class="op">=</span> <span class="st">"MOJITOO_UMAP"</span>,
-             label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoLegend</a></span><span class="op">(</span><span class="op">)</span>
-
-<span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/TrajectoryPlot.html">TrajectoryPlot</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>, 
-                    reduction <span class="op">=</span> <span class="st">"MOJITOO_UMAP"</span>,
-                    continuousSet <span class="op">=</span> <span class="st">"blueYellow"</span>,
-                    size <span class="op">=</span> <span class="fl">1</span>,
-                   addArrow <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></code></pre></div>
-<p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-20-1.png" width="1152" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>, </span>
+<span>              group.by <span class="op">=</span> <span class="st">"predicted.id"</span>, </span>
+<span>              reduction <span class="op">=</span> <span class="st">"MOJITOO_UMAP"</span>,</span>
+<span>             label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoLegend</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/TrajectoryPlot.html">TrajectoryPlot</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>, </span>
+<span>                    reduction <span class="op">=</span> <span class="st">"MOJITOO_UMAP"</span>,</span>
+<span>                    continuousSet <span class="op">=</span> <span class="st">"blueYellow"</span>,</span>
+<span>                    size <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                   addArrow <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code></pre></div>
+<p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-19-1.png" width="1152" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2">
 <h2 id="tf-and-gene-selection">TF and gene selection<a class="anchor" aria-label="anchor" href="#tf-and-gene-selection"></a>
 </h2>
-<p>We next select candidate TFs and genes for building a meaningful gene regulatory network.</p>
+<p>We next select candidate TFs and genes for building a meaningful gene
+regulatory network.</p>
 <div class="section level3">
 <h3 id="select-tfs">Select TFs<a class="anchor" aria-label="anchor" href="#select-tfs"></a>
 </h3>
-<p>To identify potential regulator (i.e., TFs), we first estimate an acitivty score for each TF in each cell. This is done by first performing motif matching and then computing deviation scores using <a href="https://greenleaflab.github.io/chromVAR/index.html" class="external-link">chromVAR</a>.</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Get a list of motif position frequency matrices from the JASPAR database</span>
-<span class="va">pfm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/TFBSTools/man/getMatrixSet-methods.html" class="external-link">getMatrixSet</a></span><span class="op">(</span>
-  x <span class="op">=</span> <span class="va">JASPAR2020</span>,
-  opts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>collection <span class="op">=</span> <span class="st">"CORE"</span>, tax_group <span class="op">=</span> <span class="st">'vertebrates'</span>, all_versions <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="op">)</span>
-
-<span class="co"># add motif information</span>
-<span class="va">pbmc.t.cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/signac/reference/AddMotifs.html" class="external-link">AddMotifs</a></span><span class="op">(</span>
-  object <span class="op">=</span> <span class="va">pbmc.t.cells</span>,
-  genome <span class="op">=</span> <span class="va">BSgenome.Hsapiens.UCSC.hg38</span>,
-  pfm <span class="op">=</span> <span class="va">pfm</span>,
-    assay <span class="op">=</span> <span class="st">"ATAC"</span>
-<span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Building motif matrix</span></code></pre>
-<pre><code><span class="co">## Finding motif positions</span></code></pre>
-<pre><code><span class="co">## Creating Motif object</span></code></pre>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># run chromVAR</span>
-<span class="va">pbmc.t.cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/signac/reference/RunChromVAR.html" class="external-link">RunChromVAR</a></span><span class="op">(</span>
-  object <span class="op">=</span> <span class="va">pbmc.t.cells</span>,
-  genome <span class="op">=</span> <span class="va">BSgenome.Hsapiens.UCSC.hg38</span>,
-    assay <span class="op">=</span> <span class="st">"ATAC"</span>
-<span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Computing GC bias per region</span></code></pre>
-<pre><code><span class="co">## Selecting background regions</span></code></pre>
-<pre><code><span class="co">## Computing deviations from background</span></code></pre>
-<pre><code><span class="co">## Constructing chromVAR assay</span></code></pre>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sel.tfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SelectTFs.html">SelectTFs</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>, 
-                 return.heatmap <span class="op">=</span> <span class="cn">TRUE</span>,
-                cor.cutoff <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Find 559 shared features!</span></code></pre>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">df.cor</span> <span class="op">&lt;-</span> <span class="va">sel.tfs</span><span class="op">$</span><span class="va">tfs</span>
-<span class="va">ht</span> <span class="op">&lt;-</span> <span class="va">sel.tfs</span><span class="op">$</span><span class="va">heatmap</span>
-
-<span class="fu">draw</span><span class="op">(</span><span class="va">ht</span><span class="op">)</span></code></pre></div>
-<p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-21-1.png" width="960" style="display: block; margin: auto;"></p>
+<p>To identify potential regulator (i.e., TFs), we first estimate an
+acitivty score for each TF in each cell. This is done by first
+performing motif matching and then computing deviation scores using <a href="https://greenleaflab.github.io/chromVAR/index.html" class="external-link">chromVAR</a>.</p>
+<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Get a list of motif position frequency matrices from the JASPAR database</span></span>
+<span><span class="va">pfm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/TFBSTools/man/getMatrixSet-methods.html" class="external-link">getMatrixSet</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="va">JASPAR2020</span>,</span>
+<span>  opts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>collection <span class="op">=</span> <span class="st">"CORE"</span>, tax_group <span class="op">=</span> <span class="st">'vertebrates'</span>, all_versions <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># add motif information</span></span>
+<span><span class="va">pbmc.t.cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://stuartlab.org/signac/reference/AddMotifs.html" class="external-link">AddMotifs</a></span><span class="op">(</span></span>
+<span>  object <span class="op">=</span> <span class="va">pbmc.t.cells</span>,</span>
+<span>  genome <span class="op">=</span> <span class="va">BSgenome.Hsapiens.UCSC.hg38</span>,</span>
+<span>  pfm <span class="op">=</span> <span class="va">pfm</span>,</span>
+<span>    assay <span class="op">=</span> <span class="st">"ATAC"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Building motif matrix</span></span></code></pre>
+<pre><code><span><span class="co">## Finding motif positions</span></span></code></pre>
+<pre><code><span><span class="co">## Creating Motif object</span></span></code></pre>
+<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># run chromVAR</span></span>
+<span><span class="va">pbmc.t.cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://stuartlab.org/signac/reference/RunChromVAR.html" class="external-link">RunChromVAR</a></span><span class="op">(</span></span>
+<span>  object <span class="op">=</span> <span class="va">pbmc.t.cells</span>,</span>
+<span>  genome <span class="op">=</span> <span class="va">BSgenome.Hsapiens.UCSC.hg38</span>,</span>
+<span>    assay <span class="op">=</span> <span class="st">"ATAC"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Computing GC bias per region</span></span></code></pre>
+<pre><code><span><span class="co">## Selecting background regions</span></span></code></pre>
+<pre><code><span><span class="co">## Computing deviations from background</span></span></code></pre>
+<pre><code><span><span class="co">## Constructing chromVAR assay</span></span></code></pre>
+<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sel.tfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SelectTFs.html">SelectTFs</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>, </span>
+<span>                 return.heatmap <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                cor.cutoff <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Creating Trajectory Group Matrix..</span></span></code></pre>
+<pre><code><span><span class="co">## Some values are below 0, this could be the Motif activity matrix in which scaleTo should be set = NULL.</span></span>
+<span><span class="co">## Continuing without depth normalization!</span></span></code></pre>
+<pre><code><span><span class="co">## Smoothing...</span></span></code></pre>
+<pre><code><span><span class="co">## Creating Trajectory Group Matrix..</span></span></code></pre>
+<pre><code><span><span class="co">## Smoothing...</span></span></code></pre>
+<pre><code><span><span class="co">## Find 559 shared features!</span></span></code></pre>
+<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df.cor</span> <span class="op">&lt;-</span> <span class="va">sel.tfs</span><span class="op">$</span><span class="va">tfs</span></span>
+<span><span class="va">ht</span> <span class="op">&lt;-</span> <span class="va">sel.tfs</span><span class="op">$</span><span class="va">heatmap</span></span>
+<span></span>
+<span><span class="fu">draw</span><span class="op">(</span><span class="va">ht</span><span class="op">)</span></span></code></pre></div>
+<p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-20-1.png" width="960" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
 <h3 id="select-genes">Select genes<a class="anchor" aria-label="anchor" href="#select-genes"></a>
 </h3>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sel.genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SelectGenes.html">SelectGenes</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>,
-                  labelTop1 <span class="op">=</span> <span class="fl">0</span>,
-                  labelTop2 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Creating Trajectory Group Matrix..</span></code></pre>
-<pre><code><span class="co">## Smoothing...</span></code></pre>
-<pre><code><span class="co">## Creating Trajectory Group Matrix..</span></code></pre>
-<pre><code><span class="co">## Smoothing...</span></code></pre>
-<pre><code><span class="co">## Linking cis-regulatory elements to genes...</span></code></pre>
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">df.p2g</span> <span class="op">&lt;-</span> <span class="va">sel.genes</span><span class="op">$</span><span class="va">p2g</span>
-<span class="va">ht</span> <span class="op">&lt;-</span> <span class="va">sel.genes</span><span class="op">$</span><span class="va">heatmap</span>
-
-<span class="fu">draw</span><span class="op">(</span><span class="va">ht</span><span class="op">)</span></code></pre></div>
-<p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-22-1.png" width="960" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sel.genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SelectGenes.html">SelectGenes</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>,</span>
+<span>                  labelTop1 <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>                  labelTop2 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Creating Trajectory Group Matrix..</span></span></code></pre>
+<pre><code><span><span class="co">## Smoothing...</span></span></code></pre>
+<pre><code><span><span class="co">## Creating Trajectory Group Matrix..</span></span></code></pre>
+<pre><code><span><span class="co">## Smoothing...</span></span></code></pre>
+<pre><code><span><span class="co">## Linking cis-regulatory elements to genes...</span></span></code></pre>
+<div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">df.p2g</span> <span class="op">&lt;-</span> <span class="va">sel.genes</span><span class="op">$</span><span class="va">p2g</span></span>
+<span><span class="va">ht</span> <span class="op">&lt;-</span> <span class="va">sel.genes</span><span class="op">$</span><span class="va">heatmap</span></span>
+<span></span>
+<span><span class="fu">draw</span><span class="op">(</span><span class="va">ht</span><span class="op">)</span></span></code></pre></div>
+<p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-21-1.png" width="960" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="gene-regulatory-network-inference-and-visualization">Gene regulatory network inference and visualization<a class="anchor" aria-label="anchor" href="#gene-regulatory-network-inference-and-visualization"></a>
 </h2>
-<p>We here will try to predict a gene regulatory network based on the correlation of the TF binding activity as estimated from snATAC-seq and gene expression as measured by snRNA-seq along the trajectory.</p>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tf.gene.cor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetTFGeneCorrelation.html">GetTFGeneCorrelation</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>, 
-                                    tf.use <span class="op">=</span> <span class="va">df.cor</span><span class="op">$</span><span class="va">tfs</span>, 
-                                    gene.use <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">df.p2g</span><span class="op">$</span><span class="va">gene</span><span class="op">)</span>,
-                                    tf.assay <span class="op">=</span> <span class="st">"chromvar"</span>, 
-                                    gene.assay <span class="op">=</span> <span class="st">"RNA"</span>,
-                                    trajectory.name <span class="op">=</span> <span class="st">"Trajectory"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Creating Trajectory Group Matrix..</span></code></pre>
-<pre><code><span class="co">## Some values are below 0, this could be the Motif activity matrix in which scaleTo should be set = NULL.</span>
-<span class="co">## Continuing without depth normalization!</span></code></pre>
-<pre><code><span class="co">## Smoothing...</span></code></pre>
-<pre><code><span class="co">## Creating Trajectory Group Matrix..</span></code></pre>
-<pre><code><span class="co">## Smoothing...</span></code></pre>
-<p>We can then visualize this correlation matrix by heatmap. Also, we can cluster the genes and TFs to identify different regulatory modules for the predefined sub-populations.</p>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ht</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GRNHeatmap.html">GRNHeatmap</a></span><span class="op">(</span><span class="va">tf.gene.cor</span>, 
-                 tf.timepoint <span class="op">=</span> <span class="va">df.cor</span><span class="op">$</span><span class="va">time_point</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## `use_raster` is automatically set to TRUE for a matrix with more than</span>
-<span class="co">## 2000 rows. You can control `use_raster` argument by explicitly setting</span>
-<span class="co">## TRUE/FALSE to it.</span>
-<span class="co">## </span>
-<span class="co">## Set `ht_opt$message = FALSE` to turn off this message.</span></code></pre>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ht</span></code></pre></div>
-<p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-24-1.png" width="1152" style="display: block; margin: auto;"></p>
-<p>To associate genes to TFs, we will use the peak-to-gene links and TF binding sites information. Specifically, if a gene is regulated by a peak and this peak is bound by a TF, then we consider this gene to be a target of this TF.</p>
-<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">motif.matching</span> <span class="op">&lt;-</span> <span class="va">pbmc.t.cells</span><span class="op">@</span><span class="va">assays</span><span class="op">$</span><span class="va">ATAC</span><span class="op">@</span><span class="va">motifs</span><span class="op">@</span><span class="va">data</span>
-<span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">motif.matching</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">pbmc.t.cells</span><span class="op">@</span><span class="va">assays</span><span class="op">$</span><span class="va">ATAC</span><span class="op">@</span><span class="va">motifs</span><span class="op">@</span><span class="va">motif.names</span>
-<span class="va">motif.matching</span> <span class="op">&lt;-</span>
-    <span class="va">motif.matching</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">df.p2g</span><span class="op">$</span><span class="va">peak</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">tf.gene.cor</span><span class="op">$</span><span class="va">tf</span><span class="op">)</span><span class="op">]</span>
-
-
-<span class="va">df.grn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetGRN.html">GetGRN</a></span><span class="op">(</span>motif.matching <span class="op">=</span> <span class="va">motif.matching</span>, 
-                 df.cor <span class="op">=</span> <span class="va">tf.gene.cor</span>, 
-                 df.p2g <span class="op">=</span> <span class="va">df.p2g</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Filtering network by peak-to-gene links...</span></code></pre>
-<pre><code><span class="co">## Filtering network by TF binding site prediction...</span></code></pre>
-<p>Finally, we can visualize our network as the last step of this analysis</p>
-<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># define colors for nodes representing TFs (i.e., regulators)</span>
-<span class="va">df.cor</span> <span class="op">&lt;-</span> <span class="va">df.cor</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">df.cor</span><span class="op">$</span><span class="va">time_point</span><span class="op">)</span>, <span class="op">]</span>
-<span class="va">tfs.timepoint</span> <span class="op">&lt;-</span> <span class="va">df.cor</span><span class="op">$</span><span class="va">time_point</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">tfs.timepoint</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">df.cor</span><span class="op">$</span><span class="va">tfs</span>
-
-<span class="co"># plot the graph, here we can highlight some genes</span>
-<span class="va">df.grn2</span> <span class="op">&lt;-</span> <span class="va">df.grn</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">correlation</span> <span class="op">&gt;</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="va">tf</span>, <span class="va">gene</span>, <span class="va">correlation</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>weights <span class="op">=</span> <span class="va">correlation</span><span class="op">)</span>
-
-<span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GRNPlot.html">GRNPlot</a></span><span class="op">(</span><span class="va">df.grn2</span>, 
-             tfs.timepoint <span class="op">=</span> <span class="va">tfs.timepoint</span>,
-             show.tf.labels <span class="op">=</span> <span class="cn">TRUE</span>,
-             seed <span class="op">=</span> <span class="fl">42</span>, 
-             plot.importance <span class="op">=</span> <span class="cn">FALSE</span>,
-            min.importance <span class="op">=</span> <span class="fl">2</span>,
-            remove.isolated <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Warning: Using alpha for a discrete variable is not advised.</span></code></pre>
-<p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-26-1.png" width="1920" style="display: block; margin: auto;"></p>
+<p>We here will try to predict a gene regulatory network based on the
+correlation of the TF binding activity as estimated from snATAC-seq and
+gene expression as measured by snRNA-seq along the trajectory.</p>
+<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">tf.gene.cor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetTFGeneCorrelation.html">GetTFGeneCorrelation</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>, </span>
+<span>                                    tf.use <span class="op">=</span> <span class="va">df.cor</span><span class="op">$</span><span class="va">tfs</span>, </span>
+<span>                                    gene.use <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">df.p2g</span><span class="op">$</span><span class="va">gene</span><span class="op">)</span>,</span>
+<span>                                    tf.assay <span class="op">=</span> <span class="st">"chromvar"</span>, </span>
+<span>                                    gene.assay <span class="op">=</span> <span class="st">"RNA"</span>,</span>
+<span>                                    trajectory.name <span class="op">=</span> <span class="st">"Trajectory"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Creating Trajectory Group Matrix..</span></span></code></pre>
+<pre><code><span><span class="co">## Some values are below 0, this could be the Motif activity matrix in which scaleTo should be set = NULL.</span></span>
+<span><span class="co">## Continuing without depth normalization!</span></span></code></pre>
+<pre><code><span><span class="co">## Smoothing...</span></span></code></pre>
+<pre><code><span><span class="co">## Creating Trajectory Group Matrix..</span></span></code></pre>
+<pre><code><span><span class="co">## Smoothing...</span></span></code></pre>
+<p>We can then visualize this correlation matrix by heatmap. Also, we
+can cluster the genes and TFs to identify different regulatory modules
+for the predefined sub-populations.</p>
+<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ht</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GRNHeatmap.html">GRNHeatmap</a></span><span class="op">(</span><span class="va">tf.gene.cor</span>, </span>
+<span>                 tf.timepoint <span class="op">=</span> <span class="va">df.cor</span><span class="op">$</span><span class="va">time_point</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## `use_raster` is automatically set to TRUE for a matrix with more than</span></span>
+<span><span class="co">## 2000 rows. You can control `use_raster` argument by explicitly setting</span></span>
+<span><span class="co">## TRUE/FALSE to it.</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Set `ht_opt$message = FALSE` to turn off this message.</span></span></code></pre>
+<pre><code><span><span class="co">## 'magick' package is suggested to install to give better rasterization.</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Set `ht_opt$message = FALSE` to turn off this message.</span></span></code></pre>
+<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ht</span></span></code></pre></div>
+<p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-23-1.png" width="1152" style="display: block; margin: auto;"></p>
+<p>To associate genes to TFs, we will use the peak-to-gene links and TF
+binding sites information. Specifically, if a gene is regulated by a
+peak and this peak is bound by a TF, then we consider this gene to be a
+target of this TF.</p>
+<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">motif.matching</span> <span class="op">&lt;-</span> <span class="va">pbmc.t.cells</span><span class="op">@</span><span class="va">assays</span><span class="op">$</span><span class="va">ATAC</span><span class="op">@</span><span class="va">motifs</span><span class="op">@</span><span class="va">data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">motif.matching</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">pbmc.t.cells</span><span class="op">@</span><span class="va">assays</span><span class="op">$</span><span class="va">ATAC</span><span class="op">@</span><span class="va">motifs</span><span class="op">@</span><span class="va">motif.names</span></span>
+<span><span class="va">motif.matching</span> <span class="op">&lt;-</span></span>
+<span>    <span class="va">motif.matching</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">df.p2g</span><span class="op">$</span><span class="va">peak</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">tf.gene.cor</span><span class="op">$</span><span class="va">tf</span><span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span></span>
+<span><span class="va">df.grn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetGRN.html">GetGRN</a></span><span class="op">(</span>motif.matching <span class="op">=</span> <span class="va">motif.matching</span>, </span>
+<span>                 df.cor <span class="op">=</span> <span class="va">tf.gene.cor</span>, </span>
+<span>                 df.p2g <span class="op">=</span> <span class="va">df.p2g</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Filtering network by peak-to-gene links...</span></span></code></pre>
+<pre><code><span><span class="co">## Filtering network by TF binding site prediction...</span></span></code></pre>
+<p>Finally, we can visualize our network as the last step of this
+analysis</p>
+<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># define colors for nodes representing TFs (i.e., regulators)</span></span>
+<span><span class="va">df.cor</span> <span class="op">&lt;-</span> <span class="va">df.cor</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">df.cor</span><span class="op">$</span><span class="va">time_point</span><span class="op">)</span>, <span class="op">]</span></span>
+<span><span class="va">tfs.timepoint</span> <span class="op">&lt;-</span> <span class="va">df.cor</span><span class="op">$</span><span class="va">time_point</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">tfs.timepoint</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">df.cor</span><span class="op">$</span><span class="va">tfs</span></span>
+<span></span>
+<span><span class="co"># plot the graph, here we can highlight some genes</span></span>
+<span><span class="va">df.grn2</span> <span class="op">&lt;-</span> <span class="va">df.grn</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">correlation</span> <span class="op">&gt;</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">tf</span>, <span class="va">gene</span>, <span class="va">correlation</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>weights <span class="op">=</span> <span class="va">correlation</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GRNPlot.html">GRNPlot</a></span><span class="op">(</span><span class="va">df.grn2</span>, </span>
+<span>             tfs.timepoint <span class="op">=</span> <span class="va">tfs.timepoint</span>,</span>
+<span>             show.tf.labels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>             seed <span class="op">=</span> <span class="fl">42</span>, </span>
+<span>             plot.importance <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>            min.importance <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>            remove.isolated <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: Using alpha for a discrete variable is not advised.</span></span></code></pre>
+<p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-25-1.png" width="1920" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2">
 <h2 id="grn-visualization">GRN visualization<a class="anchor" aria-label="anchor" href="#grn-visualization"></a>
 </h2>
-<p>Once we generated the gene regulatory network, we can visualize individual TFs in terms of binding activity, expression, and target expression along the pseudotime trajectory.</p>
+<p>Once we generated the gene regulatory network, we can visualize
+individual TFs in terms of binding activity, expression, and target
+expression along the pseudotime trajectory.</p>
 <p>Here we select two TFs for visualization.</p>
-<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc.t.cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddTargetAssay.html">AddTargetAssay</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>, df.grn <span class="op">=</span> <span class="va">df.grn2</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Warning in if (is.na(df.grn)) {: the condition has length &gt; 1 and only the first</span>
-<span class="co">## element will be used</span></code></pre>
-<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PseudotimePlot.html">PseudotimePlot</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>, tf.use <span class="op">=</span> <span class="st">"SOX4"</span><span class="op">)</span>
-<span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PseudotimePlot.html">PseudotimePlot</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>, tf.use <span class="op">=</span> <span class="st">"TBX21"</span><span class="op">)</span>
-
-<span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></code></pre></div>
-<pre><code><span class="co">## `geom_smooth()` using formula = 'y ~ x'</span>
-<span class="co">## `geom_smooth()` using formula = 'y ~ x'</span></code></pre>
-<p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-27-1.png" width="1152" style="display: block; margin: auto;"></p>
-<p>The x-axis in above plots present pseudotime point along the trajectory, and the y-axis represent TF binding acitivty, TF expression, and TF target expression after z-score transformation.</p>
-<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Check session information</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## R version 4.1.1 (2021-08-10)</span>
-<span class="co">## Platform: x86_64-conda-linux-gnu (64-bit)</span>
-<span class="co">## Running under: Rocky Linux 8.6 (Green Obsidian)</span>
-<span class="co">## </span>
-<span class="co">## Matrix products: default</span>
-<span class="co">## BLAS/LAPACK: /home/rs619065/miniconda3/envs/r-4.1/lib/libopenblasp-r0.3.18.so</span>
-<span class="co">## </span>
-<span class="co">## locale:</span>
-<span class="co">##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span>
-<span class="co">##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    </span>
-<span class="co">##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   </span>
-<span class="co">##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 </span>
-<span class="co">##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            </span>
-<span class="co">## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       </span>
-<span class="co">## </span>
-<span class="co">## attached base packages:</span>
-<span class="co">## [1] stats4    grid      stats     graphics  grDevices utils     datasets </span>
-<span class="co">## [8] methods   base     </span>
-<span class="co">## </span>
-<span class="co">## other attached packages:</span>
-<span class="co">##  [1] circlize_0.4.15                   ComplexHeatmap_2.10.0            </span>
-<span class="co">##  [3] MOJITOO_1.0                       ggraph_2.1.0                     </span>
-<span class="co">##  [5] igraph_1.3.5                      TFBSTools_1.32.0                 </span>
-<span class="co">##  [7] JASPAR2020_0.99.10                dplyr_1.0.10                     </span>
-<span class="co">##  [9] EnsDb.Hsapiens.v86_2.99.0         ensembldb_2.18.4                 </span>
-<span class="co">## [11] AnnotationFilter_1.18.0           GenomicFeatures_1.46.5           </span>
-<span class="co">## [13] AnnotationDbi_1.56.2              BSgenome.Hsapiens.UCSC.hg38_1.4.4</span>
-<span class="co">## [15] BSgenome_1.62.0                   rtracklayer_1.54.0               </span>
-<span class="co">## [17] Biostrings_2.62.0                 XVector_0.34.0                   </span>
-<span class="co">## [19] Nebulosa_1.4.0                    patchwork_1.1.2                  </span>
-<span class="co">## [21] scMEGA_0.2.0                      Signac_1.8.0                     </span>
-<span class="co">## [23] SeuratObject_4.1.3                Seurat_4.3.0                     </span>
-<span class="co">## [25] rhdf5_2.38.1                      SummarizedExperiment_1.24.0      </span>
-<span class="co">## [27] Biobase_2.54.0                    MatrixGenerics_1.6.0             </span>
-<span class="co">## [29] Rcpp_1.0.9                        Matrix_1.5-3                     </span>
-<span class="co">## [31] GenomicRanges_1.46.1              GenomeInfoDb_1.30.1              </span>
-<span class="co">## [33] IRanges_2.28.0                    S4Vectors_0.32.4                 </span>
-<span class="co">## [35] BiocGenerics_0.40.0               matrixStats_0.63.0               </span>
-<span class="co">## [37] data.table_1.14.6                 stringr_1.4.1                    </span>
-<span class="co">## [39] plyr_1.8.8                        magrittr_2.0.3                   </span>
-<span class="co">## [41] ggplot2_3.4.0                     gtable_0.3.1                     </span>
-<span class="co">## [43] gtools_3.9.4                      gridExtra_2.3                    </span>
-<span class="co">## [45] ArchR_1.0.2                      </span>
-<span class="co">## </span>
-<span class="co">## loaded via a namespace (and not attached):</span>
-<span class="co">##   [1] vcd_1.4-10                  Hmisc_4.7-0                </span>
-<span class="co">##   [3] ica_1.0-3                   corpcor_1.6.10             </span>
-<span class="co">##   [5] RcppRoll_0.3.0              class_7.3-20               </span>
-<span class="co">##   [7] Rsamtools_2.10.0            foreach_1.5.2              </span>
-<span class="co">##   [9] lmtest_0.9-40               rprojroot_2.0.3            </span>
-<span class="co">##  [11] crayon_1.5.2                laeken_0.5.2               </span>
-<span class="co">##  [13] MASS_7.3-57                 rhdf5filters_1.6.0         </span>
-<span class="co">##  [15] backports_1.4.1             nlme_3.1-157               </span>
-<span class="co">##  [17] rlang_1.0.6                 ROCR_1.0-11                </span>
-<span class="co">##  [19] irlba_2.3.5.1               smoother_1.1               </span>
-<span class="co">##  [21] filelock_1.0.2              BiocParallel_1.28.3        </span>
-<span class="co">##  [23] rjson_0.2.21                CNEr_1.30.0                </span>
-<span class="co">##  [25] bit64_4.0.5                 glue_1.6.2                 </span>
-<span class="co">##  [27] poweRlaw_0.70.6             sctransform_0.3.5          </span>
-<span class="co">##  [29] chromVAR_1.16.0             vipor_0.4.5                </span>
-<span class="co">##  [31] parallel_4.1.1              spatstat.sparse_3.0-0      </span>
-<span class="co">##  [33] spatstat.geom_3.0-3         tidyselect_1.2.0           </span>
-<span class="co">##  [35] textshape_1.7.3             fitdistrplus_1.1-8         </span>
-<span class="co">##  [37] XML_3.99-0.9                tidyr_1.2.1                </span>
-<span class="co">##  [39] zoo_1.8-11                  GenomicAlignments_1.30.0   </span>
-<span class="co">##  [41] xtable_1.8-4                RcppHNSW_0.4.1             </span>
-<span class="co">##  [43] evaluate_0.18               cli_3.4.1                  </span>
-<span class="co">##  [45] zlibbioc_1.40.0             rstudioapi_0.13            </span>
-<span class="co">##  [47] miniUI_0.1.1.1              sp_1.5-1                   </span>
-<span class="co">##  [49] rpart_4.1.16                bslib_0.4.1                </span>
-<span class="co">##  [51] fastmatch_1.1-3             RcppEigen_0.3.3.9.3        </span>
-<span class="co">##  [53] shiny_1.7.3                 xfun_0.35                  </span>
-<span class="co">##  [55] clue_0.3-60                 cluster_2.1.3              </span>
-<span class="co">##  [57] caTools_1.18.2              tidygraph_1.2.2            </span>
-<span class="co">##  [59] pcaMethods_1.86.0           KEGGREST_1.34.0            </span>
-<span class="co">##  [61] tibble_3.1.8                ggrepel_0.9.2              </span>
-<span class="co">##  [63] biovizBase_1.42.0           listenv_0.8.0              </span>
-<span class="co">##  [65] TFMPvalue_0.0.8             png_0.1-8                  </span>
-<span class="co">##  [67] future_1.29.0               withr_2.5.0                </span>
-<span class="co">##  [69] bitops_1.0-7                ggforce_0.4.1              </span>
-<span class="co">##  [71] ranger_0.14.1               pcaPP_2.0-3                </span>
-<span class="co">##  [73] e1071_1.7-12                pracma_2.4.2               </span>
-<span class="co">##  [75] pillar_1.8.1                GlobalOptions_0.1.2        </span>
-<span class="co">##  [77] cachem_1.0.6                fs_1.5.2                   </span>
-<span class="co">##  [79] hdf5r_1.3.5                 scatterplot3d_0.3-42       </span>
-<span class="co">##  [81] TTR_0.24.3                  ramify_0.3.3               </span>
-<span class="co">##  [83] GetoptLong_1.0.5            xts_0.12.2                 </span>
-<span class="co">##  [85] vctrs_0.5.1                 ellipsis_0.3.2             </span>
-<span class="co">##  [87] generics_0.1.3              tools_4.1.1                </span>
-<span class="co">##  [89] foreign_0.8-82              beeswarm_0.4.0             </span>
-<span class="co">##  [91] munsell_0.5.0               tweenr_2.0.2               </span>
-<span class="co">##  [93] proxy_0.4-27                DelayedArray_0.20.0        </span>
-<span class="co">##  [95] fastmap_1.1.0               compiler_4.1.1             </span>
-<span class="co">##  [97] abind_1.4-5                 httpuv_1.6.6               </span>
-<span class="co">##  [99] Gviz_1.38.4                 plotly_4.10.1              </span>
-<span class="co">## [101] GenomeInfoDbData_1.2.7      lattice_0.20-45            </span>
-<span class="co">## [103] deldir_1.0-6                utf8_1.2.2                 </span>
-<span class="co">## [105] later_1.3.0                 BiocFileCache_2.2.1        </span>
-<span class="co">## [107] jsonlite_1.8.3              ggplot.multistats_1.0.0    </span>
-<span class="co">## [109] scales_1.2.1                pbapply_1.6-0              </span>
-<span class="co">## [111] carData_3.0-5               nabor_0.5.0                </span>
-<span class="co">## [113] lazyeval_0.2.2              promises_1.2.0.1           </span>
-<span class="co">## [115] car_3.1-1                   doParallel_1.0.17          </span>
-<span class="co">## [117] latticeExtra_0.6-29         R.utils_2.11.0             </span>
-<span class="co">## [119] goftest_1.2-3               checkmate_2.1.0            </span>
-<span class="co">## [121] spatstat.utils_3.0-1        reticulate_1.26            </span>
-<span class="co">## [123] rmarkdown_2.14              pkgdown_2.0.3              </span>
-<span class="co">## [125] cowplot_1.1.1               textshaping_0.3.6          </span>
-<span class="co">## [127] Rtsne_0.16                  dichromat_2.0-0.1          </span>
-<span class="co">## [129] uwot_0.1.14                 survival_3.3-1             </span>
-<span class="co">## [131] yaml_2.3.6                  systemfonts_1.0.4          </span>
-<span class="co">## [133] htmltools_0.5.3             memoise_2.0.1              </span>
-<span class="co">## [135] VariantAnnotation_1.40.0    BiocIO_1.4.0               </span>
-<span class="co">## [137] here_1.0.1                  graphlayouts_0.8.4         </span>
-<span class="co">## [139] destiny_3.11.0              viridisLite_0.4.1          </span>
-<span class="co">## [141] digest_0.6.30               assertthat_0.2.1           </span>
-<span class="co">## [143] mime_0.12                   rappdirs_0.3.3             </span>
-<span class="co">## [145] RSQLite_2.2.14              future.apply_1.10.0        </span>
-<span class="co">## [147] blob_1.2.3                  R.oo_1.24.0                </span>
-<span class="co">## [149] ragg_1.2.2                  labeling_0.4.2             </span>
-<span class="co">## [151] deSolve_1.34                Formula_1.2-4              </span>
-<span class="co">## [153] splines_4.1.1               Rhdf5lib_1.16.0            </span>
-<span class="co">## [155] ProtGenerics_1.26.0         RCurl_1.98-1.9             </span>
-<span class="co">## [157] ks_1.14.0                   hms_1.1.1                  </span>
-<span class="co">## [159] base64enc_0.1-3             colorspace_2.0-3           </span>
-<span class="co">## [161] ggbeeswarm_0.6.0            shape_1.4.6                </span>
-<span class="co">## [163] ggrastr_1.0.1               nnet_7.3-17                </span>
-<span class="co">## [165] sass_0.4.4                  mclust_6.0.0               </span>
-<span class="co">## [167] RANN_2.6.1                  mvtnorm_1.1-3              </span>
-<span class="co">## [169] fansi_1.0.3                 tzdb_0.3.0                 </span>
-<span class="co">## [171] VIM_6.2.2                   parallelly_1.32.1          </span>
-<span class="co">## [173] R6_2.5.1                    factoextra_1.0.7           </span>
-<span class="co">## [175] ggridges_0.5.4              lifecycle_1.0.3            </span>
-<span class="co">## [177] curl_4.3.3                  motifmatchr_1.16.0         </span>
-<span class="co">## [179] leiden_0.4.3                jquerylib_0.1.4            </span>
-<span class="co">## [181] robustbase_0.95-0           desc_1.4.2                 </span>
-<span class="co">## [183] RcppAnnoy_0.0.20            RColorBrewer_1.1-3         </span>
-<span class="co">## [185] iterators_1.0.14            spatstat.explore_3.0-5     </span>
-<span class="co">## [187] htmlwidgets_1.5.4           polyclip_1.10-4            </span>
-<span class="co">## [189] biomaRt_2.50.3              purrr_0.3.5                </span>
-<span class="co">## [191] seqLogo_1.60.0              mgcv_1.8-40                </span>
-<span class="co">## [193] fda_6.0.5                   globals_0.16.2             </span>
-<span class="co">## [195] htmlTable_2.4.0             spatstat.random_3.0-1      </span>
-<span class="co">## [197] progressr_0.11.0            codetools_0.2-18           </span>
-<span class="co">## [199] GO.db_3.14.0                prettyunits_1.1.1          </span>
-<span class="co">## [201] SingleCellExperiment_1.16.0 dbplyr_2.1.1               </span>
-<span class="co">## [203] RSpectra_0.16-1             R.methodsS3_1.8.1          </span>
-<span class="co">## [205] DBI_1.1.2                   highr_0.9                  </span>
-<span class="co">## [207] tensor_1.5                  httr_1.4.4                 </span>
-<span class="co">## [209] KernSmooth_2.23-20          rainbow_3.7                </span>
-<span class="co">## [211] stringi_1.7.8               progress_1.2.2             </span>
-<span class="co">## [213] reshape2_1.4.4              farver_2.1.1               </span>
-<span class="co">## [215] annotate_1.72.0             viridis_0.6.2              </span>
-<span class="co">## [217] ggthemes_4.2.4              hexbin_1.28.2              </span>
-<span class="co">## [219] magick_2.7.3                fds_1.8                    </span>
-<span class="co">## [221] DT_0.26                     xml2_1.3.3                 </span>
-<span class="co">## [223] boot_1.3-28                 restfulr_0.0.13            </span>
-<span class="co">## [225] readr_2.1.2                 scattermore_0.8            </span>
-<span class="co">## [227] DEoptimR_1.0-11             bit_4.0.4                  </span>
-<span class="co">## [229] jpeg_0.1-9                  spatstat.data_3.0-0        </span>
-<span class="co">## [231] pkgconfig_2.0.3             DirichletMultinomial_1.36.0</span>
-<span class="co">## [233] knitr_1.41                  hdrcde_3.4</span></code></pre>
+<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pbmc.t.cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddTargetAssay.html">AddTargetAssay</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>, df.grn <span class="op">=</span> <span class="va">df.grn2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PseudotimePlot.html">PseudotimePlot</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>, tf.use <span class="op">=</span> <span class="st">"SOX4"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Creating Trajectory Group Matrix..</span></span></code></pre>
+<pre><code><span><span class="co">## Some values are below 0, this could be the Motif activity matrix in which scaleTo should be set = NULL.</span></span>
+<span><span class="co">## Continuing without depth normalization!</span></span></code></pre>
+<pre><code><span><span class="co">## Smoothing...</span></span></code></pre>
+<pre><code><span><span class="co">## Creating Trajectory Group Matrix..</span></span></code></pre>
+<pre><code><span><span class="co">## Smoothing...</span></span></code></pre>
+<pre><code><span><span class="co">## Creating Trajectory Group Matrix..</span></span></code></pre>
+<pre><code><span><span class="co">## Some values are below 0, this could be the Motif activity matrix in which scaleTo should be set = NULL.</span></span>
+<span><span class="co">## Continuing without depth normalization!</span></span></code></pre>
+<pre><code><span><span class="co">## Smoothing...</span></span></code></pre>
+<div class="sourceCode" id="cb138"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PseudotimePlot.html">PseudotimePlot</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>, tf.use <span class="op">=</span> <span class="st">"TBX21"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Creating Trajectory Group Matrix..</span></span></code></pre>
+<pre><code><span><span class="co">## Some values are below 0, this could be the Motif activity matrix in which scaleTo should be set = NULL.</span></span>
+<span><span class="co">## Continuing without depth normalization!</span></span></code></pre>
+<pre><code><span><span class="co">## Smoothing...</span></span></code></pre>
+<pre><code><span><span class="co">## Creating Trajectory Group Matrix..</span></span></code></pre>
+<pre><code><span><span class="co">## Smoothing...</span></span></code></pre>
+<pre><code><span><span class="co">## Creating Trajectory Group Matrix..</span></span></code></pre>
+<pre><code><span><span class="co">## Some values are below 0, this could be the Motif activity matrix in which scaleTo should be set = NULL.</span></span>
+<span><span class="co">## Continuing without depth normalization!</span></span></code></pre>
+<pre><code><span><span class="co">## Smoothing...</span></span></code></pre>
+<div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code></pre></div>
+<pre><code><span><span class="co">## `geom_smooth()` using formula = 'y ~ x'</span></span></code></pre>
+<pre><code><span><span class="co">## `geom_smooth()` using formula = 'y ~ x'</span></span></code></pre>
+<p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-26-1.png" width="1152" style="display: block; margin: auto;"></p>
+<p>The x-axis in above plots present pseudotime point along the
+trajectory, and the y-axis represent TF binding acitivty, TF expression,
+and TF target expression after z-score transformation.</p>
+<div class="sourceCode" id="cb150"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Check session information</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## R version 4.3.1 (2023-06-16)</span></span>
+<span><span class="co">## Platform: x86_64-conda-linux-gnu (64-bit)</span></span>
+<span><span class="co">## Running under: CentOS Linux 7 (Core)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Matrix products: default</span></span>
+<span><span class="co">## BLAS/LAPACK: /data/pinello/SHARED_SOFTWARE/anaconda_latest/envs/zl_scmega/lib/libopenblasp-r0.3.24.so;  LAPACK version 3.11.0</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## locale:</span></span>
+<span><span class="co">##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span></span>
+<span><span class="co">##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    </span></span>
+<span><span class="co">##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   </span></span>
+<span><span class="co">##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 </span></span>
+<span><span class="co">##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            </span></span>
+<span><span class="co">## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## time zone: America/New_York</span></span>
+<span><span class="co">## tzcode source: system (glibc)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## attached base packages:</span></span>
+<span><span class="co">## [1] stats4    grid      stats     graphics  grDevices utils     datasets </span></span>
+<span><span class="co">## [8] methods   base     </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## other attached packages:</span></span>
+<span><span class="co">##  [1] circlize_0.4.15                   ComplexHeatmap_2.16.0            </span></span>
+<span><span class="co">##  [3] MOJITOO_1.0                       ggraph_2.1.0                     </span></span>
+<span><span class="co">##  [5] igraph_1.5.1                      TFBSTools_1.38.0                 </span></span>
+<span><span class="co">##  [7] JASPAR2020_0.99.10                dplyr_1.1.3                      </span></span>
+<span><span class="co">##  [9] EnsDb.Hsapiens.v86_2.99.0         ensembldb_2.24.0                 </span></span>
+<span><span class="co">## [11] AnnotationFilter_1.24.0           GenomicFeatures_1.52.2           </span></span>
+<span><span class="co">## [13] AnnotationDbi_1.62.2              BSgenome.Hsapiens.UCSC.hg38_1.4.5</span></span>
+<span><span class="co">## [15] BSgenome_1.68.0                   rtracklayer_1.60.1               </span></span>
+<span><span class="co">## [17] Biostrings_2.68.1                 XVector_0.40.0                   </span></span>
+<span><span class="co">## [19] Nebulosa_1.10.0                   patchwork_1.1.3                  </span></span>
+<span><span class="co">## [21] scMEGA_1.0.2                      Signac_1.11.9000                 </span></span>
+<span><span class="co">## [23] Seurat_4.9.9.9060                 SeuratObject_4.9.9.9091          </span></span>
+<span><span class="co">## [25] sp_2.0-0                          rhdf5_2.44.0                     </span></span>
+<span><span class="co">## [27] SummarizedExperiment_1.30.2       Biobase_2.60.0                   </span></span>
+<span><span class="co">## [29] MatrixGenerics_1.12.3             Rcpp_1.0.11                      </span></span>
+<span><span class="co">## [31] Matrix_1.6-1                      GenomicRanges_1.52.0             </span></span>
+<span><span class="co">## [33] GenomeInfoDb_1.36.3               IRanges_2.34.1                   </span></span>
+<span><span class="co">## [35] S4Vectors_0.38.1                  BiocGenerics_0.46.0              </span></span>
+<span><span class="co">## [37] matrixStats_1.0.0                 data.table_1.14.8                </span></span>
+<span><span class="co">## [39] stringr_1.5.0                     plyr_1.8.8                       </span></span>
+<span><span class="co">## [41] magrittr_2.0.3                    ggplot2_3.4.3                    </span></span>
+<span><span class="co">## [43] gtable_0.3.4                      gtools_3.9.4                     </span></span>
+<span><span class="co">## [45] gridExtra_2.3                     ArchR_1.0.2                      </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## loaded via a namespace (and not attached):</span></span>
+<span><span class="co">##   [1] dichromat_2.0-0.1           R.methodsS3_1.8.2          </span></span>
+<span><span class="co">##   [3] progress_1.2.2              nnet_7.3-19                </span></span>
+<span><span class="co">##   [5] poweRlaw_0.70.6             DT_0.29                    </span></span>
+<span><span class="co">##   [7] goftest_1.2-3               vctrs_0.6.3                </span></span>
+<span><span class="co">##   [9] spatstat.random_3.1-6       corpcor_1.6.10             </span></span>
+<span><span class="co">##  [11] shape_1.4.6                 digest_0.6.33              </span></span>
+<span><span class="co">##  [13] png_0.1-8                   proxy_0.4-27               </span></span>
+<span><span class="co">##  [15] pcaPP_2.0-3                 ggrepel_0.9.3              </span></span>
+<span><span class="co">##  [17] deldir_1.0-9                parallelly_1.36.0          </span></span>
+<span><span class="co">##  [19] hdrcde_3.4                  MASS_7.3-60                </span></span>
+<span><span class="co">##  [21] pkgdown_2.0.7               reshape2_1.4.4             </span></span>
+<span><span class="co">##  [23] foreach_1.5.2               httpuv_1.6.11              </span></span>
+<span><span class="co">##  [25] withr_2.5.0                 xfun_0.40                  </span></span>
+<span><span class="co">##  [27] ellipsis_0.3.2              survival_3.5-7             </span></span>
+<span><span class="co">##  [29] memoise_2.0.1               hexbin_1.28.3              </span></span>
+<span><span class="co">##  [31] systemfonts_1.0.4           GlobalOptions_0.1.2        </span></span>
+<span><span class="co">##  [33] ragg_1.2.5                  zoo_1.8-12                 </span></span>
+<span><span class="co">##  [35] pbapply_1.7-2               R.oo_1.25.0                </span></span>
+<span><span class="co">##  [37] DEoptimR_1.1-2              Formula_1.2-5              </span></span>
+<span><span class="co">##  [39] prettyunits_1.1.1           KEGGREST_1.40.0            </span></span>
+<span><span class="co">##  [41] promises_1.2.1              scatterplot3d_0.3-44       </span></span>
+<span><span class="co">##  [43] httr_1.4.7                  restfulr_0.0.15            </span></span>
+<span><span class="co">##  [45] globals_0.16.2              fitdistrplus_1.1-11        </span></span>
+<span><span class="co">##  [47] rhdf5filters_1.12.1         rstudioapi_0.15.0          </span></span>
+<span><span class="co">##  [49] miniUI_0.1.1.1              generics_0.1.3             </span></span>
+<span><span class="co">##  [51] base64enc_0.1-3             curl_5.0.2                 </span></span>
+<span><span class="co">##  [53] zlibbioc_1.46.0             polyclip_1.10-4            </span></span>
+<span><span class="co">##  [55] chromVAR_1.22.1             GenomeInfoDbData_1.2.10    </span></span>
+<span><span class="co">##  [57] RcppEigen_0.3.3.9.3         xtable_1.8-4               </span></span>
+<span><span class="co">##  [59] desc_1.4.2                  pracma_2.4.2               </span></span>
+<span><span class="co">##  [61] doParallel_1.0.17           evaluate_0.21              </span></span>
+<span><span class="co">##  [63] S4Arrays_1.0.6              BiocFileCache_2.8.0        </span></span>
+<span><span class="co">##  [65] hms_1.1.3                   irlba_2.3.5.1              </span></span>
+<span><span class="co">##  [67] colorspace_2.1-0            filelock_1.0.2             </span></span>
+<span><span class="co">##  [69] hdf5r_1.3.8                 ROCR_1.0-11                </span></span>
+<span><span class="co">##  [71] reticulate_1.32.0           spatstat.data_3.0-1        </span></span>
+<span><span class="co">##  [73] lmtest_0.9-40               readr_2.1.4                </span></span>
+<span><span class="co">##  [75] later_1.3.1                 viridis_0.6.4              </span></span>
+<span><span class="co">##  [77] lattice_0.21-8              spatstat.geom_3.2-5        </span></span>
+<span><span class="co">##  [79] future.apply_1.11.0         robustbase_0.99-0          </span></span>
+<span><span class="co">##  [81] scattermore_1.2             XML_3.99-0.14              </span></span>
+<span><span class="co">##  [83] cowplot_1.1.1               RcppAnnoy_0.0.21           </span></span>
+<span><span class="co">##  [85] xts_0.13.1                  Hmisc_5.1-1                </span></span>
+<span><span class="co">##  [87] class_7.3-22                pillar_1.9.0               </span></span>
+<span><span class="co">##  [89] nlme_3.1-163                iterators_1.0.14           </span></span>
+<span><span class="co">##  [91] caTools_1.18.2              compiler_4.3.1             </span></span>
+<span><span class="co">##  [93] RSpectra_0.16-1             stringi_1.7.12             </span></span>
+<span><span class="co">##  [95] tensor_1.5                  GenomicAlignments_1.36.0   </span></span>
+<span><span class="co">##  [97] fda_6.1.4                   crayon_1.5.2               </span></span>
+<span><span class="co">##  [99] abind_1.4-5                 BiocIO_1.10.0              </span></span>
+<span><span class="co">## [101] graphlayouts_1.0.1          bit_4.0.5                  </span></span>
+<span><span class="co">## [103] pcaMethods_1.92.0           fastmatch_1.1-4            </span></span>
+<span><span class="co">## [105] codetools_0.2-19            textshaping_0.3.6          </span></span>
+<span><span class="co">## [107] TTR_0.24.3                  bslib_0.5.1                </span></span>
+<span><span class="co">## [109] textshape_1.7.3             e1071_1.7-13               </span></span>
+<span><span class="co">## [111] destiny_3.14.0              fds_1.8                    </span></span>
+<span><span class="co">## [113] biovizBase_1.48.0           GetoptLong_1.0.5           </span></span>
+<span><span class="co">## [115] ggplot.multistats_1.0.0     plotly_4.10.2              </span></span>
+<span><span class="co">## [117] mime_0.12                   splines_4.3.1              </span></span>
+<span><span class="co">## [119] ramify_0.3.3                fastDummies_1.7.3          </span></span>
+<span><span class="co">## [121] dbplyr_2.3.3                interp_1.1-4               </span></span>
+<span><span class="co">## [123] knitr_1.44                  blob_1.2.4                 </span></span>
+<span><span class="co">## [125] utf8_1.2.3                  here_1.0.1                 </span></span>
+<span><span class="co">## [127] clue_0.3-64                 seqLogo_1.66.0             </span></span>
+<span><span class="co">## [129] fs_1.6.3                    checkmate_2.2.0            </span></span>
+<span><span class="co">## [131] listenv_0.9.0               Gviz_1.44.1                </span></span>
+<span><span class="co">## [133] tibble_3.2.1                tzdb_0.4.0                 </span></span>
+<span><span class="co">## [135] tweenr_2.0.2                pkgconfig_2.0.3            </span></span>
+<span><span class="co">## [137] tools_4.3.1                 cachem_1.0.8               </span></span>
+<span><span class="co">## [139] RSQLite_2.3.1               viridisLite_0.4.2          </span></span>
+<span><span class="co">## [141] smoother_1.1                DBI_1.1.3                  </span></span>
+<span><span class="co">## [143] fastmap_1.1.1               rmarkdown_2.25             </span></span>
+<span><span class="co">## [145] scales_1.2.1                ica_1.0-3                  </span></span>
+<span><span class="co">## [147] Rsamtools_2.16.0            sass_0.4.7                 </span></span>
+<span><span class="co">## [149] VariantAnnotation_1.46.0    dotCall64_1.0-2            </span></span>
+<span><span class="co">## [151] carData_3.0-5               rpart_4.1.19               </span></span>
+<span><span class="co">## [153] RANN_2.6.1                  farver_2.1.1               </span></span>
+<span><span class="co">## [155] mgcv_1.9-0                  tidygraph_1.2.3            </span></span>
+<span><span class="co">## [157] yaml_2.3.7                  deSolve_1.38               </span></span>
+<span><span class="co">## [159] latticeExtra_0.6-30         foreign_0.8-85             </span></span>
+<span><span class="co">## [161] ggthemes_4.2.4              cli_3.6.1                  </span></span>
+<span><span class="co">## [163] purrr_1.0.2                 motifmatchr_1.22.0         </span></span>
+<span><span class="co">## [165] leiden_0.4.3                lifecycle_1.0.3            </span></span>
+<span><span class="co">## [167] uwot_0.1.16                 rainbow_3.7                </span></span>
+<span><span class="co">## [169] mvtnorm_1.2-3               backports_1.4.1            </span></span>
+<span><span class="co">## [171] BiocParallel_1.34.2         annotate_1.78.0            </span></span>
+<span><span class="co">## [173] rjson_0.2.21                ggridges_0.5.4             </span></span>
+<span><span class="co">## [175] progressr_0.14.0            parallel_4.3.1             </span></span>
+<span><span class="co">## [177] jsonlite_1.8.7              RcppHNSW_0.4.1             </span></span>
+<span><span class="co">## [179] bitops_1.0-7                assertthat_0.2.1           </span></span>
+<span><span class="co">## [181] bit64_4.0.5                 Rtsne_0.16                 </span></span>
+<span><span class="co">## [183] nabor_0.5.0                 spatstat.utils_3.0-3       </span></span>
+<span><span class="co">## [185] ranger_0.15.1               CNEr_1.36.0                </span></span>
+<span><span class="co">## [187] jquerylib_0.1.4             R.utils_2.12.2             </span></span>
+<span><span class="co">## [189] lazyeval_0.2.2              shiny_1.7.5                </span></span>
+<span><span class="co">## [191] htmltools_0.5.6             GO.db_3.17.0               </span></span>
+<span><span class="co">## [193] sctransform_0.3.5           rappdirs_0.3.3             </span></span>
+<span><span class="co">## [195] glue_1.6.2                  factoextra_1.0.7           </span></span>
+<span><span class="co">## [197] TFMPvalue_0.0.9             spam_2.9-1                 </span></span>
+<span><span class="co">## [199] VIM_6.2.2                   RCurl_1.98-1.12            </span></span>
+<span><span class="co">## [201] rprojroot_2.0.3             mclust_6.0.0               </span></span>
+<span><span class="co">## [203] ks_1.14.1                   jpeg_0.1-10                </span></span>
+<span><span class="co">## [205] boot_1.3-28.1               R6_2.5.1                   </span></span>
+<span><span class="co">## [207] tidyr_1.3.0                 SingleCellExperiment_1.22.0</span></span>
+<span><span class="co">## [209] labeling_0.4.3              RcppRoll_0.3.0             </span></span>
+<span><span class="co">## [211] vcd_1.4-11                  cluster_2.1.4              </span></span>
+<span><span class="co">## [213] Rhdf5lib_1.22.1             DirichletMultinomial_1.42.0</span></span>
+<span><span class="co">## [215] DelayedArray_0.26.7         tidyselect_1.2.0           </span></span>
+<span><span class="co">## [217] ProtGenerics_1.32.0         htmlTable_2.4.1            </span></span>
+<span><span class="co">## [219] ggforce_0.4.1               xml2_1.3.5                 </span></span>
+<span><span class="co">## [221] car_3.1-2                   future_1.33.0              </span></span>
+<span><span class="co">## [223] munsell_0.5.0               KernSmooth_2.23-22         </span></span>
+<span><span class="co">## [225] laeken_0.5.2                htmlwidgets_1.6.2          </span></span>
+<span><span class="co">## [227] RColorBrewer_1.1-3          biomaRt_2.56.1             </span></span>
+<span><span class="co">## [229] rlang_1.1.1                 spatstat.sparse_3.0-2      </span></span>
+<span><span class="co">## [231] spatstat.explore_3.2-3      fansi_1.0.4</span></span></code></pre>
 </div>
   </div>
 
@@ -726,7 +912,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
