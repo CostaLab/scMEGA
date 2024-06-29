@@ -19,60 +19,60 @@ the snATAC-seq includes all chromatin accessibility profiles.
 Additionally, we also need a gene activity matrix for data integration. 
 This matrix was estimated from the snATAC-seq data by using 
 the [ArchR](https://www.archrproject.com/) package. 
-The script of cleaning the data and preparing these objects is found [here](https://costalab.ukaachen.de/open_data/scMEGA/Fibroblast/01_prepare_data.html).
+The script of cleaning the data and preparing these objects is found 
+[here](https://costalab.ukaachen.de/open_data/scMEGA/Fibroblast/01_prepare_data.html).
 
 Run the following commands to download the data:
-```{r}
-if(!dir.exists('./Fibroblast')){
-    dir.create('./Fibroblast')
-}
+```{r download_data}
+# if(!dir.exists('./Fibroblast')){
+#     dir.create('./Fibroblast')
+# }
 
-download.file(url = 'https://costalab.ukaachen.de/open_data/scMEGA/Fibroblast/snRNA.rds', 
-              destfile = './Fibroblast/snRNA.rds', 
-              method = 'wget', extra = '--no-check-certificate')
+# download.file(url = 'https://costalab.ukaachen.de/open_data/scMEGA/Fibroblast/snRNA.rds', 
+#               destfile = './Fibroblast/snRNA.rds', 
+#               method = 'wget', extra = '--no-check-certificate')
 
-download.file(url = 'https://costalab.ukaachen.de/open_data/scMEGA/Fibroblast/snATAC.rds', 
-              destfile = './Fibroblast/snATAC.rds', 
-              method = 'wget', extra = '--no-check-certificate')
+# download.file(url = 'https://costalab.ukaachen.de/open_data/scMEGA/Fibroblast/snATAC.rds', 
+#               destfile = './Fibroblast/snATAC.rds', 
+#               method = 'wget', extra = '--no-check-certificate')
               
-download.file(url = 'https://costalab.ukaachen.de/open_data/scMEGA/Fibroblast/gene.activity.rds', 
-              destfile = './Fibroblast/gene.activity.rds', 
-              method = 'wget', extra = '--no-check-certificate')
+# download.file(url = 'https://costalab.ukaachen.de/open_data/scMEGA/Fibroblast/gene.activity.rds', 
+#               destfile = './Fibroblast/gene.activity.rds', 
+#               method = 'wget', extra = '--no-check-certificate')
 ```
 
 
 Next, we load all necessary packages:
-```{r}
+```{r load_package}
 suppressMessages(library(ArchR))
 suppressMessages(library(Seurat))
 suppressMessages(library(Signac))
 suppressMessages(library(scMEGA))
 suppressMessages(library(harmony))
 suppressMessages(library(Nebulosa))
-suppressMessages(library(BSgenome.Hsapiens.UCSC.hg38))
 suppressMessages(library(ggplot2))
 suppressMessages(library(dplyr))
-suppressMessages(library(BSgenome.Hsapiens.UCSC.hg38))
 suppressMessages(library(JASPAR2020))
 suppressMessages(library(TFBSTools))
 suppressMessages(library(igraph))
 suppressMessages(library(ggraph))
+suppressMessages(library(BSgenome.Hsapiens.UCSC.hg38))
 
-options(Seurat.object.assay.version = 'v5')
+options(future.globals.maxSize = 1e9)
 ```
 
 ## Data integration
 
 Let's load the data into memory and see how they look like
 
-```{r}
+```{r load_data}
 obj.rna <- readRDS("./Fibroblast/snRNA.rds")
 obj.atac <- readRDS("./Fibroblast/snATAC.rds")
 gene.activity <- readRDS("./Fibroblast/gene.activity.rds")
+```
 
-# We need to convert the assays to an Assay5 for Seuratv5
-# see here https://github.com/satijalab/seurat/issues/7685
-
+We need to convert the assays to an Assay5 for Seuratv5
+```{r to_seuratv5}
 obj.rna[["RNA"]] <- as(obj.rna[["RNA"]], "Assay5")
 obj.atac[["ATAC"]] <- as(obj.atac[["ATAC"]], "Assay5")
 
@@ -80,8 +80,11 @@ obj.rna
 obj.atac
 ```
 
-We can observe that there are 45,515 and 6,481 cells in our snRNA-seq and snATAC-seq datasets. We now visualize the data as colored by patients. Note that here we used the UMAP embedding generated from batch-corrected low-dimensional space so that no batch effects are observed from the 2D visualization.
 
+We can observe that there are 45,515 and 6,481 cells in our snRNA-seq and snATAC-seq datasets. 
+Let's now visualize the data as colored by patients. 
+Note that here we used the UMAP embedding generated from batch-corrected low-dimensional space 
+so that no batch effects are observed from the 2D visualization.
 
 ```{r, fig.height = 5, fig.width = 12, fig.align = "center"}
 p1 <- DimPlot(obj.rna, pt.size = 1, reduction = "umap_harmony") +
@@ -94,10 +97,12 @@ p1 + p2
 ```
 
 ### Co-embedding
-First, we need to project the data into a common low-dimensional space. This is done by using the CCA method from [Seurat](https://satijalab.org/seurat/). To this end, we have wrapped several functions from Seurat into a single function _CoembedData_.
 
+First, we need to project the data into a common low-dimensional space. 
+This is done by using the CCA method from [Seurat](https://satijalab.org/seurat/). 
+To this end, we have wrapped several functions from Seurat into a single function _CoembedData_.
 
-```{r}
+```{r coembed}
 obj.coembed <- CoembedData(
   obj.rna,
   obj.atac, 
@@ -107,8 +112,8 @@ obj.coembed <- CoembedData(
 )
 ```
 
-We next visualize the snRNA-seq and snATAC-seq in this shared UMAP space. The cells are colored by
-patients or modalities.
+We next visualize the snRNA-seq and snATAC-seq in this shared UMAP space. 
+The cells are colored by patients or modalities.
 
 ```{r, fig.height = 5, fig.width = 12, fig.align = "center"}
 
@@ -122,25 +127,21 @@ The batch effects between patients, regions and modalities are quite clear.
 So next we use [Harmony](https://www.nature.com/articles/s41592-019-0619-0) to 
 perform batch correction and generate a new UMAP embedding.
 
-```{r, fig.height = 10, fig.width = 12, fig.align = "center"}
-obj.coembed <- RunHarmony(
-  obj.coembed,
-  group.by.vars = c("patient", "region", "tech"),
-  reduction = "pca",
-  max.iter.harmony = 30,
-  dims.use = 1:30,
-  project.dim = FALSE,
-  plot_convergence = FALSE
-)
+```{r batch_correction, fig.height = 10, fig.width = 12, fig.align = "center"}
+obj.coembed <- RunHarmony(obj.coembed, 
+                          group.by.vars = "patient",
+                          reduction.use = "pca", 
+                          dims.use = 1:30,
+                          project.dim = FALSE,
+                          plot_convergence = FALSE)
 
 obj.coembed <- RunUMAP(
   obj.coembed,
   dims = 1:30,
   reduction = 'harmony',
   reduction.name = "umap_harmony",
-  reduction.ke = 'umapharmony_',
-  verbose = FALSE,
-  min.dist = 0.4
+  reduction.key = 'umapharmony_',
+  verbose = FALSE
 )
 ```
 
@@ -155,9 +156,17 @@ p2 <-
 p1 + p2
 ```
 
-From the new UMAP embedding, we can observe that after batch-correction, cells from different patients, regions, and modalities are well mixed.
+From the new UMAP embedding, we can observe that after batch-correction, 
+cells from different patients, regions, and modalities are well mixed.
 
-Based on our previous works of myofibroblast differentiation in [human](https://www.nature.com/articles/s41586-020-2941-1) and [mouse](https://www.nature.com/articles/s41467-021-26530-2) kidney, we already known some relevant genes for this biological process. For example, SCARA5 is a marker for myofibroblast progenitor, and COL1A1, POSTN, and FN1 are highly expressed in myofibroblast. Therefore we can visualize the expression of these genes to check if we can also identify similar process in human heart. Note that to make the visualization clear, here we used the package [Nebulosa](https://github.com/powellgenomicslab/Nebulosa) to plot the data.
+Based on our previous works of myofibroblast differentiation in 
+[human](https://www.nature.com/articles/s41586-020-2941-1) and 
+[mouse](https://www.nature.com/articles/s41467-021-26530-2) kidney, 
+we already known some relevant genes for this biological process. For example, 
+SCARA5 is a marker for myofibroblast progenitor, and COL1A1, POSTN, and FN1 are highly expressed in myofibroblast. 
+Therefore we can visualize the expression of these genes to check if we can also identify similar process in human heart. 
+Note that to make the visualization clear, here we used the package 
+[Nebulosa](https://github.com/powellgenomicslab/Nebulosa) to plot the data.
 
 ```{r, fig.height = 10, fig.width = 12, fig.align = "center"}
 p1 <-
@@ -185,19 +194,23 @@ p4 <-
 (p1 + p2) / (p3 + p4)
 ```
 
-From the visualization, we can observe that some cells highly express SCARA5 which could be the progenitors of myofibroblasts. On the other hand, some cells highly express COL1A1, POSTN, and FN1 and they could be terminally differentiated myofibroblasts.
+From the visualization, we can observe that some cells highly express SCARA5 which could be the 
+progenitors of myofibroblasts. On the other hand, some cells highly express COL1A1, POSTN, and 
+FN1 and they could be terminally differentiated myofibroblasts.
 
 ### Sub-clustering
 
-We next perform sub-clustering to identify different populations in our multi-omic fibroblast data. To further control the data quality, here we will use a two-round approach to remove low-quality cells. We first use a high-resolution to get a large amount of clusters.
+We next perform sub-clustering to identify different populations in our multi-omic fibroblast data. 
+To further control the data quality, here we will use a two-round approach to remove low-quality cells. 
+We first use a high-resolution to get a large amount of clusters.
 
 ```{r, fig.height = 5, fig.width = 6, fig.align = "center"}
 obj.coembed <- FindNeighbors(obj.coembed, reduction = "harmony", dims = 1:30)
-obj.coembed <- FindClusters(obj.coembed, resolution = 0.9, verbose = FALSE)
+obj.coembed <- FindClusters(obj.coembed, resolution = 1, verbose = FALSE)
 
-cols <- ArchR::paletteDiscrete(obj.coembed@meta.data[, "RNA_snn_res.0.9"])
+cols <- ArchR::paletteDiscrete(obj.coembed@meta.data[, "RNA_snn_res.1"])
     
-p <- DimPlot(obj.coembed, group.by = "RNA_snn_res.0.9", label = TRUE,
+p <- DimPlot(obj.coembed, group.by = "RNA_snn_res.1", label = TRUE,
              reduction = "umap_harmony", shuffle = TRUE) +
     scale_color_manual(values = cols) +
     xlab("UMAP1") + ylab("UMAP2")
@@ -209,61 +222,54 @@ We can use the function _CellPropPlot_ to visualize the cell propotion across al
 
 ```{r, fig.height = 6, fig.width = 10, fig.align = "center"}
 p <- CellPropPlot(obj.coembed,
-                  group.by = "RNA_snn_res.0.9",
+                  group.by = "RNA_snn_res.1",
                   prop.in = "patient_region_id",
                   cols = cols)
 
 p
 ```
 
-Next, we identify the markers for each cluster and visualize the top 3.
 
-```{r, fig.height = 5, fig.width = 15, fig.align = "center", eval=TRUE}
-all.markers <- FindAllMarkers(obj.coembed, 
-                              only.pos = TRUE, 
-                              min.pct = 0.25, logfc.threshold = 0.5)
+Since we have annotated all patients into three major groups, i.e., myogenic, ischmeic, and fibrotic.
+we can also perform statistical test to check if any sub-population are enriched in any of the above group. 
+This can be done by the function _CompareCellProp_. 
 
-df <- all.markers %>%
-    group_by(cluster) %>%
-    slice_max(n = 3, order_by = avg_log2FC)
+The idea is to identify sub-populations that show significant difference.
 
-p <- DotPlot(obj.coembed, features = unique(df$gene)) + RotatedAxis()
+```{r, fig.height = 6, fig.width = 20, fig.align = "center", eval=TRUE}
+obj.coembed$patient_group <- factor(obj.coembed$patient_group, 
+                                    levels = c("myogenic", "ischemic", "fibrotic"))
 
-print(p)
+p <- CompareCellProp(object = obj.coembed, 
+                     group.by = "RNA_snn_res.1", 
+                     prop.in = "patient_region_id", 
+                      sample.annotation = "patient_group",
+                    comparisons = list(c("myogenic", "ischemic"),
+                                       c("ischemic", "fibrotic"),
+                                       c("myogenic", "fibrotic")))
+p
 
-saveRDS(obj.coembed, "./Fibroblast/coembed.rds")
 ```
 
-The above dot plot demonstrates the top 3 markers per cluster and we can easily classify cluster
-3 and 7 as myofibroblasts. In addition, two clusters (i.e., cluster 2 and 5) are marked by RYR2, a well known marker gene for cardiomyocyte, likely due to the background noise. It is worth pointing out that in another study [Cells of the adult human heart](https://www.nature.com/articles/s41586-020-2797-4) a similar fibroblast sub-population (marked by another cardiomyocyte-specific gene TNNT2) was also identified. Based on these, we decide to remove these two clusters.
 
-```{r, fig.height = 5, fig.width = 6, fig.align = "center"}
-Idents(obj.coembed) <- "RNA_snn_res.0.9"
-coembed.sub <- subset(obj.coembed, idents = c(2, 5), invert = TRUE)
+We subset the object to only keep the clusters with significant difference and re-do the clustering
+```{r, fig.height = 6, fig.width = 6, fig.align = "center", eval=TRUE}
+Idents(obj.coembed) <- "RNA_snn_res.1"
+coembed.sub <- subset(obj.coembed, idents = c(0, 1, 11, 12, 3, 4, 7, 8, 9))
 coembed.sub
 
-cols.clusters <- ArchR::paletteDiscrete(coembed.sub@meta.data[, "RNA_snn_res.0.9"])
-
-p <- DimPlot(coembed.sub, group.by = "RNA_snn_res.0.9", label = TRUE,
-             reduction = "umap_harmony", shuffle = TRUE, cols = cols) +
-    xlab("UMAP1") + ylab("UMAP2")
-
-p
-```
-
-We then re-do the UMAP embedding and clustering with a lower resolution to reduce complexity.
-
-```{r, fig.height = 5, fig.width = 6, fig.align = "center"}
+# re-do the UMAP
 coembed.sub <- RunUMAP(coembed.sub, 
                        dims = 1:30, 
                        reduction = 'harmony',
                        reduction.name = "umap_harmony",
                        reduction.key = 'umap_harmony_',
-                       verbose = FALSE,
-                       min.dist = 0.4)
+                       verbose = FALSE)
 
-## re-clustering
+
+## re-clustering with a lower resolution
 coembed.sub <- FindNeighbors(coembed.sub, reduction = "harmony", dims = 1:30)
+
 coembed.sub <- FindClusters(coembed.sub, resolution = 0.2, verbose = FALSE)
 
 cols <- ArchR::paletteDiscrete(coembed.sub@meta.data[, "RNA_snn_res.0.2"])
@@ -276,13 +282,23 @@ p <- DimPlot(coembed.sub, group.by = "RNA_snn_res.0.2", label = TRUE,
 p                
 ```
 
-Marker genes are identified based on new clustering results and we can plot the
-top 10 markers.
 
-```{r, fig.height = 5, fig.width = 15, fig.align = "center"}
+Visualize the patient and RNA/ATAC distribution
+```{r, fig.height = 5, fig.width = 12, fig.align = "center", eval=TRUE}
+p1 <- DimPlot(coembed.sub, group.by = "patient", reduction = "umap_harmony", shuffle = TRUE, label = TRUE)
+p2 <- DimPlot(coembed.sub, group.by = "tech", reduction = "umap_harmony", shuffle = TRUE, label = TRUE)
+
+p1 + p2
+```
+
+
+Next, we identify the markers for each cluster and visualize the top 10.
+
+```{r, fig.height = 5, fig.width = 15, fig.align = "center", eval=TRUE}
 all.markers <- FindAllMarkers(coembed.sub, 
                               only.pos = TRUE, 
-                              min.pct = 0.25, logfc.threshold = 0.5)
+                              min.pct = 0.5, 
+                              logfc.threshold = 0.5)
 
 df <- all.markers %>%
     group_by(cluster) %>%
@@ -293,72 +309,21 @@ p <- DotPlot(coembed.sub, features = unique(df$gene)) + RotatedAxis()
 print(p)
 ```
 
-Now the clustering results are clearer, and cluster 1 is myofibroblast, and cluster 2 is SCARA5+ fibroblast.
+The above dot plot demonstrates the top 10 markers per cluster and we can easily classify cluster
+1 as myofibroblasts. 
 
-We can plot the snRNA-seq and snATAC-seq data separately
-
-```{r, fig.height = 5, fig.width = 10, fig.align = "center"}
-p <- DimPlot(coembed.sub, group.by = "RNA_snn_res.0.2", label = TRUE,
-             reduction = "umap_harmony", shuffle = TRUE, split.by = "tech", 
-             cols = cols) +
-    xlab("UMAP1") + ylab("UMAP2")
-
-p
-```
-
-Visualize the cell proportion of each sub-population across all patients
-
-```{r, fig.height = 6, fig.width = 10, fig.align = "center"}
-p <- CellPropPlot(coembed.sub, 
-                   group.by = "RNA_snn_res.0.2", 
-                   prop.in = "patient_region_id", 
-                   cols = cols)
-
-p
-```
-
-Since we have annotated all patients into three major groups, i.e., myogenic, ischmeic, and fibrotic.
-we can also perform statistical test to check if any sub-population are enriched in any of the above group. This can be done by the function _CompareCellProp_.
-
-```{r, fig.height = 5, fig.width = 10, fig.align = "center"}
+Let's compare the cell proportion again:
+```{r, fig.height = 5, fig.width = 8, fig.align = "center", eval=TRUE}
 coembed.sub$patient_group <- factor(coembed.sub$patient_group, 
                                     levels = c("myogenic", "ischemic", "fibrotic"))
 
 p <- CompareCellProp(object = coembed.sub, 
                      group.by = "RNA_snn_res.0.2", 
                      prop.in = "patient_region_id", 
-                      sample.annotation = "patient_group",
-                    comparisons = list(c("myogenic", "ischemic"),
+                     sample.annotation = "patient_group",
+                     comparisons = list(c("myogenic", "ischemic"),
                                        c("ischemic", "fibrotic"),
                                        c("myogenic", "fibrotic")))
-
-p
-
-saveRDS(coembed.sub, "./Fibroblast/coembed.cluster.rds")
-```
-
-This analysis reveals significant changes of cell proportion between different conditions for cluster 1, 2, and 3. We therefore only use these three clusters in our trajectory analysis.
-
-```{r}
-Idents(coembed.sub) <- "RNA_snn_res.0.2"
-coembed.sub <- subset(coembed.sub, idents = c(1, 2, 3))
-```
-
-We can generate a new UMAP
-
-```{r, fig.height = 5, fig.width = 6, fig.align = "center"}
-cols <- ArchR::paletteDiscrete(unique(coembed.sub@meta.data[, "RNA_snn_res.0.2"]))
-
-coembed.sub <- RunUMAP(coembed.sub, 
-               dims = 1:30, 
-               reduction = 'harmony',
-               reduction.name = "umap_harmony",
-               reduction.ke = 'umap_harmony_',
-              verbose = FALSE)
-
-p <- DimPlot(coembed.sub, group.by = "RNA_snn_res.0.2", label = TRUE,
-             reduction = "umap_harmony", shuffle = TRUE, cols = cols) +
-    xlab("UMAP1") + ylab("UMAP2")
 
 p
 ```
@@ -421,19 +386,20 @@ multimodal protocol.
 
 ```{r, fig.height = 5, fig.width = 10, fig.align = "center"}
 obj.pair <- CreatePairedObject(df.pair = df.pair, 
-                                obj.rna = obj.rna,
-                                obj.atac = obj.atac,
+                               obj.coembed = coembed.sub2,
+                               obj.rna = obj.rna,
+                               obj.atac = obj.atac,
                                rna.assay = "RNA", 
                                atac.assay = "ATAC")
 
-obj.pair
+obj.pair <- NormalizeData(obj.pair)                           
 ```
 
 Finally, we infer a pseudo-time trajectory from SCARA5+ fibroblasts to myofibroblast using the approach from [ArchR](https://www.archrproject.com/). Here we modified the function to allow to take a Seurat object as input
 
 ```{r, fig.height = 5, fig.width = 5, fig.align = "center"}
 obj.pair <- AddTrajectory(object = obj.pair, 
-                          trajectory = c(2, 1),
+                          trajectory = c(0, 2, 1),
                           group.by = "RNA_snn_res.0.2", 
                           reduction = "dm",
                           dims = 1:3, 
@@ -542,7 +508,7 @@ df.grn <- GetGRN(motif.matching = motif.matching,
 Next, we can visualize our network as the last step of this analysis
 
 ```{r viz_network, fig.height = 15, fig.width = 15, fig.align = "center"}
-# define colors for nodes representing TFs (i.e., regulators)
+define colors for nodes representing TFs (i.e., regulators)
 df.cor <- df.cor[order(df.cor$time_point), ]
 tfs.timepoint <- df.cor$time_point
 names(tfs.timepoint) <- df.cor$tfs
@@ -577,12 +543,12 @@ Once we generated the gene regulatory network, we can visualize individual TFs i
 Here we select two TFs for visualization.
 
 ```{r, fig.height = 3.5, fig.width = 12, fig.align = "center"}
-obj <- AddTargetAssay(object = obj, df.grn = df.grn2)
+# obj <- AddTargetAssay(object = obj, df.grn = df.grn2)
 
-p1 <- PseudotimePlot(object = obj, tf.use = "NR3C2")
-p2 <- PseudotimePlot(object = obj, tf.use = "RUNX1")
+# p1 <- PseudotimePlot(object = obj, tf.use = "NR3C2")
+# p2 <- PseudotimePlot(object = obj, tf.use = "RUNX1")
 
-p1 + p2
+# p1 + p2
 ```
 
 The x-axis in above plots present pseudotime point along the trajectory, and the y-axis represent TF binding acitivty, TF expression, and TF target expression after z-score transformation.
@@ -591,7 +557,7 @@ The x-axis in above plots present pseudotime point along the trajectory, and the
 
 As an additional step, if the spatial transcriptome (ST) data (e.g., generated by using 10X Visium assay) are available, we can then visualize the target gene expression for some interesting TFs to understand the regulon activity in spatial space. First let's download the ST data
 
-```{bash, eval=TRUE}
+```{r, eval=FALSE}
 dir.create('./VisiumSpatial')
 
 
@@ -603,7 +569,7 @@ download.file(url = 'https://costalab.ukaachen.de/open_data/scMEGA/VisiumSpatial
 Of note, each spot in the 10X Visium assay contains multiple cells, meaning that we usually cannot identify cell types by clustering the data. To address this issue, people developed various computation tools to estimate cell-type-specific abundance in each spot. Here we have perform such analysis using [cell2location](https://www.nature.com/articles/s41587-021-01139-4) based on our snRNA-seq data. Let's first visualize the fibroblast proportion.
 
 
-```{r, fig.height = 5, fig.width = 5, fig.align = "center"}
+```{r, fig.height = 5, fig.width = 5, fig.align = "center", eval=FALSE}
 obj.spatial <- readRDS("./VisiumSpatial/AKK004_157772.rds")
 
 DefaultAssay(obj.spatial) <- "c2l_props"
@@ -621,7 +587,7 @@ print(p)
 We next can check the gene expression in space. Here, we use the above TFs.
 
 
-```{r, fig.height = 5, fig.width = 10, fig.align = "center"}
+```{r, fig.height = 5, fig.width = 10, fig.align = "center", eval=FALSE}
 DefaultAssay(obj.spatial) <- "SCT"
 
 p1 <- SpatialFeaturePlot(object = obj.spatial, features = "NR3C2") +
@@ -639,7 +605,7 @@ p1 + p2
 
 Then, we visualize the regulon activity of NR3C2 and RUNX1 by using the GRN that we predicted. The major idea is that if the target genes of a TF are up-regulated, then this TF should have high activity. This principle has been used to develop computation methods to estimate TF activity from gene expression data, such as [DoRothEA](https://genome.cshlp.org/content/29/8/1363.short).
 
-```{r, fig.height = 5, fig.width = 10, fig.align = "center"}
+```{r, fig.height = 5, fig.width = 10, fig.align = "center", eval=FALSE}
 DefaultAssay(obj.spatial) <- "SCT"
 
 p1 <- GRNSpatialPlot(object = obj.spatial, assay = "SCT", df.grn = df.grn2,
@@ -658,7 +624,7 @@ p1 + p2
 The above plots demonstrate a clear spatial-distributed pattern for the regulon activity of NR3C2 and RUNX1.
 
 Save data
-```{r, fig.height = 5, fig.width = 6, fig.align = "center"}
+```{r, fig.height = 5, fig.width = 6, fig.align = "center", eval=FALSE}
 saveRDS(obj, "./Fibroblast/coembed.trajectory.rds")
 ```
 
@@ -672,7 +638,7 @@ This will allow us to
 * to vizualise regulatory networks centred in selected transcription factors.  
 
 We first load the network produced by scMEGA:
-```{r, fig.height = 5, fig.width = 6, fig.align = "center"}
+```{r, fig.height = 5, fig.width = 6, fig.align = "center", eval=FALSE}
 dfgrn <- readRDS("./Fibroblast/final_grn.Rds")
 netobj <- graph_from_data_frame(dfgrn,directed = TRUE)
 V(netobj)$type <- ifelse(V(netobj)$name %in% dfgrn$tf,"TF/Gene","Gene")
@@ -681,12 +647,12 @@ V(netobj)$type <- ifelse(V(netobj)$name %in% dfgrn$tf,"TF/Gene","Gene")
 Next, we will estimate distint network topological measures as node degree, node centrality and node page rank score and plot these in a principal component based embedding with a focus on transcription factors. We plot bellow the 3 first PCs. 
 
 ### Network topological measures embedding: PC1 and PC2
-```{r,fig.width=12,fig.height=12}
+```{r,fig.width=12, fig.height=12, eval=FALSE}
 p <- TopEmbGRN(df.grn=netobj)
 ```
 
 ### Network topological measures embedding: PC2 and PC3
-```{r,fig.width=12,fig.height=12}
+```{r,fig.width=12, fig.height=12, eval=FALSE}
 p <- TopEmbGRN(df.grn=netobj,axis=c(2,3))
 ```
 
@@ -696,7 +662,7 @@ This reveals that RUNX1 is a central TF in this network, as it has high in/out-d
 
 To further inspect genes and TFs associated with RUNX1, we create a centric layout embedding.
 
-```{r,fig.width=12,fig.height=12}
+```{r,fig.width=12,fig.height=12, eval=FALSE}
 NetCentPlot(netobj,"RUNX1")
 ```
 

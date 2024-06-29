@@ -40,7 +40,7 @@ This function wraps a number of functions from the Seurat package.
 It integrates and projects the single-cell multi-omics (e.g., scRNA-seq
 and scATAC-seq) data into a common low-dimensional space via CCA approach.
 The details can be found:
-\url{https://satijalab.org/seurat/articles/atacseq_integration_vignette.html}
+\url{https://satijalab.org/seurat/articles/seurat5_atacseq_integration_vignette}
 }
 \examples{
 \dontrun{

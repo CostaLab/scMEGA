@@ -4,7 +4,7 @@
 #' It integrates and projects the single-cell multi-omics (e.g., scRNA-seq
 #' and scATAC-seq) data into a common low-dimensional space via CCA approach.
 #' The details can be found:
-#' \url{https://satijalab.org/seurat/articles/atacseq_integration_vignette.html}
+#' \url{https://satijalab.org/seurat/articles/seurat5_atacseq_integration_vignette}
 #'
 #' @param obj.rna A Seurat object including gene expression data
 #' @param obj.atac A Seurat object including chromatin accessibility data
@@ -49,20 +49,22 @@ CoembedData <-
     gene.use <- intersect(rownames(gene.activity),
                           rownames(obj.rna))
 
-    message("Performing data integration using Seurat...")
+    n_genes <- length(gene.use)
+    message(glue::glue("Find {n_genes} common genes between ATAC and RNA"))
 
+    message("Subset ATAC and RNA data")
     obj.atac[['GeneActivity']] <-
       CreateAssayObject(counts = gene.activity[gene.use,])
-
     DefaultAssay(obj.atac) <- "GeneActivity"
-
-    obj.atac <- obj.atac %>%
-      NormalizeData(verbose = verbose) %>%
-      FindVariableFeatures(verbose = verbose) %>%
-      ScaleData(verbose = verbose)
 
     obj.rna <- subset(obj.rna, features = gene.use)
 
+    message("Normalize gene activity score for ATAC data")
+    obj.atac <- obj.atac %>%
+      NormalizeData(verbose = verbose) %>%
+      ScaleData(verbose = verbose)
+
+    message("Performing data integration using Seurat...")
     transfer.anchors <- FindTransferAnchors(
       reference = obj.rna,
       query = obj.atac,
@@ -74,10 +76,6 @@ CoembedData <-
     )
 
     # we here restrict the imputation to the selected genes
-    #refdata <-
-    #  GetAssayData(obj.rna, assay = reference.assay, slot = "data")
-
-    # Seurat V5
     refdata <- LayerData(obj.rna, assay = reference.assay, layer = "data")
 
     # refdata (input) contains a scRNA-seq expression matrix for the scRNA-seq cells.
@@ -96,15 +94,15 @@ CoembedData <-
 
     # merge the objects
     coembed <- merge(x = obj.atac, y = obj.rna)
-
     coembed <- JoinLayers(coembed)
 
-    #Finally, we run PCA and UMAP on this combined object, to visualize the co-embedding of both datasets
+    # Finally, we run PCA and UMAP on this combined object, 
+    # to visualize the co-embedding of both datasets
     message("Coemebdding the data...")
     coembed <- coembed %>%
       ScaleData(do.scale = FALSE) %>%
-      RunPCA(verbose = FALSE) %>%
-      RunUMAP(dims = 1:30, verbose = FALSE)
+      RunPCA(verbose = verbose) %>%
+      RunUMAP(dims = 1:30, verbose = verbose)
 
     return(coembed)
   }
@@ -179,6 +177,11 @@ PairCells <- function(object,
 
   embedding <- rbind(embedding.atac, embedding.rna)
   n.cells <- dim(embedding)[1]
+
+  n.cells.atac <- dim(embedding.atac)[1]
+  n.cells.rna <- dim(embedding.rna)[1]
+
+  message(glue::glue("Number of ATAC cells: {n.cells.atac}, number of RNA cells: {n.cells.rna}"))
 
   # release memory
   rm(obj.1)
@@ -442,12 +445,15 @@ CreatePairedObject <- function(df.pair,
                          min.cells = 10)
 
   for (reduction in names(obj.coembed@reductions)) {
-    embedding <-
-      Embeddings(obj.coembed, reduction = reduction)[df.pair$RNA,]
+    embedding <- Embeddings(
+      obj.coembed, 
+      reduction = reduction)[df.pair$RNA, ]
+
     rownames(embedding) <- df.pair$cell_name
-    obj.pair[[reduction]] <-
-      CreateDimReducObject(embeddings = embedding,
-                           assay = DefaultAssay(obj.pair))
+
+    obj.pair[[reduction]] <- CreateDimReducObject(
+      embeddings = embedding,
+      assay = DefaultAssay(obj.pair))
   }
 
   # add metadata, here we use the metadata from RNA assay

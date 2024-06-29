@@ -11,7 +11,7 @@ PairCells(
   ident1 = "ATAC",
   ident2 = "RNA",
   assay = "RNA",
-  pair.mode = "geodesic",
+  pair.mode = "greedy",
   tol = 1e-04,
   search.range = 0.2,
   max.multimatch = 5,
@@ -33,7 +33,7 @@ PairCells(
 
 \item{assay}{Assay name based on which a KNN graph is constructed}
 
-\item{pair.mode}{Pair mode. Currently only "geodesic" is available}
+\item{pair.mode}{Pair mode. Available options are: "greedy" and "geodesic".}
 
 \item{tol}{Tol times the number of subjects to be matched specifies the extent to which fullmatch's}
 

@@ -51,9 +51,7 @@ SelectTFs <- function(object,
   df.cor <- GetCorrelation(trajMM, trajRNA)
 
   # we only select TFs that show significant correlation
-  df.cor <-
-    df.cor[df.cor$adj_p < p.cutoff &
-             df.cor$correlation > cor.cutoff,]
+  df.cor <- df.cor[df.cor$adj_p < p.cutoff & df.cor$correlation > cor.cutoff, ]
 
   matMM <- suppressMessages(TrajectoryHeatmap(
     trajMM,
