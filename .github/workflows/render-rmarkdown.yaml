@@ -49,10 +49,6 @@ jobs:
       #   run: |
       #     pkgdown::build_site()
       #   shell: Rscript {0}
-      - name: Render Rmarkdown files
-        run : |
-          pkgdown::build_article(name='install.Rmd', quiet=FALSE)
-        shell: Rscript {0}
       - name: Commit files
         run: |
           git config --local user.name "$GITHUB_ACTOR"
