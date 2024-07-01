@@ -578,7 +578,8 @@ obj.spatial <- readRDS("./VisiumSpatial/AKK004_157772.rds")
 DefaultAssay(obj.spatial) <- "c2l_props"
 
 p <- SpatialFeaturePlot(obj.spatial, features = "Fib", min.cutoff = "q5",
-                       max.cutoff = "q95") +
+                       max.cutoff = "q95", image.alpha = 1, 
+                       pt.size.factor = 400, keep.scale = NULL) +
     scale_fill_viridis(option = "D") +
     ggtitle("") +
     labs(fill = "") +
@@ -593,12 +594,12 @@ We next can check the gene expression in space. Here, we use the above TFs.
 ```{r, fig.height = 5, fig.width = 10, fig.align = "center", eval=TRUE}
 DefaultAssay(obj.spatial) <- "SCT"
 
-p1 <- SpatialFeaturePlot(object = obj.spatial, features = "NR3C2") +
+p1 <- SpatialFeaturePlot(object = obj.spatial, features = "NR3C2", image.alpha = 1, pt.size.factor = 400, keep.scale = NULL) +
     ggtitle("") +
     theme(legend.position = "bottom") +
 scale_fill_viridis(option = "C")
 
-p2 <- SpatialFeaturePlot(object = obj.spatial, features = "RUNX1") +
+p2 <- SpatialFeaturePlot(object = obj.spatial, features = "RUNX1", image.alpha = 1, pt.size.factor = 400, keep.scale = NULL) +
     ggtitle("") +
     theme(legend.position = "bottom") +
 scale_fill_viridis(option = "C")

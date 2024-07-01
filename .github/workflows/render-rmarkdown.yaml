@@ -51,7 +51,7 @@ jobs:
       #   shell: Rscript {0}
       - name: Render Rmarkdown files
         run : |
-          pkgdown::build_article(name='myofibroblast-GRN', quiet=FALSE)
+          pkgdown::build_article(name='install.Rmd', quiet=FALSE)
         shell: Rscript {0}
       - name: Commit files
         run: |
