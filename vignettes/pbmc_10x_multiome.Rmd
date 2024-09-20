@@ -233,18 +233,18 @@ meta.data <- obj.rna@meta.data %>%
 
 # create a Seurat object containing the RNA adata
 pbmc <- CreateSeuratObject(
-  counts = obj.rna@assays$RNA@counts,
+  counts = GetAssayData(obj.rna, layer = "counts"),
   assay = "RNA",
-    meta.data = meta.data
+  meta.data = meta.data
 )
 
 # create ATAC assay and add it to the object
 pbmc[["ATAC"]] <- CreateChromatinAssay(
-  counts = obj.atac@assays$ATAC@counts,
+  counts = GetAssayData(obj.atac, layer = "counts",),
   sep = c(":", "-"),
-    min.cells = 1,
-    genome = 'hg38',
-    fragments = './10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz'
+  min.cells = 1,
+  genome = 'hg38',
+  fragments = './10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz'
 )
 ```
 
@@ -300,9 +300,9 @@ pbmc <- AddTrajectory(object = pbmc,
                       trajectory = c("naive CD4 T cells", 
                                      "memory CD4 T cells"),
                       group.by = "predicted.id", 
-                          reduction = "MOJITOO_UMAP",
-                          dims = 1:2, 
-                          use.all = FALSE)
+                      reduction = "MOJITOO_UMAP",
+                      dims = 1:2, 
+                      use.all = FALSE)
 
 # we only plot the cells that are in this trajectory
 pbmc.t.cells <- pbmc[, !is.na(pbmc$Trajectory)]

@@ -1,7 +1,7 @@
 Package: scMEGA
 Type: Package
 Title: Single-cell Multiomic Enhancer-based Gene Regulatory Network Inference
-Version: 1.0.2
+Version: 1.1.0
 Author: Zhijian Li
 Maintainer: Zhijian Li <lzj1769@gmail.com>
 Description: Infering gene regulatory network from single-cell multi-omics data.

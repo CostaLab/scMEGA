@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gene-regulatory network of CD4 T cells activaction • scMEGA</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">scMEGA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
       </span>
     </div>
 
@@ -90,8 +90,7 @@
       <h1 data-toc-skip>Gene-regulatory network of CD4 T cells
 activaction</h1>
             
-            <h4 data-toc-skip class="date">Compiled: September 23,
-2023</h4>
+            <h4 data-toc-skip class="date">Compiled: July 05, 2024</h4>
       
       
       <div class="hidden name"><code>pbmc_10x_multiome.Rmd</code></div>
@@ -164,17 +163,19 @@ data</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Visualize QC metrics as a violin plot</span></span>
 <span><span class="fu"><a href="https://satijalab.org/seurat/reference/VlnPlot.html" class="external-link">VlnPlot</a></span><span class="op">(</span><span class="va">obj.rna</span>, features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"nFeature_RNA"</span>, <span class="st">"nCount_RNA"</span>, <span class="st">"percent.mt"</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">3</span>, pt.size <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: Default search for "data" layer in "RNA" assay yielded no results;</span></span>
+<span><span class="co">## utilizing "counts" layer instead.</span></span></code></pre>
 <p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-4-1.png" width="1440" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">obj.rna</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">obj.rna</span>, subset <span class="op">=</span> <span class="va">nFeature_RNA</span> <span class="op">&gt;</span> <span class="fl">200</span> <span class="op">&amp;</span> <span class="va">nFeature_RNA</span> <span class="op">&lt;</span> <span class="fl">3000</span> <span class="op">&amp;</span> <span class="va">percent.mt</span> <span class="op">&lt;</span> <span class="fl">20</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">obj.rna</span></span></code></pre></div>
 <pre><code><span><span class="co">## An object of class Seurat </span></span>
 <span><span class="co">## 36601 features across 10504 samples within 1 assay </span></span>
 <span><span class="co">## Active assay: RNA (36601 features, 0 variable features)</span></span>
-<span><span class="co">##  2 layers present: counts, data</span></span></code></pre>
+<span><span class="co">##  1 layer present: counts</span></span></code></pre>
 <p>Create Seurat object for scATAC-seq data:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create seurat object</span></span>
 <span><span class="va">chrom_assay</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://stuartlab.org/signac/reference/CreateChromatinAssay.html" class="external-link">CreateChromatinAssay</a></span><span class="op">(</span></span>
 <span>    counts <span class="op">=</span> <span class="va">atac_counts</span>,</span>
@@ -184,7 +185,7 @@ data</p>
 <span>    fragments <span class="op">=</span> <span class="st">'./10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz'</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Computing hash</span></span></code></pre>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">obj.atac</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/CreateSeuratObject.html" class="external-link">CreateSeuratObject</a></span><span class="op">(</span></span>
 <span>    counts <span class="op">=</span> <span class="va">chrom_assay</span>,</span>
 <span>    assay <span class="op">=</span> <span class="st">"ATAC"</span><span class="op">)</span></span>
@@ -194,90 +195,67 @@ data</p>
 <span>                                   verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
 <span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
-<span></span>
 <span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
 <span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
-<span></span>
 <span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
 <span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
-<span></span>
 <span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
 <span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
-<span></span>
 <span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
 <span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
-<span></span>
 <span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
 <span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
-<span></span>
 <span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
 <span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
-<span></span>
 <span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
 <span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
-<span></span>
 <span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
 <span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
-<span></span>
 <span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
 <span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
-<span></span>
 <span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
 <span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
-<span></span>
 <span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
 <span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
-<span></span>
 <span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
 <span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
-<span></span>
 <span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
 <span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
-<span></span>
 <span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
 <span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
-<span></span>
 <span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
 <span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
-<span></span>
 <span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
 <span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
-<span></span>
 <span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
 <span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
-<span></span>
 <span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
 <span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
-<span></span>
 <span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
 <span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
-<span></span>
 <span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
 <span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
-<span></span>
 <span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
 <span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
-<span></span>
 <span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
 <span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span>
-<span></span>
 <span><span class="co">## Warning in .merge_two_Seqinfo_objects(x, y): The 2 combined objects have no sequence levels in common. (Use</span></span>
 <span><span class="co">##   suppressWarnings() to suppress this warning.)</span></span></code></pre>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># change to UCSC style since the data was mapped to hg38</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/GenomeInfoDb/man/seqlevelsStyle.html" class="external-link">seqlevelsStyle</a></span><span class="op">(</span><span class="va">annotations</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">'UCSC'</span></span>
 <span></span>
 <span><span class="co"># add the gene information to the object</span></span>
 <span><span class="fu"><a href="https://stuartlab.org/signac/reference/Annotation.html" class="external-link">Annotation</a></span><span class="op">(</span><span class="va">obj.atac</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">annotations</span></span></code></pre></div>
 <p>Make sure that the two modalities have the same cells:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cell.sel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/setops.html" class="external-link">intersect</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">obj.rna</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">obj.atac</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">obj.rna</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">obj.rna</span>, cells <span class="op">=</span> <span class="va">cell.sel</span><span class="op">)</span></span>
 <span><span class="va">obj.atac</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">obj.atac</span>, cells <span class="op">=</span> <span class="va">cell.sel</span><span class="op">)</span></span></code></pre></div>
 <p>We next process the scRNA-seq and scATAC-seq data using standard
 Seurat and Signac analysis pipeline:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># normalization followed by dimensionality reduction</span></span>
 <span><span class="va">obj.rna</span> <span class="op">&lt;-</span> <span class="va">obj.rna</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/NormalizeData.html" class="external-link">NormalizeData</a></span><span class="op">(</span>verbose<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -285,16 +263,11 @@ Seurat and Signac analysis pipeline:</p>
 <span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/ScaleData.html" class="external-link">ScaleData</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/RunPCA.html" class="external-link">RunPCA</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/RunUMAP.html" class="external-link">RunUMAP</a></span><span class="op">(</span>dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning: The following arguments are not used: nselect</span></span></code></pre>
 <pre><code><span><span class="co">## Centering and scaling data matrix</span></span></code></pre>
 <pre><code><span><span class="co">## Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric</span></span>
 <span><span class="co">## To use Python UMAP via reticulate, set umap.method to 'umap-learn' and metric to 'correlation'</span></span>
 <span><span class="co">## This message will be shown once per session</span></span></code></pre>
-<pre><code><span><span class="co">## Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></span></code></pre>
-<pre><code><span><span class="co">## Also defined by 'spam'</span></span></code></pre>
-<pre><code><span><span class="co">## Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></span></code></pre>
-<pre><code><span><span class="co">## Also defined by 'spam'</span></span></code></pre>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">obj.atac</span> <span class="op">&lt;-</span> <span class="va">obj.atac</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://stuartlab.org/signac/reference/RunTFIDF.html" class="external-link">RunTFIDF</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://stuartlab.org/signac/reference/FindTopFeatures.html" class="external-link">FindTopFeatures</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -303,12 +276,8 @@ Seurat and Signac analysis pipeline:</p>
 <pre><code><span><span class="co">## Performing TF-IDF normalization</span></span></code></pre>
 <pre><code><span><span class="co">## Running SVD</span></span></code></pre>
 <pre><code><span><span class="co">## Scaling cell embeddings</span></span></code></pre>
-<pre><code><span><span class="co">## Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></span></code></pre>
-<pre><code><span><span class="co">## Also defined by 'spam'</span></span></code></pre>
-<pre><code><span><span class="co">## Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></span></code></pre>
-<pre><code><span><span class="co">## Also defined by 'spam'</span></span></code></pre>
 <p>Visualize the scRNA-seq and scATAC-seq separately.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.rna</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoLegend</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.atac</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoLegend</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -322,12 +291,12 @@ Seurat and Signac analysis pipeline:</p>
 transfer approach implemented by Seurat. The reference dataset is found
 <a href="https://raw.githack.com/bioFAM/MOFA2_tutorials/master/R_tutorials/10x_scRNA_scATAC.html" class="external-link">here</a></p>
 <p>Download data</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">'https://costalab.ukaachen.de/open_data/scMEGA/10x_multiome/seurat.rds'</span>, </span>
 <span>              destfile <span class="op">=</span> <span class="st">'./10x_pbmc/seurat.rds'</span>, </span>
 <span>              method <span class="op">=</span> <span class="st">'wget'</span>, extra <span class="op">=</span> <span class="st">'--no-check-certificate'</span><span class="op">)</span></span></code></pre></div>
 <p>Load data</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reference</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"./10x_pbmc/seurat.rds"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">reference</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/UpdateSeuratObject.html" class="external-link">UpdateSeuratObject</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">reference</span><span class="op">)</span></span></code></pre></div>
@@ -343,14 +312,14 @@ transfer approach implemented by Seurat. The reference dataset is found
 <pre><code><span><span class="co">## Validating object structure for Assay 'RNA'</span></span></code></pre>
 <pre><code><span><span class="co">## Validating object structure for Assay 'ATAC'</span></span></code></pre>
 <pre><code><span><span class="co">## Object representation is consistent with the most current Seurat version</span></span></code></pre>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reference</span><span class="op">[[</span><span class="st">"RNA"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/methods/as.html" class="external-link">as</a></span><span class="op">(</span><span class="va">reference</span><span class="op">[[</span><span class="st">"RNA"</span><span class="op">]</span><span class="op">]</span>, <span class="st">"Assay5"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning: Assay RNA changing from Assay to Assay5</span></span></code></pre>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># we only keep cells with annotated cell type</span></span>
 <span><span class="va">reference</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">reference</span>, subset <span class="op">=</span> <span class="va">celltype</span> <span class="op">!=</span> <span class="st">"NA"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning: Removing 1877 cells missing data for vars requested</span></span></code></pre>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># run sctransform</span></span>
 <span><span class="va">reference</span> <span class="op">&lt;-</span> <span class="va">reference</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/NormalizeData.html" class="external-link">NormalizeData</a></span><span class="op">(</span>verbose<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -358,15 +327,8 @@ transfer approach implemented by Seurat. The reference dataset is found
 <span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/ScaleData.html" class="external-link">ScaleData</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/RunPCA.html" class="external-link">RunPCA</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/RunUMAP.html" class="external-link">RunUMAP</a></span><span class="op">(</span>dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning: The following arguments are not used: layer</span></span></code></pre>
 <pre><code><span><span class="co">## Centering and scaling data matrix</span></span></code></pre>
-<pre><code><span><span class="co">## Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></span></code></pre>
-<pre><code><span><span class="co">## Also defined by 'spam'</span></span></code></pre>
-<pre><code><span><span class="co">## Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></span></code></pre>
-<pre><code><span><span class="co">## Also defined by 'spam'</span></span></code></pre>
-<pre><code><span><span class="co">## Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></span></code></pre>
-<pre><code><span><span class="co">## Also defined by 'spam'</span></span></code></pre>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">reference</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, repel <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>        reduction <span class="op">=</span> <span class="st">"umap"</span>, group.by <span class="op">=</span> <span class="st">"broad_celltype"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoLegend</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -376,7 +338,7 @@ transfer approach implemented by Seurat. The reference dataset is found
 <span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code></pre></div>
 <p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-11-1.png" width="1152" style="display: block; margin: auto;"></p>
 <p>Transfer cell type labels from reference to query:</p>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">transfer_anchors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindTransferAnchors.html" class="external-link">FindTransferAnchors</a></span><span class="op">(</span></span>
 <span>  reference <span class="op">=</span> <span class="va">reference</span>,</span>
 <span>  query <span class="op">=</span> <span class="va">obj.rna</span>,</span>
@@ -387,7 +349,7 @@ transfer approach implemented by Seurat. The reference dataset is found
 <pre><code><span><span class="co">## Finding neighborhoods</span></span></code></pre>
 <pre><code><span><span class="co">## Finding anchors</span></span></code></pre>
 <pre><code><span><span class="co">##  Found 26315 anchors</span></span></code></pre>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">predictions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/TransferData.html" class="external-link">TransferData</a></span><span class="op">(</span></span>
 <span>  anchorset <span class="op">=</span> <span class="va">transfer_anchors</span>, </span>
 <span>  refdata <span class="op">=</span> <span class="va">reference</span><span class="op">$</span><span class="va">celltype</span>,</span>
@@ -397,7 +359,7 @@ transfer approach implemented by Seurat. The reference dataset is found
 <pre><code><span><span class="co">## Finding integration vectors</span></span></code></pre>
 <pre><code><span><span class="co">## Finding integration vector weights</span></span></code></pre>
 <pre><code><span><span class="co">## Predicting cell labels</span></span></code></pre>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">obj.rna</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/AddMetaData.html" class="external-link">AddMetaData</a></span><span class="op">(</span></span>
 <span>  object <span class="op">=</span> <span class="va">obj.rna</span>,</span>
 <span>  metadata <span class="op">=</span> <span class="va">predictions</span></span>
@@ -408,7 +370,7 @@ transfer approach implemented by Seurat. The reference dataset is found
 <span>  metadata <span class="op">=</span> <span class="va">predictions</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Visualize the predicted cell types:</p>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">obj.rna</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, repel <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>        reduction <span class="op">=</span> <span class="st">"umap"</span>, group.by <span class="op">=</span> <span class="st">"predicted.id"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoLegend</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -426,29 +388,29 @@ we can use <a href="https://academic.oup.com/bioinformatics/article/38/Supplemen
 to do this job.</p>
 <p>Let’s first create a single Seurat object including both modalities
 and predicted cell types that we generated in the above step:</p>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">meta.data</span> <span class="op">&lt;-</span> <span class="va">obj.rna</span><span class="op">@</span><span class="va">meta.data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># create a Seurat object containing the RNA adata</span></span>
 <span><span class="va">pbmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/CreateSeuratObject.html" class="external-link">CreateSeuratObject</a></span><span class="op">(</span></span>
-<span>  counts <span class="op">=</span> <span class="va">obj.rna</span><span class="op">@</span><span class="va">assays</span><span class="op">$</span><span class="va">RNA</span><span class="op">@</span><span class="va">counts</span>,</span>
+<span>  counts <span class="op">=</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/AssayData.html" class="external-link">GetAssayData</a></span><span class="op">(</span><span class="va">obj.rna</span>, layer <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span>,</span>
 <span>  assay <span class="op">=</span> <span class="st">"RNA"</span>,</span>
-<span>    meta.data <span class="op">=</span> <span class="va">meta.data</span></span>
+<span>  meta.data <span class="op">=</span> <span class="va">meta.data</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># create ATAC assay and add it to the object</span></span>
 <span><span class="va">pbmc</span><span class="op">[[</span><span class="st">"ATAC"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://stuartlab.org/signac/reference/CreateChromatinAssay.html" class="external-link">CreateChromatinAssay</a></span><span class="op">(</span></span>
-<span>  counts <span class="op">=</span> <span class="va">obj.atac</span><span class="op">@</span><span class="va">assays</span><span class="op">$</span><span class="va">ATAC</span><span class="op">@</span><span class="va">counts</span>,</span>
+<span>  counts <span class="op">=</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/AssayData.html" class="external-link">GetAssayData</a></span><span class="op">(</span><span class="va">obj.atac</span>, layer <span class="op">=</span> <span class="st">"counts"</span>,<span class="op">)</span>,</span>
 <span>  sep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">":"</span>, <span class="st">"-"</span><span class="op">)</span>,</span>
-<span>    min.cells <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>    genome <span class="op">=</span> <span class="st">'hg38'</span>,</span>
-<span>    fragments <span class="op">=</span> <span class="st">'./10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz'</span></span>
+<span>  min.cells <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  genome <span class="op">=</span> <span class="st">'hg38'</span>,</span>
+<span>  fragments <span class="op">=</span> <span class="st">'./10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz'</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Computing hash</span></span></code></pre>
 <p>MOJITOO takes as input the individual low-dimensional space for each
 modality, so here we do this again:</p>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## RNA pre-processing and PCA dimension reduction</span></span>
 <span><span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/DefaultAssay.html" class="external-link">DefaultAssay</a></span><span class="op">(</span><span class="va">pbmc</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"RNA"</span></span>
 <span></span>
@@ -456,10 +418,9 @@ modality, so here we do this again:</p>
 <span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/NormalizeData.html" class="external-link">NormalizeData</a></span><span class="op">(</span>verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/FindVariableFeatures.html" class="external-link">FindVariableFeatures</a></span><span class="op">(</span>nfeatures<span class="op">=</span><span class="fl">3000</span>, verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/ScaleData.html" class="external-link">ScaleData</a></span><span class="op">(</span>verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/RunPCA.html" class="external-link">RunPCA</a></span><span class="op">(</span>npcs<span class="op">=</span><span class="fl">50</span>, reduction.name<span class="op">=</span><span class="st">"RNA_PCA"</span>, verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Warning: The following arguments are not used: nselect</span></span></code></pre>
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">## ATAC pre-processing and LSI dimension reduction</span></span>
+<span>    <span class="fu"><a href="https://satijalab.org/seurat/reference/RunPCA.html" class="external-link">RunPCA</a></span><span class="op">(</span>npcs<span class="op">=</span><span class="fl">50</span>, reduction.name<span class="op">=</span><span class="st">"RNA_PCA"</span>, verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## ATAC pre-processing and LSI dimension reduction</span></span>
 <span><span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/DefaultAssay.html" class="external-link">DefaultAssay</a></span><span class="op">(</span><span class="va">pbmc</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"ATAC"</span></span>
 <span></span>
 <span><span class="va">pbmc</span> <span class="op">&lt;-</span> <span class="va">pbmc</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -467,7 +428,7 @@ modality, so here we do this again:</p>
 <span>    <span class="fu"><a href="https://stuartlab.org/signac/reference/FindTopFeatures.html" class="external-link">FindTopFeatures</a></span><span class="op">(</span>min.cutoff <span class="op">=</span> <span class="st">'q0'</span>, verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://stuartlab.org/signac/reference/RunSVD.html" class="external-link">RunSVD</a></span><span class="op">(</span>verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span></span></code></pre></div>
 <p>Run MOJITOO:</p>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pbmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/MOJITOO/man/mojitoo.html" class="external-link">mojitoo</a></span><span class="op">(</span></span>
 <span>     object <span class="op">=</span> <span class="va">pbmc</span>,</span>
 <span>     reduction.list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"RNA_PCA"</span>, <span class="st">"lsi"</span><span class="op">)</span>,</span>
@@ -482,19 +443,15 @@ modality, so here we do this again:</p>
 <span><span class="co">## underscore, setting key from MOJITOO to MOJITOO_</span></span></code></pre>
 <p>We can generate another UMAP representation based on the MOJITOO
 results:</p>
-<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/DefaultAssay.html" class="external-link">DefaultAssay</a></span><span class="op">(</span><span class="va">pbmc</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"RNA"</span></span>
 <span><span class="va">embedd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/Embeddings.html" class="external-link">Embeddings</a></span><span class="op">(</span><span class="va">pbmc</span><span class="op">[[</span><span class="st">"MOJITOO"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">pbmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/RunUMAP.html" class="external-link">RunUMAP</a></span><span class="op">(</span><span class="va">pbmc</span>, </span>
 <span>                reduction<span class="op">=</span><span class="st">"MOJITOO"</span>, </span>
 <span>                reduction.name<span class="op">=</span><span class="st">"MOJITOO_UMAP"</span>, </span>
-<span>                dims<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">embedd</span><span class="op">)</span>, verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></span></code></pre>
-<pre><code><span><span class="co">## Also defined by 'spam'</span></span></code></pre>
-<pre><code><span><span class="co">## Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span></span></code></pre>
-<pre><code><span><span class="co">## Also defined by 'spam'</span></span></code></pre>
-<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">pbmc</span>, group.by <span class="op">=</span> <span class="st">"predicted.id"</span>, </span>
+<span>                dims<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">embedd</span><span class="op">)</span>, verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">pbmc</span>, group.by <span class="op">=</span> <span class="st">"predicted.id"</span>, </span>
 <span>        shuffle <span class="op">=</span> <span class="cn">TRUE</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, reduction <span class="op">=</span> <span class="st">"MOJITOO_UMAP"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoLegend</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-17-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
@@ -503,19 +460,19 @@ results:</p>
 </h2>
 <p>We next infer a trajectory from naive CD4 T cells to memory CD4 T
 cells to characterize CD4+ T cell activation.</p>
-<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pbmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddTrajectory.html">AddTrajectory</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc</span>, </span>
 <span>                      trajectory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"naive CD4 T cells"</span>, </span>
 <span>                                     <span class="st">"memory CD4 T cells"</span><span class="op">)</span>,</span>
 <span>                      group.by <span class="op">=</span> <span class="st">"predicted.id"</span>, </span>
-<span>                          reduction <span class="op">=</span> <span class="st">"MOJITOO_UMAP"</span>,</span>
-<span>                          dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, </span>
-<span>                          use.all <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>                      reduction <span class="op">=</span> <span class="st">"MOJITOO_UMAP"</span>,</span>
+<span>                      dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, </span>
+<span>                      use.all <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># we only plot the cells that are in this trajectory</span></span>
 <span><span class="va">pbmc.t.cells</span> <span class="op">&lt;-</span> <span class="va">pbmc</span><span class="op">[</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">pbmc</span><span class="op">$</span><span class="va">Trajectory</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <p>The results can be visualized as:</p>
-<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>, </span>
 <span>              group.by <span class="op">=</span> <span class="st">"predicted.id"</span>, </span>
 <span>              reduction <span class="op">=</span> <span class="st">"MOJITOO_UMAP"</span>,</span>
@@ -540,7 +497,7 @@ regulatory network.</p>
 <p>To identify potential regulator (i.e., TFs), we first estimate an
 acitivty score for each TF in each cell. This is done by first
 performing motif matching and then computing deviation scores using <a href="https://greenleaflab.github.io/chromVAR/index.html" class="external-link">chromVAR</a>.</p>
-<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get a list of motif position frequency matrices from the JASPAR database</span></span>
 <span><span class="va">pfm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/TFBSTools/man/getMatrixSet-methods.html" class="external-link">getMatrixSet</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">JASPAR2020</span>,</span>
@@ -557,7 +514,7 @@ performing motif matching and then computing deviation scores using <a href="htt
 <pre><code><span><span class="co">## Building motif matrix</span></span></code></pre>
 <pre><code><span><span class="co">## Finding motif positions</span></span></code></pre>
 <pre><code><span><span class="co">## Creating Motif object</span></span></code></pre>
-<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># run chromVAR</span></span>
 <span><span class="va">pbmc.t.cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://stuartlab.org/signac/reference/RunChromVAR.html" class="external-link">RunChromVAR</a></span><span class="op">(</span></span>
 <span>  object <span class="op">=</span> <span class="va">pbmc.t.cells</span>,</span>
@@ -568,7 +525,8 @@ performing motif matching and then computing deviation scores using <a href="htt
 <pre><code><span><span class="co">## Selecting background regions</span></span></code></pre>
 <pre><code><span><span class="co">## Computing deviations from background</span></span></code></pre>
 <pre><code><span><span class="co">## Constructing chromVAR assay</span></span></code></pre>
-<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
+<pre><code><span><span class="co">## Warning: Layer counts isn't present in the assay object; returning NULL</span></span></code></pre>
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sel.tfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SelectTFs.html">SelectTFs</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>, </span>
 <span>                 return.heatmap <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                cor.cutoff <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span></span></code></pre></div>
@@ -579,7 +537,7 @@ performing motif matching and then computing deviation scores using <a href="htt
 <pre><code><span><span class="co">## Creating Trajectory Group Matrix..</span></span></code></pre>
 <pre><code><span><span class="co">## Smoothing...</span></span></code></pre>
 <pre><code><span><span class="co">## Find 559 shared features!</span></span></code></pre>
-<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df.cor</span> <span class="op">&lt;-</span> <span class="va">sel.tfs</span><span class="op">$</span><span class="va">tfs</span></span>
 <span><span class="va">ht</span> <span class="op">&lt;-</span> <span class="va">sel.tfs</span><span class="op">$</span><span class="va">heatmap</span></span>
 <span></span>
@@ -589,7 +547,7 @@ performing motif matching and then computing deviation scores using <a href="htt
 <div class="section level3">
 <h3 id="select-genes">Select genes<a class="anchor" aria-label="anchor" href="#select-genes"></a>
 </h3>
-<div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sel.genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SelectGenes.html">SelectGenes</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>,</span>
 <span>                  labelTop1 <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>                  labelTop2 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
@@ -598,7 +556,7 @@ performing motif matching and then computing deviation scores using <a href="htt
 <pre><code><span><span class="co">## Creating Trajectory Group Matrix..</span></span></code></pre>
 <pre><code><span><span class="co">## Smoothing...</span></span></code></pre>
 <pre><code><span><span class="co">## Linking cis-regulatory elements to genes...</span></span></code></pre>
-<div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df.p2g</span> <span class="op">&lt;-</span> <span class="va">sel.genes</span><span class="op">$</span><span class="va">p2g</span></span>
 <span><span class="va">ht</span> <span class="op">&lt;-</span> <span class="va">sel.genes</span><span class="op">$</span><span class="va">heatmap</span></span>
 <span></span>
@@ -612,7 +570,7 @@ performing motif matching and then computing deviation scores using <a href="htt
 <p>We here will try to predict a gene regulatory network based on the
 correlation of the TF binding activity as estimated from snATAC-seq and
 gene expression as measured by snRNA-seq along the trajectory.</p>
-<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tf.gene.cor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetTFGeneCorrelation.html">GetTFGeneCorrelation</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>, </span>
 <span>                                    tf.use <span class="op">=</span> <span class="va">df.cor</span><span class="op">$</span><span class="va">tfs</span>, </span>
 <span>                                    gene.use <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">df.p2g</span><span class="op">$</span><span class="va">gene</span><span class="op">)</span>,</span>
@@ -628,7 +586,7 @@ gene expression as measured by snRNA-seq along the trajectory.</p>
 <p>We can then visualize this correlation matrix by heatmap. Also, we
 can cluster the genes and TFs to identify different regulatory modules
 for the predefined sub-populations.</p>
-<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ht</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GRNHeatmap.html">GRNHeatmap</a></span><span class="op">(</span><span class="va">tf.gene.cor</span>, </span>
 <span>                 tf.timepoint <span class="op">=</span> <span class="va">df.cor</span><span class="op">$</span><span class="va">time_point</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## `use_raster` is automatically set to TRUE for a matrix with more than</span></span>
@@ -639,14 +597,14 @@ for the predefined sub-populations.</p>
 <pre><code><span><span class="co">## 'magick' package is suggested to install to give better rasterization.</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Set `ht_opt$message = FALSE` to turn off this message.</span></span></code></pre>
-<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ht</span></span></code></pre></div>
 <p><img src="pbmc_10x_multiome_files/figure-html/unnamed-chunk-23-1.png" width="1152" style="display: block; margin: auto;"></p>
 <p>To associate genes to TFs, we will use the peak-to-gene links and TF
 binding sites information. Specifically, if a gene is regulated by a
 peak and this peak is bound by a TF, then we consider this gene to be a
 target of this TF.</p>
-<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">motif.matching</span> <span class="op">&lt;-</span> <span class="va">pbmc.t.cells</span><span class="op">@</span><span class="va">assays</span><span class="op">$</span><span class="va">ATAC</span><span class="op">@</span><span class="va">motifs</span><span class="op">@</span><span class="va">data</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">motif.matching</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">pbmc.t.cells</span><span class="op">@</span><span class="va">assays</span><span class="op">$</span><span class="va">ATAC</span><span class="op">@</span><span class="va">motifs</span><span class="op">@</span><span class="va">motif.names</span></span>
 <span><span class="va">motif.matching</span> <span class="op">&lt;-</span></span>
@@ -660,7 +618,7 @@ target of this TF.</p>
 <pre><code><span><span class="co">## Filtering network by TF binding site prediction...</span></span></code></pre>
 <p>Finally, we can visualize our network as the last step of this
 analysis</p>
-<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># define colors for nodes representing TFs (i.e., regulators)</span></span>
 <span><span class="va">df.cor</span> <span class="op">&lt;-</span> <span class="va">df.cor</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">df.cor</span><span class="op">$</span><span class="va">time_point</span><span class="op">)</span>, <span class="op">]</span></span>
 <span><span class="va">tfs.timepoint</span> <span class="op">&lt;-</span> <span class="va">df.cor</span><span class="op">$</span><span class="va">time_point</span></span>
@@ -691,10 +649,11 @@ analysis</p>
 individual TFs in terms of binding activity, expression, and target
 expression along the pseudotime trajectory.</p>
 <p>Here we select two TFs for visualization.</p>
-<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pbmc.t.cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddTargetAssay.html">AddTargetAssay</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>, df.grn <span class="op">=</span> <span class="va">df.grn2</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PseudotimePlot.html">PseudotimePlot</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>, tf.use <span class="op">=</span> <span class="st">"SOX4"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pbmc.t.cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddTargetAssay.html">AddTargetAssay</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>, df.grn <span class="op">=</span> <span class="va">df.grn2</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: Layer counts isn't present in the assay object; returning NULL</span></span></code></pre>
+<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PseudotimePlot.html">PseudotimePlot</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>, tf.use <span class="op">=</span> <span class="st">"SOX4"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Creating Trajectory Group Matrix..</span></span></code></pre>
 <pre><code><span><span class="co">## Some values are below 0, this could be the Motif activity matrix in which scaleTo should be set = NULL.</span></span>
 <span><span class="co">## Continuing without depth normalization!</span></span></code></pre>
@@ -705,7 +664,7 @@ expression along the pseudotime trajectory.</p>
 <pre><code><span><span class="co">## Some values are below 0, this could be the Motif activity matrix in which scaleTo should be set = NULL.</span></span>
 <span><span class="co">## Continuing without depth normalization!</span></span></code></pre>
 <pre><code><span><span class="co">## Smoothing...</span></span></code></pre>
-<div class="sourceCode" id="cb138"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PseudotimePlot.html">PseudotimePlot</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">pbmc.t.cells</span>, tf.use <span class="op">=</span> <span class="st">"TBX21"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Creating Trajectory Group Matrix..</span></span></code></pre>
 <pre><code><span><span class="co">## Some values are below 0, this could be the Motif activity matrix in which scaleTo should be set = NULL.</span></span>
@@ -717,7 +676,7 @@ expression along the pseudotime trajectory.</p>
 <pre><code><span><span class="co">## Some values are below 0, this could be the Motif activity matrix in which scaleTo should be set = NULL.</span></span>
 <span><span class="co">## Continuing without depth normalization!</span></span></code></pre>
 <pre><code><span><span class="co">## Smoothing...</span></span></code></pre>
-<div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code></pre></div>
 <pre><code><span><span class="co">## `geom_smooth()` using formula = 'y ~ x'</span></span></code></pre>
 <pre><code><span><span class="co">## `geom_smooth()` using formula = 'y ~ x'</span></span></code></pre>
@@ -725,15 +684,15 @@ expression along the pseudotime trajectory.</p>
 <p>The x-axis in above plots present pseudotime point along the
 trajectory, and the y-axis represent TF binding acitivty, TF expression,
 and TF target expression after z-score transformation.</p>
-<div class="sourceCode" id="cb150"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check session information</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## R version 4.3.1 (2023-06-16)</span></span>
+<pre><code><span><span class="co">## R version 4.3.3 (2024-02-29)</span></span>
 <span><span class="co">## Platform: x86_64-conda-linux-gnu (64-bit)</span></span>
 <span><span class="co">## Running under: CentOS Linux 7 (Core)</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
-<span><span class="co">## BLAS/LAPACK: /data/pinello/SHARED_SOFTWARE/anaconda_latest/envs/zl_scmega/lib/libopenblasp-r0.3.24.so;  LAPACK version 3.11.0</span></span>
+<span><span class="co">## BLAS/LAPACK: /data/pinello/SHARED_SOFTWARE/anaconda_latest/envs/zl_envs/zl_scmega/lib/libopenblasp-r0.3.27.so;  LAPACK version 3.12.0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## locale:</span></span>
 <span><span class="co">##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span></span>
@@ -743,7 +702,7 @@ and TF target expression after z-score transformation.</p>
 <span><span class="co">##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            </span></span>
 <span><span class="co">## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       </span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## time zone: America/New_York</span></span>
+<span><span class="co">## time zone: Etc/UTC</span></span>
 <span><span class="co">## tzcode source: system (glibc)</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attached base packages:</span></span>
@@ -751,147 +710,151 @@ and TF target expression after z-score transformation.</p>
 <span><span class="co">## [8] methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">##  [1] circlize_0.4.15                   ComplexHeatmap_2.16.0            </span></span>
-<span><span class="co">##  [3] MOJITOO_1.0                       ggraph_2.1.0                     </span></span>
-<span><span class="co">##  [5] igraph_1.5.1                      TFBSTools_1.38.0                 </span></span>
-<span><span class="co">##  [7] JASPAR2020_0.99.10                dplyr_1.1.3                      </span></span>
-<span><span class="co">##  [9] EnsDb.Hsapiens.v86_2.99.0         ensembldb_2.24.0                 </span></span>
-<span><span class="co">## [11] AnnotationFilter_1.24.0           GenomicFeatures_1.52.2           </span></span>
-<span><span class="co">## [13] AnnotationDbi_1.62.2              BSgenome.Hsapiens.UCSC.hg38_1.4.5</span></span>
-<span><span class="co">## [15] BSgenome_1.68.0                   rtracklayer_1.60.1               </span></span>
-<span><span class="co">## [17] Biostrings_2.68.1                 XVector_0.40.0                   </span></span>
-<span><span class="co">## [19] Nebulosa_1.10.0                   patchwork_1.1.3                  </span></span>
-<span><span class="co">## [21] scMEGA_1.0.2                      Signac_1.11.9000                 </span></span>
-<span><span class="co">## [23] Seurat_4.9.9.9060                 SeuratObject_4.9.9.9091          </span></span>
-<span><span class="co">## [25] sp_2.0-0                          rhdf5_2.44.0                     </span></span>
-<span><span class="co">## [27] SummarizedExperiment_1.30.2       Biobase_2.60.0                   </span></span>
-<span><span class="co">## [29] MatrixGenerics_1.12.3             Rcpp_1.0.11                      </span></span>
-<span><span class="co">## [31] Matrix_1.6-1                      GenomicRanges_1.52.0             </span></span>
-<span><span class="co">## [33] GenomeInfoDb_1.36.3               IRanges_2.34.1                   </span></span>
-<span><span class="co">## [35] S4Vectors_0.38.1                  BiocGenerics_0.46.0              </span></span>
-<span><span class="co">## [37] matrixStats_1.0.0                 data.table_1.14.8                </span></span>
-<span><span class="co">## [39] stringr_1.5.0                     plyr_1.8.8                       </span></span>
-<span><span class="co">## [41] magrittr_2.0.3                    ggplot2_3.4.3                    </span></span>
-<span><span class="co">## [43] gtable_0.3.4                      gtools_3.9.4                     </span></span>
-<span><span class="co">## [45] gridExtra_2.3                     ArchR_1.0.2                      </span></span>
+<span><span class="co">##  [1] circlize_0.4.16                   ComplexHeatmap_2.18.0            </span></span>
+<span><span class="co">##  [3] MOJITOO_1.0                       ggraph_2.2.1                     </span></span>
+<span><span class="co">##  [5] igraph_2.0.3                      TFBSTools_1.40.0                 </span></span>
+<span><span class="co">##  [7] JASPAR2020_0.99.10                dplyr_1.1.4                      </span></span>
+<span><span class="co">##  [9] EnsDb.Hsapiens.v86_2.99.0         ensembldb_2.26.0                 </span></span>
+<span><span class="co">## [11] AnnotationFilter_1.26.0           GenomicFeatures_1.54.1           </span></span>
+<span><span class="co">## [13] AnnotationDbi_1.64.1              BSgenome.Hsapiens.UCSC.hg38_1.4.5</span></span>
+<span><span class="co">## [15] BSgenome_1.70.2                   rtracklayer_1.62.0               </span></span>
+<span><span class="co">## [17] BiocIO_1.12.0                     Biostrings_2.70.3                </span></span>
+<span><span class="co">## [19] XVector_0.42.0                    Nebulosa_1.12.1                  </span></span>
+<span><span class="co">## [21] patchwork_1.2.0                   scMEGA_1.0.2                     </span></span>
+<span><span class="co">## [23] Signac_1.13.0                     Seurat_5.1.0                     </span></span>
+<span><span class="co">## [25] SeuratObject_5.0.2                sp_2.1-4                         </span></span>
+<span><span class="co">## [27] rhdf5_2.46.1                      SummarizedExperiment_1.32.0      </span></span>
+<span><span class="co">## [29] Biobase_2.62.0                    MatrixGenerics_1.14.0            </span></span>
+<span><span class="co">## [31] Rcpp_1.0.12                       Matrix_1.6-5                     </span></span>
+<span><span class="co">## [33] GenomicRanges_1.54.1              GenomeInfoDb_1.38.8              </span></span>
+<span><span class="co">## [35] IRanges_2.36.0                    S4Vectors_0.40.2                 </span></span>
+<span><span class="co">## [37] BiocGenerics_0.48.1               matrixStats_1.3.0                </span></span>
+<span><span class="co">## [39] data.table_1.15.4                 stringr_1.5.1                    </span></span>
+<span><span class="co">## [41] plyr_1.8.9                        magrittr_2.0.3                   </span></span>
+<span><span class="co">## [43] ggplot2_3.5.1                     gtable_0.3.5                     </span></span>
+<span><span class="co">## [45] gtools_3.9.5                      gridExtra_2.3                    </span></span>
+<span><span class="co">## [47] ArchR_1.0.2                      </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##   [1] dichromat_2.0-0.1           R.methodsS3_1.8.2          </span></span>
-<span><span class="co">##   [3] progress_1.2.2              nnet_7.3-19                </span></span>
-<span><span class="co">##   [5] poweRlaw_0.70.6             DT_0.29                    </span></span>
-<span><span class="co">##   [7] goftest_1.2-3               vctrs_0.6.3                </span></span>
-<span><span class="co">##   [9] spatstat.random_3.1-6       corpcor_1.6.10             </span></span>
-<span><span class="co">##  [11] shape_1.4.6                 digest_0.6.33              </span></span>
-<span><span class="co">##  [13] png_0.1-8                   proxy_0.4-27               </span></span>
-<span><span class="co">##  [15] pcaPP_2.0-3                 ggrepel_0.9.3              </span></span>
-<span><span class="co">##  [17] deldir_1.0-9                parallelly_1.36.0          </span></span>
-<span><span class="co">##  [19] hdrcde_3.4                  MASS_7.3-60                </span></span>
-<span><span class="co">##  [21] pkgdown_2.0.7               reshape2_1.4.4             </span></span>
-<span><span class="co">##  [23] foreach_1.5.2               httpuv_1.6.11              </span></span>
-<span><span class="co">##  [25] withr_2.5.0                 xfun_0.40                  </span></span>
-<span><span class="co">##  [27] ellipsis_0.3.2              survival_3.5-7             </span></span>
-<span><span class="co">##  [29] memoise_2.0.1               hexbin_1.28.3              </span></span>
-<span><span class="co">##  [31] systemfonts_1.0.4           GlobalOptions_0.1.2        </span></span>
-<span><span class="co">##  [33] ragg_1.2.5                  zoo_1.8-12                 </span></span>
-<span><span class="co">##  [35] pbapply_1.7-2               R.oo_1.25.0                </span></span>
-<span><span class="co">##  [37] DEoptimR_1.1-2              Formula_1.2-5              </span></span>
-<span><span class="co">##  [39] prettyunits_1.1.1           KEGGREST_1.40.0            </span></span>
-<span><span class="co">##  [41] promises_1.2.1              scatterplot3d_0.3-44       </span></span>
-<span><span class="co">##  [43] httr_1.4.7                  restfulr_0.0.15            </span></span>
-<span><span class="co">##  [45] globals_0.16.2              fitdistrplus_1.1-11        </span></span>
-<span><span class="co">##  [47] rhdf5filters_1.12.1         rstudioapi_0.15.0          </span></span>
-<span><span class="co">##  [49] miniUI_0.1.1.1              generics_0.1.3             </span></span>
-<span><span class="co">##  [51] base64enc_0.1-3             curl_5.0.2                 </span></span>
-<span><span class="co">##  [53] zlibbioc_1.46.0             polyclip_1.10-4            </span></span>
-<span><span class="co">##  [55] chromVAR_1.22.1             GenomeInfoDbData_1.2.10    </span></span>
-<span><span class="co">##  [57] RcppEigen_0.3.3.9.3         xtable_1.8-4               </span></span>
-<span><span class="co">##  [59] desc_1.4.2                  pracma_2.4.2               </span></span>
-<span><span class="co">##  [61] doParallel_1.0.17           evaluate_0.21              </span></span>
-<span><span class="co">##  [63] S4Arrays_1.0.6              BiocFileCache_2.8.0        </span></span>
-<span><span class="co">##  [65] hms_1.1.3                   irlba_2.3.5.1              </span></span>
-<span><span class="co">##  [67] colorspace_2.1-0            filelock_1.0.2             </span></span>
-<span><span class="co">##  [69] hdf5r_1.3.8                 ROCR_1.0-11                </span></span>
-<span><span class="co">##  [71] reticulate_1.32.0           spatstat.data_3.0-1        </span></span>
-<span><span class="co">##  [73] lmtest_0.9-40               readr_2.1.4                </span></span>
-<span><span class="co">##  [75] later_1.3.1                 viridis_0.6.4              </span></span>
-<span><span class="co">##  [77] lattice_0.21-8              spatstat.geom_3.2-5        </span></span>
-<span><span class="co">##  [79] future.apply_1.11.0         robustbase_0.99-0          </span></span>
-<span><span class="co">##  [81] scattermore_1.2             XML_3.99-0.14              </span></span>
-<span><span class="co">##  [83] cowplot_1.1.1               RcppAnnoy_0.0.21           </span></span>
-<span><span class="co">##  [85] xts_0.13.1                  Hmisc_5.1-1                </span></span>
-<span><span class="co">##  [87] class_7.3-22                pillar_1.9.0               </span></span>
-<span><span class="co">##  [89] nlme_3.1-163                iterators_1.0.14           </span></span>
-<span><span class="co">##  [91] caTools_1.18.2              compiler_4.3.1             </span></span>
-<span><span class="co">##  [93] RSpectra_0.16-1             stringi_1.7.12             </span></span>
-<span><span class="co">##  [95] tensor_1.5                  GenomicAlignments_1.36.0   </span></span>
-<span><span class="co">##  [97] fda_6.1.4                   crayon_1.5.2               </span></span>
-<span><span class="co">##  [99] abind_1.4-5                 BiocIO_1.10.0              </span></span>
-<span><span class="co">## [101] graphlayouts_1.0.1          bit_4.0.5                  </span></span>
-<span><span class="co">## [103] pcaMethods_1.92.0           fastmatch_1.1-4            </span></span>
-<span><span class="co">## [105] codetools_0.2-19            textshaping_0.3.6          </span></span>
-<span><span class="co">## [107] TTR_0.24.3                  bslib_0.5.1                </span></span>
-<span><span class="co">## [109] textshape_1.7.3             e1071_1.7-13               </span></span>
-<span><span class="co">## [111] destiny_3.14.0              fds_1.8                    </span></span>
-<span><span class="co">## [113] biovizBase_1.48.0           GetoptLong_1.0.5           </span></span>
-<span><span class="co">## [115] ggplot.multistats_1.0.0     plotly_4.10.2              </span></span>
-<span><span class="co">## [117] mime_0.12                   splines_4.3.1              </span></span>
-<span><span class="co">## [119] ramify_0.3.3                fastDummies_1.7.3          </span></span>
-<span><span class="co">## [121] dbplyr_2.3.3                interp_1.1-4               </span></span>
-<span><span class="co">## [123] knitr_1.44                  blob_1.2.4                 </span></span>
-<span><span class="co">## [125] utf8_1.2.3                  here_1.0.1                 </span></span>
-<span><span class="co">## [127] clue_0.3-64                 seqLogo_1.66.0             </span></span>
-<span><span class="co">## [129] fs_1.6.3                    checkmate_2.2.0            </span></span>
-<span><span class="co">## [131] listenv_0.9.0               Gviz_1.44.1                </span></span>
-<span><span class="co">## [133] tibble_3.2.1                tzdb_0.4.0                 </span></span>
-<span><span class="co">## [135] tweenr_2.0.2                pkgconfig_2.0.3            </span></span>
-<span><span class="co">## [137] tools_4.3.1                 cachem_1.0.8               </span></span>
-<span><span class="co">## [139] RSQLite_2.3.1               viridisLite_0.4.2          </span></span>
-<span><span class="co">## [141] smoother_1.1                DBI_1.1.3                  </span></span>
-<span><span class="co">## [143] fastmap_1.1.1               rmarkdown_2.25             </span></span>
-<span><span class="co">## [145] scales_1.2.1                ica_1.0-3                  </span></span>
-<span><span class="co">## [147] Rsamtools_2.16.0            sass_0.4.7                 </span></span>
-<span><span class="co">## [149] VariantAnnotation_1.46.0    dotCall64_1.0-2            </span></span>
-<span><span class="co">## [151] carData_3.0-5               rpart_4.1.19               </span></span>
-<span><span class="co">## [153] RANN_2.6.1                  farver_2.1.1               </span></span>
-<span><span class="co">## [155] mgcv_1.9-0                  tidygraph_1.2.3            </span></span>
-<span><span class="co">## [157] yaml_2.3.7                  deSolve_1.38               </span></span>
-<span><span class="co">## [159] latticeExtra_0.6-30         foreign_0.8-85             </span></span>
-<span><span class="co">## [161] ggthemes_4.2.4              cli_3.6.1                  </span></span>
-<span><span class="co">## [163] purrr_1.0.2                 motifmatchr_1.22.0         </span></span>
-<span><span class="co">## [165] leiden_0.4.3                lifecycle_1.0.3            </span></span>
-<span><span class="co">## [167] uwot_0.1.16                 rainbow_3.7                </span></span>
-<span><span class="co">## [169] mvtnorm_1.2-3               backports_1.4.1            </span></span>
-<span><span class="co">## [171] BiocParallel_1.34.2         annotate_1.78.0            </span></span>
-<span><span class="co">## [173] rjson_0.2.21                ggridges_0.5.4             </span></span>
-<span><span class="co">## [175] progressr_0.14.0            parallel_4.3.1             </span></span>
-<span><span class="co">## [177] jsonlite_1.8.7              RcppHNSW_0.4.1             </span></span>
-<span><span class="co">## [179] bitops_1.0-7                assertthat_0.2.1           </span></span>
-<span><span class="co">## [181] bit64_4.0.5                 Rtsne_0.16                 </span></span>
-<span><span class="co">## [183] nabor_0.5.0                 spatstat.utils_3.0-3       </span></span>
-<span><span class="co">## [185] ranger_0.15.1               CNEr_1.36.0                </span></span>
-<span><span class="co">## [187] jquerylib_0.1.4             R.utils_2.12.2             </span></span>
-<span><span class="co">## [189] lazyeval_0.2.2              shiny_1.7.5                </span></span>
-<span><span class="co">## [191] htmltools_0.5.6             GO.db_3.17.0               </span></span>
-<span><span class="co">## [193] sctransform_0.3.5           rappdirs_0.3.3             </span></span>
-<span><span class="co">## [195] glue_1.6.2                  factoextra_1.0.7           </span></span>
-<span><span class="co">## [197] TFMPvalue_0.0.9             spam_2.9-1                 </span></span>
-<span><span class="co">## [199] VIM_6.2.2                   RCurl_1.98-1.12            </span></span>
-<span><span class="co">## [201] rprojroot_2.0.3             mclust_6.0.0               </span></span>
-<span><span class="co">## [203] ks_1.14.1                   jpeg_0.1-10                </span></span>
-<span><span class="co">## [205] boot_1.3-28.1               R6_2.5.1                   </span></span>
-<span><span class="co">## [207] tidyr_1.3.0                 SingleCellExperiment_1.22.0</span></span>
-<span><span class="co">## [209] labeling_0.4.3              RcppRoll_0.3.0             </span></span>
-<span><span class="co">## [211] vcd_1.4-11                  cluster_2.1.4              </span></span>
-<span><span class="co">## [213] Rhdf5lib_1.22.1             DirichletMultinomial_1.42.0</span></span>
-<span><span class="co">## [215] DelayedArray_0.26.7         tidyselect_1.2.0           </span></span>
-<span><span class="co">## [217] ProtGenerics_1.32.0         htmlTable_2.4.1            </span></span>
-<span><span class="co">## [219] ggforce_0.4.1               xml2_1.3.5                 </span></span>
-<span><span class="co">## [221] car_3.1-2                   future_1.33.0              </span></span>
-<span><span class="co">## [223] munsell_0.5.0               KernSmooth_2.23-22         </span></span>
-<span><span class="co">## [225] laeken_0.5.2                htmlwidgets_1.6.2          </span></span>
-<span><span class="co">## [227] RColorBrewer_1.1-3          biomaRt_2.56.1             </span></span>
-<span><span class="co">## [229] rlang_1.1.1                 spatstat.sparse_3.0-2      </span></span>
-<span><span class="co">## [231] spatstat.explore_3.2-3      fansi_1.0.4</span></span></code></pre>
+<span><span class="co">##   [1] ica_1.0-3                   plotly_4.10.4              </span></span>
+<span><span class="co">##   [3] Formula_1.2-5               zlibbioc_1.48.2            </span></span>
+<span><span class="co">##   [5] tidyselect_1.2.1            bit_4.0.5                  </span></span>
+<span><span class="co">##   [7] doParallel_1.0.17           clue_0.3-65                </span></span>
+<span><span class="co">##   [9] lattice_0.22-6              rjson_0.2.21               </span></span>
+<span><span class="co">##  [11] factoextra_1.0.7            blob_1.2.4                 </span></span>
+<span><span class="co">##  [13] S4Arrays_1.2.1              parallel_4.3.3             </span></span>
+<span><span class="co">##  [15] dichromat_2.0-0.1           hdrcde_3.4                 </span></span>
+<span><span class="co">##  [17] seqLogo_1.68.0              png_0.1-8                  </span></span>
+<span><span class="co">##  [19] cli_3.6.3                   ProtGenerics_1.34.0        </span></span>
+<span><span class="co">##  [21] goftest_1.2-3               VIM_6.2.2                  </span></span>
+<span><span class="co">##  [23] textshape_1.7.5             pkgdown_2.0.9              </span></span>
+<span><span class="co">##  [25] textshaping_0.3.7           purrr_1.0.2                </span></span>
+<span><span class="co">##  [27] chromVAR_1.24.0             uwot_0.2.2                 </span></span>
+<span><span class="co">##  [29] curl_5.2.1                  deSolve_1.40               </span></span>
+<span><span class="co">##  [31] mime_0.12                   evaluate_0.24.0            </span></span>
+<span><span class="co">##  [33] leiden_0.4.3.1              stringi_1.8.4              </span></span>
+<span><span class="co">##  [35] backports_1.5.0             desc_1.4.3                 </span></span>
+<span><span class="co">##  [37] XML_3.99-0.17               httpuv_1.6.15              </span></span>
+<span><span class="co">##  [39] rappdirs_0.3.3              splines_4.3.3              </span></span>
+<span><span class="co">##  [41] RcppRoll_0.3.0              mclust_6.1.1               </span></span>
+<span><span class="co">##  [43] jpeg_0.1-10                 rainbow_3.8                </span></span>
+<span><span class="co">##  [45] pcaPP_2.0-4                 DT_0.33                    </span></span>
+<span><span class="co">##  [47] sctransform_0.4.1           ggbeeswarm_0.7.2           </span></span>
+<span><span class="co">##  [49] DBI_1.2.3                   jquerylib_0.1.4            </span></span>
+<span><span class="co">##  [51] smoother_1.3                withr_3.0.0                </span></span>
+<span><span class="co">##  [53] corpcor_1.6.10              class_7.3-22               </span></span>
+<span><span class="co">##  [55] systemfonts_1.0.5           rprojroot_2.0.4            </span></span>
+<span><span class="co">##  [57] lmtest_0.9-40               tidygraph_1.3.1            </span></span>
+<span><span class="co">##  [59] htmlwidgets_1.6.4           fs_1.6.4                   </span></span>
+<span><span class="co">##  [61] biomaRt_2.58.0              SingleCellExperiment_1.24.0</span></span>
+<span><span class="co">##  [63] ggrepel_0.9.5               labeling_0.4.3             </span></span>
+<span><span class="co">##  [65] SparseArray_1.2.4           ranger_0.16.0              </span></span>
+<span><span class="co">##  [67] DEoptimR_1.1-3              annotate_1.80.0            </span></span>
+<span><span class="co">##  [69] reticulate_1.38.0           VariantAnnotation_1.48.1   </span></span>
+<span><span class="co">##  [71] hexbin_1.28.3               zoo_1.8-12                 </span></span>
+<span><span class="co">##  [73] knitr_1.47                  ggplot.multistats_1.0.0    </span></span>
+<span><span class="co">##  [75] TFMPvalue_0.0.9             foreach_1.5.2              </span></span>
+<span><span class="co">##  [77] fansi_1.0.6                 fda_6.1.8                  </span></span>
+<span><span class="co">##  [79] caTools_1.18.2              R.oo_1.26.0                </span></span>
+<span><span class="co">##  [81] poweRlaw_0.80.0             RSpectra_0.16-1            </span></span>
+<span><span class="co">##  [83] irlba_2.3.5.1               ggrastr_1.0.2              </span></span>
+<span><span class="co">##  [85] fastDummies_1.7.3           lazyeval_0.2.2             </span></span>
+<span><span class="co">##  [87] yaml_2.3.9                  survival_3.7-0             </span></span>
+<span><span class="co">##  [89] scattermore_1.2             crayon_1.5.3               </span></span>
+<span><span class="co">##  [91] RcppAnnoy_0.0.22            RColorBrewer_1.1-3         </span></span>
+<span><span class="co">##  [93] tidyr_1.3.1                 progressr_0.14.0           </span></span>
+<span><span class="co">##  [95] tweenr_2.0.3                later_1.3.2                </span></span>
+<span><span class="co">##  [97] ggridges_0.5.6              fds_1.8                    </span></span>
+<span><span class="co">##  [99] codetools_0.2-20            base64enc_0.1-3            </span></span>
+<span><span class="co">## [101] GlobalOptions_0.1.2         KEGGREST_1.42.0            </span></span>
+<span><span class="co">## [103] Rtsne_0.17                  shape_1.4.6.1              </span></span>
+<span><span class="co">## [105] Rsamtools_2.18.0            filelock_1.0.3             </span></span>
+<span><span class="co">## [107] foreign_0.8-87              pkgconfig_2.0.3            </span></span>
+<span><span class="co">## [109] xml2_1.3.6                  GenomicAlignments_1.38.2   </span></span>
+<span><span class="co">## [111] scatterplot3d_0.3-44        spatstat.sparse_3.1-0      </span></span>
+<span><span class="co">## [113] viridisLite_0.4.2           biovizBase_1.50.0          </span></span>
+<span><span class="co">## [115] xtable_1.8-4                interp_1.1-6               </span></span>
+<span><span class="co">## [117] car_3.1-2                   highr_0.11                 </span></span>
+<span><span class="co">## [119] httr_1.4.7                  tools_4.3.3                </span></span>
+<span><span class="co">## [121] globals_0.16.3              beeswarm_0.4.0             </span></span>
+<span><span class="co">## [123] htmlTable_2.4.2             checkmate_2.3.1            </span></span>
+<span><span class="co">## [125] nlme_3.1-165                dbplyr_2.5.0               </span></span>
+<span><span class="co">## [127] hdf5r_1.3.10                assertthat_0.2.1           </span></span>
+<span><span class="co">## [129] digest_0.6.36               farver_2.1.2               </span></span>
+<span><span class="co">## [131] tzdb_0.4.0                  reshape2_1.4.4             </span></span>
+<span><span class="co">## [133] ks_1.14.2                   viridis_0.6.5              </span></span>
+<span><span class="co">## [135] DirichletMultinomial_1.44.0 rpart_4.1.23               </span></span>
+<span><span class="co">## [137] glue_1.7.0                  cachem_1.1.0               </span></span>
+<span><span class="co">## [139] BiocFileCache_2.10.1        polyclip_1.10-6            </span></span>
+<span><span class="co">## [141] ramify_0.3.3                Hmisc_5.1-3                </span></span>
+<span><span class="co">## [143] generics_0.1.3              mvtnorm_1.2-5              </span></span>
+<span><span class="co">## [145] parallelly_1.37.1           here_1.0.1                 </span></span>
+<span><span class="co">## [147] RcppHNSW_0.6.0              ragg_1.3.2                 </span></span>
+<span><span class="co">## [149] carData_3.0-5               pbapply_1.7-2              </span></span>
+<span><span class="co">## [151] nabor_0.5.0                 spam_2.10-0                </span></span>
+<span><span class="co">## [153] utf8_1.2.4                  graphlayouts_1.1.1         </span></span>
+<span><span class="co">## [155] RcppEigen_0.3.4.0.0         shiny_1.8.1.1              </span></span>
+<span><span class="co">## [157] GenomeInfoDbData_1.2.11     R.utils_2.12.3             </span></span>
+<span><span class="co">## [159] rhdf5filters_1.14.1         RCurl_1.98-1.14            </span></span>
+<span><span class="co">## [161] memoise_2.0.1               rmarkdown_2.27             </span></span>
+<span><span class="co">## [163] scales_1.3.0                R.methodsS3_1.8.2          </span></span>
+<span><span class="co">## [165] future_1.33.2               RANN_2.6.1                 </span></span>
+<span><span class="co">## [167] Cairo_1.6-2                 spatstat.data_3.1-2        </span></span>
+<span><span class="co">## [169] rstudioapi_0.16.0           cluster_2.1.6              </span></span>
+<span><span class="co">## [171] spatstat.utils_3.0-5        hms_1.1.3                  </span></span>
+<span><span class="co">## [173] fitdistrplus_1.1-11         munsell_0.5.1              </span></span>
+<span><span class="co">## [175] cowplot_1.1.3               colorspace_2.1-0           </span></span>
+<span><span class="co">## [177] rlang_1.1.4                 xts_0.14.0                 </span></span>
+<span><span class="co">## [179] dotCall64_1.1-1             ggforce_0.4.2              </span></span>
+<span><span class="co">## [181] mgcv_1.9-1                  laeken_0.5.3               </span></span>
+<span><span class="co">## [183] xfun_0.45                   e1071_1.7-14               </span></span>
+<span><span class="co">## [185] CNEr_1.38.0                 iterators_1.0.14           </span></span>
+<span><span class="co">## [187] abind_1.4-5                 tibble_3.2.1               </span></span>
+<span><span class="co">## [189] Rhdf5lib_1.24.2             motifmatchr_1.24.0         </span></span>
+<span><span class="co">## [191] readr_2.1.5                 bitops_1.0-7               </span></span>
+<span><span class="co">## [193] promises_1.3.0              RSQLite_2.3.7              </span></span>
+<span><span class="co">## [195] DelayedArray_0.28.0         proxy_0.4-27               </span></span>
+<span><span class="co">## [197] GO.db_3.18.0                compiler_4.3.3             </span></span>
+<span><span class="co">## [199] prettyunits_1.2.0           boot_1.3-30                </span></span>
+<span><span class="co">## [201] listenv_0.9.1               tensor_1.5                 </span></span>
+<span><span class="co">## [203] MASS_7.3-60                 progress_1.2.3             </span></span>
+<span><span class="co">## [205] BiocParallel_1.36.0         spatstat.random_3.2-3      </span></span>
+<span><span class="co">## [207] R6_2.5.1                    fastmap_1.2.0              </span></span>
+<span><span class="co">## [209] fastmatch_1.1-4             vipor_0.4.7                </span></span>
+<span><span class="co">## [211] TTR_0.24.4                  ROCR_1.0-11                </span></span>
+<span><span class="co">## [213] vcd_1.4-12                  nnet_7.3-19                </span></span>
+<span><span class="co">## [215] KernSmooth_2.23-24          latticeExtra_0.6-30        </span></span>
+<span><span class="co">## [217] miniUI_0.1.1.1              deldir_2.0-4               </span></span>
+<span><span class="co">## [219] htmltools_0.5.8.1           ggthemes_5.1.0             </span></span>
+<span><span class="co">## [221] bit64_4.0.5                 spatstat.explore_3.2-7     </span></span>
+<span><span class="co">## [223] lifecycle_1.0.4             destiny_3.16.0             </span></span>
+<span><span class="co">## [225] Gviz_1.46.1                 restfulr_0.0.15            </span></span>
+<span><span class="co">## [227] sass_0.4.9                  vctrs_0.6.5                </span></span>
+<span><span class="co">## [229] robustbase_0.99-2           spatstat.geom_3.2-9        </span></span>
+<span><span class="co">## [231] future.apply_1.11.2         pracma_2.4.4               </span></span>
+<span><span class="co">## [233] bslib_0.7.0                 pillar_1.9.0               </span></span>
+<span><span class="co">## [235] pcaMethods_1.94.0           jsonlite_1.8.8             </span></span>
+<span><span class="co">## [237] GetoptLong_1.0.5</span></span></code></pre>
 </div>
   </div>
 
@@ -912,7 +875,7 @@ and TF target expression after z-score transformation.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
 </div>
 
       </footer>

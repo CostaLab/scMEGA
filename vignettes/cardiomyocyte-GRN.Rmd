@@ -65,10 +65,17 @@ Let's load the data into memory and see how they look like
 obj.rna <- readRDS("./Cardiomyocyte/snRNA.rds")
 obj.atac <- readRDS("./Cardiomyocyte/snATAC.rds")
 gene.activity <- readRDS("./Cardiomyocyte/gene.activity.rds")
+```
+
+We need to convert the assays to an Assay5 for Seuratv5
+```{r to_seuratv5}
+obj.rna[["RNA"]] <- as(obj.rna[["RNA"]], "Assay5")
+obj.atac[["ATAC"]] <- as(obj.atac[["ATAC"]], "Assay5")
 
 obj.rna
 obj.atac
 ```
+
 
 We can observe that there are 45,515 and 6,481 cells in our snRNA-seq and snATAC-seq datasets. We now visualize the data as colored by patients. Note that here we used the UMAP embedding generated from batch-corrected low-dimensional space so that no batch effects are observed from the 2D visualization.
 
@@ -111,16 +118,12 @@ So next we use [Harmony](https://www.nature.com/articles/s41592-019-0619-0) to
 perform batch correction and generate a new UMAP embedding.
 
 ```{r, fig.height = 10, fig.width = 12, fig.align = "center"}
-obj.coembed <- RunHarmony(
-  obj.coembed,
-  group.by.vars = c("patient", "region", "tech"),
-  reduction = "pca",
-  max.iter.harmony = 30,
-  dims.use = 1:30,
-  project.dim = FALSE,
-  plot_convergence = FALSE
-)
-
+obj.coembed <- RunHarmony(obj.coembed, 
+                          group.by.vars = c("patient", "region", "tech"),
+                          reduction.use = "pca", 
+                          dims.use = 1:30,
+                          project.dim = FALSE,
+                          plot_convergence = FALSE)
 obj.coembed <- RunUMAP(
   obj.coembed,
   dims = 1:30,
