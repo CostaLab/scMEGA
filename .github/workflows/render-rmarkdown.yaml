@@ -4,31 +4,31 @@ name: render-rmarkdown
 run-name: Rendering rmarkdown files
 on: [push]
 
-# jobs:
-#   render-rmarkdown:
-#     runs-on: ubuntu-latest
-#     env:
-#       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-#     steps:
-#       - uses: actions/checkout@v3
-#       - uses: r-lib/actions/setup-pandoc@v2
-#       - uses: r-lib/actions/setup-r@v2
-#       - name: Install libraries
-#         run: |
-#           sudo apt-get install build-essential libcurl4-gnutls-dev libxml2-dev libssl-dev
-#           sudo apt-get install libharfbuzz-dev libfribidi-dev libfreetype6-dev libfontconfig1-dev
-      # - name: Install dependencies
-      #   run: |
-      #     install.packages("textshaping")
-      #     install.packages("curl")
-      #     install.packages("devtools")
-      #     install.packages("BiocManager")
-      #     install.packages("rmarkdown")
-      #     devtools::install_github("GreenleafLab/ArchR", ref="master", repos = BiocManager::repositories())
-      #     devtools::install_github("satijalab/seurat", "seurat5")
-      #     install.packages("Signac")
-      #     BiocManager::install("destiny")
-      #   shell: Rscript {0}
+jobs:
+  render-rmarkdown:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: r-lib/actions/setup-pandoc@v2
+      - uses: r-lib/actions/setup-r@v2
+      - name: Install libraries
+        run: |
+          sudo apt-get install build-essential libcurl4-gnutls-dev libxml2-dev libssl-dev
+          sudo apt-get install libharfbuzz-dev libfribidi-dev libfreetype6-dev libfontconfig1-dev
+      - name: Install dependencies
+        run: |
+          install.packages("textshaping")
+          install.packages("curl")
+          install.packages("devtools")
+          install.packages("BiocManager")
+          install.packages("rmarkdown")
+          devtools::install_github("GreenleafLab/ArchR", ref="master", repos = BiocManager::repositories())
+          devtools::install_github("satijalab/seurat", "seurat5")
+          install.packages("Signac")
+          BiocManager::install("destiny")
+        shell: Rscript {0}
       # - name: Install packages for tutorial
       #   run: |
       #     devtools::install_github("immunogenomics/harmony")
@@ -40,17 +40,17 @@ on: [push]
       #     install.packages('ggraph')
       #     install.packages('igraph')
       #   shell: Rscript {0}
-      # - name: Install scMEGA
-      #   run: |
-      #     devtools::install_github("CostaLab/scMEGA")
-      #   shell: Rscript {0}
-      # - name: Render Rmarkdown files
-      #   run: |
-      #     pkgdown::build_site()
-      #   shell: Rscript {0}
-      # - name: Commit files
-      #   run: |
-      #     git config --local user.name "$GITHUB_ACTOR"
-      #     git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
-      #     git commit -am "Re-build Rmarkdown files"
-      #     git push origin || echo "No changes to commit"
+      - name: Install scMEGA
+        run: |
+          devtools::install_github("CostaLab/scMEGA")
+        shell: Rscript {0}
+      - name: Render Rmarkdown files
+        run: |
+          pkgdown::build_site()
+        shell: Rscript {0}
+      - name: Commit files
+        run: |
+          git config --local user.name "$GITHUB_ACTOR"
+          git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git commit -am "Re-build Rmarkdown files"
+          git push origin || echo "No changes to commit"
