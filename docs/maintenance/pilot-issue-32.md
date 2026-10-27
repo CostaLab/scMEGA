@@ -1,8 +1,8 @@
 # Pilot investigation: issue #32
 
 Issue: [#32](https://github.com/CostaLab/scMEGA/issues/32). Read the full report and
-its one maintainer comment. Related #29 has no evidence establishing the same
-root cause; #27 concerns split-layer selection in a different function.
+its one maintainer comment. Related #29 uses obsolete argument names (confirmed from its screenshot), a
+distinct documentation/signature mismatch; #27 concerns split-layer selection in a different function.
 
 ## Finding and reproduction
 

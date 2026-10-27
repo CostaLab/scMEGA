@@ -15,6 +15,7 @@ The implementation is locally reviewable; **production rollout is not complete**
 | `R CMD INSTALL --library=/tmp/scmega-baseline/lib .` | Failed: 13 missing Imports. |
 | `R CMD build --no-build-vignettes --no-manual .` (baseline) | Passed. |
 | `R CMD check --no-manual --no-build-vignettes --output=/tmp/scmega-baseline scMEGA_1.1.0.tar.gz` | Failed: 1 ERROR, missing Imports/testthat and undeclared Seurat. Network retry removed index-access warnings but retained the same dependency error. |
+| Source-only `CreatePairedObject(df.pair=data.frame(), object=NULL, use.assay1="RNA", use.assay2="ATAC")` inside tryCatch | Reproduces the unused-arguments error visible in #29 screenshot; documentation mismatch is separate from #32. |
 | `Rscript scripts/maintenance/reproduce_32.R` | Passed diagnostic assertions: original Assay5 extraction/renaming corrupts pairing order; explicit name reindexing preserves it. |
 | `R_LIBS_USER=/tmp/scmega-r-lib SCMEGA_REQUIRE_INTEGRATION=true Rscript scripts/maintenance/run_pairing_tests.R /tmp/scmega-original .` | Pristine source failed: 14 failed expectations, three test errors, two dense-input warnings; real Signac enabled, zero skips. Five then-present cases; an additional aligned/partial-overlap case was subsequently added. |
 | `R_LIBS_USER=/tmp/scmega-r-lib SCMEGA_REQUIRE_INTEGRATION=true Rscript scripts/maintenance/run_pairing_tests.R .` | Corrected source: 117 expectations pass in six cases, zero failures/errors/skips, two dense-to-dgCMatrix warnings. Real Signac integration included. |

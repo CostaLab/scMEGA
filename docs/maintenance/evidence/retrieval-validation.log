@@ -1,1 +1,2 @@
 PASS: live REST retrieval matches all 12 audited titles, bodies and complete comment lists. No remote writes.
+Issue #29 screenshot inspected: unused arguments object/use.assay1/use.assay2. A source-only R argument-dispatch call reproduced the same unused-arguments error; classified as documentation drift, not duplicate of #32.
