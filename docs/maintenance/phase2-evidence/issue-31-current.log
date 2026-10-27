@@ -1,0 +1,8 @@
+R: 4.5.3 Matrix: 1.7.5 irlba: 2.3.7
+Matrix path: /opt/homebrew/Cellar/r/4.5.3/lib/R/library/Matrix
+irlba path: /opt/homebrew/lib/R/4.5/site-library/irlba
+PASS: sparse truncated SVD matches dense reference; residual 5.523446e-16
+Performing TF-IDF normalization
+Running SVD
+Scaling cell embeddings
+PASS: Signac TF-IDF / feature selection / SVD preserves cell identities.

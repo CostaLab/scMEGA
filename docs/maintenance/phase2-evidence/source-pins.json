@@ -1,0 +1,29 @@
+[
+  {
+    "url": "https://cran.r-project.org/src/contrib/Archive/smoother/smoother_1.3.tar.gz",
+    "sha256": "e8df4bc88e9d95c30c66fc10e6b1b485626828b6d28ad1a52a20168736468277"
+  },
+  {
+    "url": "https://cran.r-project.org/src/contrib/Archive/irlba/irlba_2.3.5.1.tar.gz",
+    "sha256": "2cfe6384fef91c223a9920895ce89496f990d1450d731e44309fdbec2bb5c5cf"
+  },
+  {
+    "repository": "GreenleafLab/chromVARmotifs",
+    "commit": "38bed559c1f4770b6c91c80bf3f8ea965da26076",
+    "archive_url": "https://codeload.github.com/GreenleafLab/chromVARmotifs/tar.gz/38bed559c1f4770b6c91c80bf3f8ea965da26076",
+    "archive_sha256": "6bc0894e1ffc9aa51d7eefce71ca0a586b271e7c6fd60211b179862eb51e4f1b"
+  },
+  {
+    "repository": "immunogenomics/presto",
+    "commit": "b5df6ee6097eb62522f2e557aa93ac21bab2d05f",
+    "archive_url": "https://codeload.github.com/immunogenomics/presto/tar.gz/b5df6ee6097eb62522f2e557aa93ac21bab2d05f",
+    "archive_sha256": "1b686ae74b66578a4b5939c3400c1ef8e10826c52a8485db5ce4ccfa0ae651d1"
+  },
+  {
+    "repository": "GreenleafLab/ArchR",
+    "commit": "eda96f593dc5b57c9f23fcc00419e6f74cf66e55",
+    "version": "1.0.3",
+    "archive_url": "https://codeload.github.com/GreenleafLab/ArchR/tar.gz/eda96f593dc5b57c9f23fcc00419e6f74cf66e55",
+    "archive_sha256": "bc6f1d852cc12b3f60060d85d87e8147a00efa718aa98d8e956f53767f031337"
+  }
+]

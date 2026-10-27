@@ -1,0 +1,67 @@
+
+R version 4.5.3 (2026-03-11) -- "Reassured Reassurer"
+Copyright (C) 2026 The R Foundation for Statistical Computing
+Platform: aarch64-apple-darwin25.3.0
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(testthat)
+> library(scMEGA)
+> test_check("scMEGA")
+Performing TF-IDF normalization
+Running SVD
+Scaling cell embeddings
+Performing TF-IDF normalization
+Running SVD
+Scaling cell embeddings
+Find 100 common genes between ATAC and RNA
+Subset ATAC and RNA data
+Normalize gene activity score for ATAC data
+Performing data integration using Seurat...
+Finding integration vectors
+Finding integration vector weights
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Transfering 100 features onto reference data
+Coemebdding the data...
+Centering data matrix
+
+  |
+  |                                                                      |   0%
+  |
+  |======================================================================| 100%
+Find 100 common genes between ATAC and RNA
+Subset ATAC and RNA data
+Normalize gene activity score for ATAC data
+Performing data integration using Seurat...
+Finding integration vectors
+Finding integration vector weights
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Transfering 100 features onto reference data
+Coemebdding the data...
+Centering data matrix
+
+  |
+  |                                                                      |   0%
+  |
+  |======================================================================| 100%
+[ FAIL 0 | WARN 5 | SKIP 0 | PASS 17 ]
+
+[ FAIL 0 | WARN 5 | SKIP 0 | PASS 17 ]
+>
+> proc.time()
+   user  system elapsed
+  9.028   0.360   9.360

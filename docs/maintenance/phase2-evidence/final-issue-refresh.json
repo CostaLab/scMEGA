@@ -1,0 +1,66 @@
+{
+  "checked_at_utc": "2026-10-27T17:22:27.618754+00:00",
+  "result": "All 12 open issue numbers and update timestamps unchanged during the investigation",
+  "issues": [
+    {
+      "number": 33,
+      "updatedAt": "2026-03-14T18:03:08Z",
+      "url": "https://github.com/CostaLab/scMEGA/issues/33"
+    },
+    {
+      "number": 32,
+      "updatedAt": "2025-06-25T18:07:17Z",
+      "url": "https://github.com/CostaLab/scMEGA/issues/32"
+    },
+    {
+      "number": 31,
+      "updatedAt": "2025-03-27T10:16:11Z",
+      "url": "https://github.com/CostaLab/scMEGA/issues/31"
+    },
+    {
+      "number": 30,
+      "updatedAt": "2024-11-22T01:38:08Z",
+      "url": "https://github.com/CostaLab/scMEGA/issues/30"
+    },
+    {
+      "number": 29,
+      "updatedAt": "2024-05-08T14:11:36Z",
+      "url": "https://github.com/CostaLab/scMEGA/issues/29"
+    },
+    {
+      "number": 27,
+      "updatedAt": "2023-10-22T18:14:44Z",
+      "url": "https://github.com/CostaLab/scMEGA/issues/27"
+    },
+    {
+      "number": 25,
+      "updatedAt": "2023-09-22T21:14:14Z",
+      "url": "https://github.com/CostaLab/scMEGA/issues/25"
+    },
+    {
+      "number": 24,
+      "updatedAt": "2024-02-27T05:16:53Z",
+      "url": "https://github.com/CostaLab/scMEGA/issues/24"
+    },
+    {
+      "number": 23,
+      "updatedAt": "2023-09-02T15:26:23Z",
+      "url": "https://github.com/CostaLab/scMEGA/issues/23"
+    },
+    {
+      "number": 21,
+      "updatedAt": "2023-06-02T08:30:42Z",
+      "url": "https://github.com/CostaLab/scMEGA/issues/21"
+    },
+    {
+      "number": 18,
+      "updatedAt": "2023-07-26T16:08:26Z",
+      "url": "https://github.com/CostaLab/scMEGA/issues/18"
+    },
+    {
+      "number": 17,
+      "updatedAt": "2024-05-29T16:51:28Z",
+      "url": "https://github.com/CostaLab/scMEGA/issues/17"
+    }
+  ]
+}

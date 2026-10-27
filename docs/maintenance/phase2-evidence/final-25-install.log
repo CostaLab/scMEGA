@@ -1,0 +1,24 @@
+* installing *source* package ‘scMEGA’ ...
+** this is package ‘scMEGA’ version ‘1.1.0’
+** using staged installation
+** libs
+using C++ compiler: ‘Apple clang version 21.0.0 (clang-2100.1.1.101)’
+using SDK: ‘MacOSX26.5.sdk’
+clang++ -std=gnu++17 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG  -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2   -c Correlation.cpp -o Correlation.o
+clang++ -std=gnu++17 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG  -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2   -c RcppExports.cpp -o RcppExports.o
+clang++ -std=gnu++17 -dynamiclib -Wl,-headerpad_max_install_names -undefined dynamic_lookup -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -L/opt/homebrew/opt/gettext/lib -L/opt/homebrew/opt/readline/lib -L/opt/homebrew/opt/xz/lib -L/opt/homebrew/lib -o scMEGA.so Correlation.o RcppExports.o -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -lR
+installing to /private/tmp/scmega-phase2-final25/library/00LOCK-scmega-validate25-metadata/00new/scMEGA/libs
+** R
+** data
+*** moving datasets to lazyload DB
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (scMEGA)

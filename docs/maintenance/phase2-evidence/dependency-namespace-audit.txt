@@ -1,0 +1,18 @@
+AddTrajectory : quantile
+CoembedData : JoinLayers, LayerData
+CorrelationHeatmap : assay<-, paletteContinuous
+CorrelationPlot : reorder, theme_cowplot
+CreatePairedObject : CreateChromatinAssay, LayerData
+GetCorrelation : cor.test
+GetTFGeneCorrelation : cor, paletteContinuous, pt
+GetTrajectory : LayerData, SummarizedExperiment
+GRNHeatmap : Heatmap
+GRNPlot : ggraph, reorder, V<-
+GRNSpatialPlot : scale_fill_viridis
+NetCentPlot : ggraph, theme_graph
+PeakToGene : elementMetadata, pt, rowData, rowRanges, SummarizedExperiment
+rowCorCpp : .Call
+RunDiffusionMap : DiffusionMap
+SelectGenes : paletteContinuous
+SelectTFs : paletteContinuous
+TopEmbGRN : as.directed, page.rank, prcomp

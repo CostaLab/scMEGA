@@ -1,0 +1,27 @@
+trajectory-dimensions: Creating Trajectory Group Matrix..
+..Creating Trajectory Group Matrix..
+.Creating Trajectory Group Matrix..
+..Creating Trajectory Group Matrix..
+.Creating Trajectory Group Matrix..
+.Creating Trajectory Group Matrix..
+...Creating Trajectory Group Matrix..
+.Creating Trajectory Group Matrix..
+...Creating Trajectory Group Matrix..
+...........Find 1 shared features!
+....
+
+══ DONE ════════════════════════════════════════════════════════════════════════
+                                                                         test
+         trajectory means retain cells, genes and values across assay classes
+                          singleton cells and features remain two dimensional
+                        a single trajectory bin stays a feature by one matrix
+ empty trajectory bins fail explicitly instead of propagating undefined means
+                     invalid trajectory metadata and absent TFs are diagnosed
+            one shared TF yields the same correlation and p value as cor.test
+ failed error skipped warning passed
+      0 FALSE   FALSE       0      6
+      0 FALSE   FALSE       0      8
+      0 FALSE   FALSE       0      4
+      0 FALSE   FALSE       0      3
+      0 FALSE   FALSE       0      4
+      0 FALSE   FALSE       0      4

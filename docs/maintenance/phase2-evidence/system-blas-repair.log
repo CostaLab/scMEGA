@@ -1,0 +1,43 @@
+Channels:
+ - conda-forge
+Platform: osx-arm64
+Collecting package metadata (repodata.json): ...working... done
+Solving environment: ...working... done
+
+
+==> WARNING: A newer version of conda exists. <==
+    current version: 26.7.2
+    latest version: 26.9.4
+
+Please update conda by running
+
+    $ conda self update
+
+
+
+## Package Plan ##
+
+  environment location: /tmp/scmega-systemdeps
+
+  added / updated specs:
+    - libopenblas[build=*pthreads*]
+
+
+The following packages will be downloaded:
+
+    package                    |            build
+    ---------------------------|-----------------
+    libopenblas-0.3.34         |pthreads_hb42d564_1         4.0 MB  conda-forge
+    ------------------------------------------------------------
+                                           Total:         4.0 MB
+
+The following packages will be REVISED:
+
+  libopenblas                      0.3.34-openmp_h5e6e99c_1 --> 0.3.34-pthreads_hb42d564_1
+
+
+
+Downloading and Extracting Packages: ...working... done
+Preparing transaction: ...working... done
+Verifying transaction: ...working... done
+Executing transaction: ...working... done

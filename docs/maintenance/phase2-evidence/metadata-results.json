@@ -1,0 +1,34 @@
+{
+  "install": {
+    "command": [
+      "R",
+      "CMD",
+      "INSTALL",
+      "--library=/private/tmp/scmega-phase2-check-metadata/library",
+      "/private/tmp/scmega-dependency-metadata"
+    ],
+    "exit_code": 1
+  },
+  "build": {
+    "command": [
+      "R",
+      "CMD",
+      "build",
+      "--no-build-vignettes",
+      "--no-manual",
+      "/private/tmp/scmega-dependency-metadata"
+    ],
+    "exit_code": 0
+  },
+  "check": {
+    "command": [
+      "R",
+      "CMD",
+      "check",
+      "--no-manual",
+      "--no-build-vignettes",
+      "/private/tmp/scmega-phase2-check-metadata/scMEGA_1.1.0.tar.gz"
+    ],
+    "exit_code": 1
+  }
+}

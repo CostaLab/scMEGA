@@ -1,0 +1,52 @@
+PASS: Seurat
+PASS: destiny
+PASS: dplyr
+PASS: ggplot2
+PASS: GenomicRanges GRanges
+PASS: GenomicRanges findOverlaps
+PASS: GenomicRanges resize
+PASS: IRanges IRanges
+PASS: Rcpp sourceCpp
+PASS: S4Vectors SimpleList
+PASS: SeuratObject GetAssayData
+PASS: SummarizedExperiment assay
+PASS: factoextra fviz_pca_biplot
+PASS: ggraph geom_edge_link
+PASS: ggraph geom_node_label
+PASS: ggraph geom_node_point
+PASS: ggraph scale_edge_color_viridis
+PASS: ggrepel geom_label_repel
+PASS: igraph E
+PASS: igraph V
+PASS: igraph betweenness
+PASS: igraph degree
+PASS: igraph graph_from_data_frame
+PASS: igraph layout_with_fr
+PASS: igraph page_rank
+PASS: stats as.formula
+PASS: stats p.adjust
+PASS: utils head
+BLOCKED: ArchR not installed
+PASS: ComplexHeatmap Heatmap
+PASS: SeuratObject JoinLayers
+PASS: SeuratObject LayerData
+PASS: Signac CreateChromatinAssay
+PASS: SummarizedExperiment SummarizedExperiment
+PASS: SummarizedExperiment assay<-
+PASS: SummarizedExperiment rowData
+PASS: SummarizedExperiment rowRanges
+PASS: S4Vectors elementMetadata
+PASS: cowplot theme_cowplot
+PASS: ggraph ggraph
+PASS: ggraph theme_graph
+PASS: igraph V<-
+PASS: igraph as.directed
+PASS: igraph page.rank
+PASS: stats cor
+PASS: stats cor.test
+PASS: stats prcomp
+PASS: stats pt
+PASS: stats quantile
+PASS: stats reorder
+PASS: viridis scale_fill_viridis
+expression(NULL)

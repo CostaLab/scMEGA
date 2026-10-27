@@ -1,0 +1,122 @@
+Bioconductor version 3.22 (BiocManager 1.30.27), R 4.5.3 (2026-03-11)
+Installing package(s) 'chromVAR', 'devtools', 'motifmatchr'
+also installing the dependencies ‘DirichletMultinomial’, ‘gert’, ‘TFBSTools’, ‘usethis’
+
+trying URL 'https://bioconductor.org/packages/3.22/bioc/src/contrib/DirichletMultinomial_1.52.0.tar.gz'
+trying URL 'https://cloud.r-project.org/src/contrib/gert_2.5.0.tar.gz'
+trying URL 'https://bioconductor.org/packages/3.22/bioc/src/contrib/TFBSTools_1.48.0.tar.gz'
+trying URL 'https://cloud.r-project.org/src/contrib/usethis_3.2.2.tar.gz'
+trying URL 'https://bioconductor.org/packages/3.22/bioc/src/contrib/chromVAR_1.32.0.tar.gz'
+trying URL 'https://cloud.r-project.org/src/contrib/devtools_2.5.2.tar.gz'
+trying URL 'https://bioconductor.org/packages/3.22/bioc/src/contrib/motifmatchr_1.32.0.tar.gz'
+begin installing package ‘DirichletMultinomial’
+begin installing package ‘gert’
+make: *** [DirichletMultinomial.ts] Error 1
+* installing *source* package ‘gert’ ...
+** this is package ‘gert’ version ‘2.5.0’
+** package ‘gert’ successfully unpacked and MD5 sums checked
+** using staged installation
+Found INCLUDE_DIR and/or LIB_DIR!
+Using PKG_CFLAGS=-I/tmp/scmega-systemdeps/include
+Using PKG_LIBS=-L/tmp/scmega-systemdeps/lib -lgit2
+Configuration OK!
+** libs
+using C compiler: ‘Apple clang version 21.0.0 (clang-2100.1.1.101)’
+using SDK: ‘MacOSX26.5.sdk’
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I/tmp/scmega-systemdeps/include  -DR_NO_REMAP -DSTRICT_R_HEADERS  -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include   -fvisibility=hidden -fPIC  -g -O2  -c branch.c -o branch.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I/tmp/scmega-systemdeps/include  -DR_NO_REMAP -DSTRICT_R_HEADERS  -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include   -fvisibility=hidden -fPIC  -g -O2  -c clone.c -o clone.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I/tmp/scmega-systemdeps/include  -DR_NO_REMAP -DSTRICT_R_HEADERS  -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include   -fvisibility=hidden -fPIC  -g -O2  -c commit.c -o commit.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I/tmp/scmega-systemdeps/include  -DR_NO_REMAP -DSTRICT_R_HEADERS  -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include   -fvisibility=hidden -fPIC  -g -O2  -c config.c -o config.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I/tmp/scmega-systemdeps/include  -DR_NO_REMAP -DSTRICT_R_HEADERS  -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include   -fvisibility=hidden -fPIC  -g -O2  -c conflicts.c -o conflicts.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I/tmp/scmega-systemdeps/include  -DR_NO_REMAP -DSTRICT_R_HEADERS  -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include   -fvisibility=hidden -fPIC  -g -O2  -c files.c -o files.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I/tmp/scmega-systemdeps/include  -DR_NO_REMAP -DSTRICT_R_HEADERS  -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include   -fvisibility=hidden -fPIC  -g -O2  -c ignore.c -o ignore.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I/tmp/scmega-systemdeps/include  -DR_NO_REMAP -DSTRICT_R_HEADERS  -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include   -fvisibility=hidden -fPIC  -g -O2  -c init.c -o init.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I/tmp/scmega-systemdeps/include  -DR_NO_REMAP -DSTRICT_R_HEADERS  -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include   -fvisibility=hidden -fPIC  -g -O2  -c merge.c -o merge.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I/tmp/scmega-systemdeps/include  -DR_NO_REMAP -DSTRICT_R_HEADERS  -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include   -fvisibility=hidden -fPIC  -g -O2  -c rebase.c -o rebase.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I/tmp/scmega-systemdeps/include  -DR_NO_REMAP -DSTRICT_R_HEADERS  -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include   -fvisibility=hidden -fPIC  -g -O2  -c stash.c -o stash.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I/tmp/scmega-systemdeps/include  -DR_NO_REMAP -DSTRICT_R_HEADERS  -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include   -fvisibility=hidden -fPIC  -g -O2  -c submodules.c -o submodules.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I/tmp/scmega-systemdeps/include  -DR_NO_REMAP -DSTRICT_R_HEADERS  -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include   -fvisibility=hidden -fPIC  -g -O2  -c tag.c -o tag.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I/tmp/scmega-systemdeps/include  -DR_NO_REMAP -DSTRICT_R_HEADERS  -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include   -fvisibility=hidden -fPIC  -g -O2  -c utils.c -o utils.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I/tmp/scmega-systemdeps/include  -DR_NO_REMAP -DSTRICT_R_HEADERS  -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include   -fvisibility=hidden -fPIC  -g -O2  -c version.c -o version.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I/tmp/scmega-systemdeps/include  -DR_NO_REMAP -DSTRICT_R_HEADERS  -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include   -fvisibility=hidden -fPIC  -g -O2  -c worktree.c -o worktree.o
+clang -std=gnu23 -dynamiclib -Wl,-headerpad_max_install_names -undefined dynamic_lookup -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -L/opt/homebrew/opt/gettext/lib -L/opt/homebrew/opt/readline/lib -L/opt/homebrew/opt/xz/lib -L/opt/homebrew/lib -L/tmp/scmega-systemdeps/lib -Wl,-rpath,/tmp/scmega-systemdeps/lib -o gert.so branch.o clone.o commit.o config.o conflicts.o files.o ignore.o init.o merge.o rebase.o stash.o submodules.o tag.o utils.o version.o worktree.o -L/tmp/scmega-systemdeps/lib -lgit2 -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -lR
+installing to /private/tmp/scmega-r-lib/00LOCK-gert/00new/gert/libs
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (gert)
+begin installing package ‘usethis’
+* installing *source* package ‘usethis’ ...
+** this is package ‘usethis’ version ‘3.2.2’
+** package ‘usethis’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (usethis)
+begin installing package ‘devtools’
+* installing *source* package ‘devtools’ ...
+** this is package ‘devtools’ version ‘2.5.2’
+** package ‘devtools’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (devtools)
+make: Target `all' not remade because of errors.
+* installing *source* package ‘DirichletMultinomial’ ...
+** this is package ‘DirichletMultinomial’ version ‘1.52.0’
+** package ‘DirichletMultinomial’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘Apple clang version 21.0.0 (clang-2100.1.1.101)’
+using SDK: ‘MacOSX26.5.sdk’
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG   -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include   `gsl-config --cflags` -DR_DIRICHLETMULTINOMIAL -fPIC  -g -O2  -c R_init_DirichletMultinomial.c -o R_init_DirichletMultinomial.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG   -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include   `gsl-config --cflags` -DR_DIRICHLETMULTINOMIAL -fPIC  -g -O2  -c dirichlet_fit.c -o dirichlet_fit.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG   -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include   `gsl-config --cflags` -DR_DIRICHLETMULTINOMIAL -fPIC  -g -O2  -c dirichlet_fit_main.c -o dirichlet_fit_main.o
+clang -std=gnu23 -dynamiclib -Wl,-headerpad_max_install_names -undefined dynamic_lookup -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -L/opt/homebrew/opt/gettext/lib -L/opt/homebrew/opt/readline/lib -L/opt/homebrew/opt/xz/lib -L/opt/homebrew/lib -L/tmp/scmega-systemdeps/lib -Wl,-rpath,/tmp/scmega-systemdeps/lib -o DirichletMultinomial.so R_init_DirichletMultinomial.o dirichlet_fit.o dirichlet_fit_main.o -L/tmp/scmega-systemdeps/lib -lgsl -lgslcblas -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -lR
+installing to /private/tmp/scmega-r-lib/00LOCK-DirichletMultinomial/00new/DirichletMultinomial/libs
+** R
+** data
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+sh: line 1: 79757 Abort trap: 6           R_TESTS= '/opt/homebrew/Cellar/r/4.5.3/lib/R/bin/R' --no-save --no-restore --no-echo 2>&1 < '/var/folders/rg/6bkp4j2s36nd_4x36jzgp1dm0000gn/T//Rtmp2V6ipU/file13429424817b1'
+OMP: Error #15: Initializing libomp.dylib, but found libomp.dylib already initialized.
+OMP: Hint This means that multiple copies of the OpenMP runtime have been linked into the program. That is dangerous, since it can degrade performance or cause incorrect results. The best thing to do is to ensure that only a single OpenMP runtime is linked into the process, e.g. by avoiding static linking of the OpenMP runtime in any library. As an unsafe, unsupported, undocumented workaround you can set the environment variable KMP_DUPLICATE_LIB_OK=TRUE to allow the program to continue to execute, but that may cause crashes or silently produce incorrect results. For more information, please see http://openmp.llvm.org/
+ERROR: loading failed
+* removing ‘/private/tmp/scmega-r-lib/DirichletMultinomial’
+
+The downloaded source packages are in
+	‘/private/var/folders/rg/6bkp4j2s36nd_4x36jzgp1dm0000gn/T/Rtmp6fMGWb/downloaded_packages’
+Warning message:
+In install.packages(...) : installation of 4 packages failed:
+  ‘DirichletMultinomial’, ‘TFBSTools’, ‘chromVAR’, ‘motifmatchr’

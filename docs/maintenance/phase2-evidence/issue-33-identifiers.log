@@ -1,0 +1,10 @@
+Warning in Signac::CreateMotifObject(data = match.matrix, pwm = pwm, motif.names = as.list(labels)) :
+  Non-unique motif names supplied, making unique
+PASS: Signac makes duplicate labels unique; suffixed labels are not gene identifiers.
+Find 2 shared features!
+PASS: exact matching retains Spi1/Actb but loses mouse Gata1 despite GATA1 motif labels.
+PASS: title casing leaves a composite unmatched and can collapse distinct-case GATA1/Gata1 labels.
+PASS: positional motif-label assignment is unsafe after motif row reordering; stable IDs must be checked.
+Bundled mm10 symbols: Xkr4 Rp1 Sox17 Mrpl15 Lypla1 Tcea1
+Sequence names: chr1 chr2 chr3 chr4 chr5 chr6
+PASS: SelectTFs has no genome argument; SelectGenes defaults to hg38 and needs explicit mm10.

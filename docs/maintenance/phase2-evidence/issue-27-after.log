@@ -1,0 +1,62 @@
+coembed-layers: Performing TF-IDF normalization
+Running SVD
+Scaling cell embeddings
+.Performing TF-IDF normalization
+Running SVD
+Scaling cell embeddings
+Find 100 common genes between ATAC and RNA
+Subset ATAC and RNA data
+Normalize gene activity score for ATAC data
+Performing data integration using Seurat...
+Finding integration vectors
+Finding integration vector weights
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Transfering 100 features onto reference data
+WCoemebdding the data...
+Centering data matrix
+
+  |
+  |                                                                      |   0%
+  |
+  |======================================================================| 100%
+WW........Find 100 common genes between ATAC and RNA
+Subset ATAC and RNA data
+Normalize gene activity score for ATAC data
+Performing data integration using Seurat...
+Finding integration vectors
+Finding integration vector weights
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Transfering 100 features onto reference data
+WCoemebdding the data...
+Centering data matrix
+
+  |
+  |                                                                      |   0%
+  |
+  |======================================================================| 100%
+W........
+
+══ Warnings ════════════════════════════════════════════════════════════════════
+1. joined Assay5 and legacy Assay coembeddings retain cells and observed data ('test-coembed-layers.R:40:5') - Layer counts isn't present in the assay object; returning NULL
+
+2. joined Assay5 and legacy Assay coembeddings retain cells and observed data ('test-coembed-layers.R:40:5') - You're computing too large a percentage of total singular values, use a standard svd instead.
+
+3. joined Assay5 and legacy Assay coembeddings retain cells and observed data ('test-coembed-layers.R:40:5') - The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
+To use Python UMAP via reticulate, set umap.method to 'umap-learn' and metric to 'correlation'
+This message will be shown once per session
+
+4. joined Assay5 and legacy Assay coembeddings retain cells and observed data ('test-coembed-layers.R:40:5') - Layer counts isn't present in the assay object; returning NULL
+
+5. joined Assay5 and legacy Assay coembeddings retain cells and observed data ('test-coembed-layers.R:40:5') - You're computing too large a percentage of total singular values, use a standard svd instead.
+
+══ DONE ════════════════════════════════════════════════════════════════════════
+                                                                       test
+                  split reference layers fail with preparation instructions
+ joined Assay5 and legacy Assay coembeddings retain cells and observed data
+ failed error skipped warning passed
+      0 FALSE   FALSE       0      1
+      0 FALSE   FALSE       5     16

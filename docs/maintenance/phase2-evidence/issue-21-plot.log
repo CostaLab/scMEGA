@@ -1,0 +1,8 @@
+EXPECTED original graph error: only connected graphs are supported.
+Warning message:
+`guide_colourbar()` cannot be used for edge_colour.
+ℹ Use one of colour, color, or fill instead.
+Warning message:
+`guide_colourbar()` cannot be used for edge_colour.
+ℹ Use one of colour, color, or fill instead.
+PASS: connected component plot builds and highlights RUNX1; original graph unchanged.

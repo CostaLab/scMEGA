@@ -1,0 +1,39 @@
+Performing TF-IDF normalization
+Running SVD
+Scaling cell embeddings
+
+CASE: split
+Find 100 common genes between ATAC and RNA
+Subset ATAC and RNA data
+Normalize gene activity score for ATAC data
+Performing data integration using Seurat...
+Warning: Please provide a matrix that has the same number of columns as the number of reference cells used in anchor finding.
+Number of columns in provided matrix : 60
+Number of columns required           : 120
+Skipping element 1.
+ERROR: None of the provided refdata elements are valid.
+
+CASE: joined
+Find 100 common genes between ATAC and RNA
+Subset ATAC and RNA data
+Normalize gene activity score for ATAC data
+Performing data integration using Seurat...
+Finding integration vectors
+Finding integration vector weights
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Transfering 100 features onto reference data
+Warning: Layer counts isn't present in the assay object; returning NULL
+Coemebdding the data...
+Centering data matrix
+
+  |
+  |                                                                      |   0%
+  |
+  |======================================================================| 100%
+ERROR: No variable features, run FindVariableFeatures() or provide a vector of features
+Warning message:
+In LayerData.Assay5(object = object[[assay]], layer = layer, ...) :
+  multiple layers are identified by data.batch1 data.batch2
+ only the first layer is used

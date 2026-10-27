@@ -1,0 +1,4 @@
+ERROR: dependency ‘ArchR’ is not available for package ‘scMEGA’
+Perhaps try a variation of:
+install.packages('ArchR')
+* removing ‘/private/tmp/scmega-phase2-check-metadata/library/scMEGA’

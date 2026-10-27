@@ -1,0 +1,82 @@
+trajectory-dimensions: Creating Trajectory Group Matrix..
+..Creating Trajectory Group Matrix..
+.Creating Trajectory Group Matrix..
+..Creating Trajectory Group Matrix..
+.Creating Trajectory Group Matrix..
+1Creating Trajectory Group Matrix..
+2Creating Trajectory Group Matrix..
+3....Find 1 shared features!
+4
+
+══ Failed ══════════════════════════════════════════════════════════════════════
+── 1. Error ('test-trajectory-dimensions.R:28:5'): singleton cells and features
+Error in `h(simpleError(msg, call))`: error in evaluating the argument 'x' in selecting a method for function 'Reduce': 'x' must be an array of at least two dimensions
+Backtrace:
+     ▆
+  1. ├─GetTrajectory(...) at test-trajectory-dimensions.R:28:5
+  2. │ ├─... %>% Reduce(cbind, .)
+  3. │ ├─BiocGenerics::lapply(...)
+  4. │ └─base::lapply(...)
+  5. │   └─FUN(X[[i]], ...)
+  6. │     ├─Matrix::rowMeans(data.use[, cell_names])
+  7. │     └─Matrix::rowMeans(data.use[, cell_names])
+  8. │       └─base::rowMeans(x, na.rm = na.rm, dims = dims, ...)
+  9. │         └─base::stop("'x' must be an array of at least two dimensions")
+ 10. ├─BiocGenerics::Reduce(cbind, .)
+ 11. └─base::.handleSimpleError(...)
+ 12.   └─base (local) h(simpleError(msg, call))
+
+── 2. Error ('test-trajectory-dimensions.R:42:3'): a single trajectory bin stays
+Error in ``colnames<-`(`*tmp*`, value = names(groupList))`: attempt to set 'colnames' on an object with less than two dimensions
+Backtrace:
+    ▆
+ 1. └─GetTrajectory(...) at test-trajectory-dimensions.R:42:3
+ 2.   ├─base::`colnames<-`(`*tmp*`, value = names(groupList))
+ 3.   └─base::`colnames<-`(`*tmp*`, value = names(groupList))
+
+── 3. Error ('test-trajectory-dimensions.R:52:3'): empty trajectory bins fail ex
+Error in `if (any(groupMat < 0)) {     message("Some values are below 0, this could be the Motif activity matrix in which scaleTo should be set = NULL.\nContinuing without depth normalization!") } else {     groupMat <- t(t(groupMat)/colSums(groupMat)) * scaleTo }`: missing value where TRUE/FALSE needed
+Backtrace:
+    ▆
+ 1. ├─testthat::expect_error(...) at test-trajectory-dimensions.R:52:3
+ 2. │ └─testthat:::expect_condition_matching_(...)
+ 3. │   └─testthat:::quasi_capture(...)
+ 4. │     ├─testthat (local) .capture(...)
+ 5. │     │ └─base::withCallingHandlers(...)
+ 6. │     └─rlang::eval_bare(quo_get_expr(.quo), quo_get_env(.quo))
+ 7. └─GetTrajectory(f$object, assay = "RNA", groupEvery = 25)
+
+── 4. Error ('test-trajectory-dimensions.R:77:3'): one shared TF yields the same
+Error in `h(simpleError(msg, call))`: error in evaluating the argument 'x' in selecting a method for function 'Reduce': incorrect number of dimensions
+Backtrace:
+     ▆
+  1. ├─GetCorrelation(a, b) at test-trajectory-dimensions.R:77:3
+  2. │ ├─... %>% tidyr::drop_na()
+  3. │ ├─BiocGenerics::lapply(...)
+  4. │ └─base::lapply(...)
+  5. │   └─FUN(X[[i]], ...)
+  6. │     ├─base::suppressWarnings(cor.test(mat1[x, ], mat2[x, ]))
+  7. │     │ └─base::withCallingHandlers(...)
+  8. │     └─stats::cor.test(mat1[x, ], mat2[x, ])
+  9. ├─tidyr::drop_na(.)
+ 10. ├─BiocGenerics::Reduce(rbind, .)
+ 11. └─base::.handleSimpleError(...)
+ 12.   └─base (local) h(simpleError(msg, call))
+
+══ DONE ════════════════════════════════════════════════════════════════════════
+                                                                         test
+         trajectory means retain cells, genes and values across assay classes
+                          singleton cells and features remain two dimensional
+                        a single trajectory bin stays a feature by one matrix
+ empty trajectory bins fail explicitly instead of propagating undefined means
+                     invalid trajectory metadata and absent TFs are diagnosed
+            one shared TF yields the same correlation and p value as cor.test
+ failed error skipped warning passed
+      0 FALSE   FALSE       0      6
+      0  TRUE   FALSE       0      0
+      0  TRUE   FALSE       0      0
+      0  TRUE   FALSE       0      0
+      0 FALSE   FALSE       0      4
+      0  TRUE   FALSE       0      0
+Error: Trajectory regression failure/skip
+Execution halted

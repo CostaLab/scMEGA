@@ -1,0 +1,4 @@
+ERROR: dependencies ‘ArchR’, ‘ggpubr’, ‘destiny’, ‘factoextra’ are not available for package ‘scMEGA’
+Perhaps try a variation of:
+install.packages(c('ArchR', 'ggpubr', 'destiny', 'factoextra'))
+* removing ‘/private/tmp/scmega-phase2-check25/library/scMEGA’

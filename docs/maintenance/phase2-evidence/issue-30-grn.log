@@ -1,0 +1,14 @@
+Filtering network by peak-to-gene links...
+`summarise()` has regrouped the output.
+ℹ Summaries were computed grouped by tf and gene.
+ℹ Output is grouped by tf.
+ℹ Use `summarise(.groups = "drop_last")` to silence this message.
+ℹ Use `summarise(.by = c(tf, gene))` for per-operation grouping
+  (`?dplyr::dplyr_by`) instead.
+Filtering network by TF binding site prediction...
+   tf gene n_peaks correlation  fdr
+1 TF1   G1       2         0.8 0.01
+2 TF2   G1       1          NA   NA
+3 TF2   G2       1        -0.6 0.02
+PASS: GetGRN joins supplied evidence, counts motif/peak-link rows, and does not itself remove missing/negative correlations.
+No trajectory-free statistical inference or causal validation occurs in this assembly function.

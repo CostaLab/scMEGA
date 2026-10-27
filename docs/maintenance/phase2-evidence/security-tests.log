@@ -1,0 +1,29 @@
+test_issue_author_identity_does_not_authorize (test_security.AuthorizationTests.test_issue_author_identity_does_not_authorize) ... ok
+test_live_maintainer (test_security.AuthorizationTests.test_live_maintainer) ... ok
+test_manual_audit_and_branch_restriction (test_security.AuthorizationTests.test_manual_audit_and_branch_restriction) ... ok
+test_other_labels_and_withdrawn_label (test_security.AuthorizationTests.test_other_labels_and_withdrawn_label) ... ok
+test_permission_roles (test_security.AuthorizationTests.test_permission_roles) ... ok
+test_untrusted_rerun_actor (test_security.AuthorizationTests.test_untrusted_rerun_actor) ... ok
+test_diagnostics_and_failure_recovery (test_security.EvidenceTests.test_diagnostics_and_failure_recovery) ... ok
+test_paginated_issue_retrieval_is_read_only_and_preserves_adversarial_text (test_security.EvidenceTests.test_paginated_issue_retrieval_is_read_only_and_preserves_adversarial_text) ... ok
+test_provenance_replay_and_wrong_workflow (test_security.EvidenceTests.test_provenance_replay_and_wrong_workflow) ... ok
+test_report_injection_cannot_close_other_issues_or_mention_users (test_security.EvidenceTests.test_report_injection_cannot_close_other_issues_or_mention_users) ... ok
+test_actual_malformed_hunk_rejected (test_security.PatchTests.test_actual_malformed_hunk_rejected) ... error: patch failed: R/example.R:1
+error: R/example.R: patch does not apply
+ok
+test_binary_malformed_empty_and_oversize (test_security.PatchTests.test_binary_malformed_empty_and_oversize) ... ok
+test_existing_branch_blocks_remote_mutation (test_security.PatchTests.test_existing_branch_blocks_remote_mutation) ... ok
+test_header_traversal_not_hidden_by_hunk_path (test_security.PatchTests.test_header_traversal_not_hidden_by_hunk_path) ... ok
+test_no_test_no_patch (test_security.PatchTests.test_no_test_no_patch) ... ok
+test_protected_and_malicious_paths (test_security.PatchTests.test_protected_and_malicious_paths) ... ok
+test_publish_draft_with_api_double (test_security.PatchTests.test_publish_draft_with_api_double) ... ok
+test_symlink_and_executable_modes (test_security.PatchTests.test_symlink_and_executable_modes) ... ok
+test_symlink_leaf (test_security.PatchTests.test_symlink_leaf) ... ok
+test_symlink_parent_escape (test_security.PatchTests.test_symlink_parent_escape) ... ok
+test_valid_patch_and_regression_test (test_security.PatchTests.test_valid_patch_and_regression_test) ... ok
+test_wrong_base_and_dirty_checkout (test_security.PatchTests.test_wrong_base_and_dirty_checkout) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 2.330s
+
+OK

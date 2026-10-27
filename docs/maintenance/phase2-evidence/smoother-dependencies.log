@@ -1,0 +1,100 @@
+also installing the dependency ‘xts’
+
+trying URL 'https://cloud.r-project.org/src/contrib/xts_0.14.3.tar.gz'
+trying URL 'https://cloud.r-project.org/src/contrib/TTR_0.24.4.tar.gz'
+begin installing package ‘xts’
+* installing *source* package ‘xts’ ...
+** this is package ‘xts’ version ‘0.14.3’
+** package ‘xts’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘Apple clang version 21.0.0 (clang-2100.1.1.101)’
+using SDK: ‘MacOSX26.5.sdk’
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c add_class.c -o add_class.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c any.c -o any.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c attr.c -o attr.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c binsearch.c -o binsearch.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c coredata.c -o coredata.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c dimnames.c -o dimnames.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c endpoints.c -o endpoints.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c extract_col.c -o extract_col.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c init.c -o init.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c isOrdered.c -o isOrdered.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c isXts.c -o isXts.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c lag.c -o lag.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c merge.c -o merge.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c na.c -o na.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c period_apply.c -o period_apply.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c period_arithmetic.c -o period_arithmetic.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c period_quantile.c -o period_quantile.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c rbind.c -o rbind.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c rollfun.c -o rollfun.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c runSum.c -o runSum.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c startofyear.c -o startofyear.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c subset.c -o subset.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c toperiod.c -o toperiod.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c totalcols.c -o totalcols.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c tryXts.c -o tryXts.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I../inst/include -I'/opt/homebrew/lib/R/4.5/site-library/zoo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c unique.time.c -o unique.time.o
+clang -std=gnu23 -dynamiclib -Wl,-headerpad_max_install_names -undefined dynamic_lookup -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -L/opt/homebrew/opt/gettext/lib -L/opt/homebrew/opt/readline/lib -L/opt/homebrew/opt/xz/lib -L/opt/homebrew/lib -o xts.so add_class.o any.o attr.o binsearch.o coredata.o dimnames.o endpoints.o extract_col.o init.o isOrdered.o isXts.o lag.o merge.o na.o period_apply.o period_arithmetic.o period_quantile.o rbind.o rollfun.o runSum.o startofyear.o subset.o toperiod.o totalcols.o tryXts.o unique.time.o -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -lR
+installing to /private/tmp/scmega-r-lib/00LOCK-xts/00new/xts/libs
+** R
+** data
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (xts)
+begin installing package ‘TTR’
+* installing *source* package ‘TTR’ ...
+** this is package ‘TTR’ version ‘0.24.4’
+** package ‘TTR’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘Apple clang version 21.0.0 (clang-2100.1.1.101)’
+using SDK: ‘MacOSX26.5.sdk’
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG  -I'/private/tmp/scmega-r-lib/xts/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c adjRatios.c -o adjRatios.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG  -I'/private/tmp/scmega-r-lib/xts/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c aroon.c -o aroon.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG  -I'/private/tmp/scmega-r-lib/xts/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c init.c -o init.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG  -I'/private/tmp/scmega-r-lib/xts/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c moving_averages.c -o moving_averages.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG  -I'/private/tmp/scmega-r-lib/xts/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c percent_rank.c -o percent_rank.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG  -I'/private/tmp/scmega-r-lib/xts/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c runfun.c -o runfun.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG  -I'/private/tmp/scmega-r-lib/xts/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c sar.c -o sar.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG  -I'/private/tmp/scmega-r-lib/xts/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c wilderSum.c -o wilderSum.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG  -I'/private/tmp/scmega-r-lib/xts/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c zigzag.c -o zigzag.o
+clang -std=gnu23 -dynamiclib -Wl,-headerpad_max_install_names -undefined dynamic_lookup -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -L/opt/homebrew/opt/gettext/lib -L/opt/homebrew/opt/readline/lib -L/opt/homebrew/opt/xz/lib -L/opt/homebrew/lib -o TTR.so adjRatios.o aroon.o init.o moving_averages.o percent_rank.o runfun.o sar.o wilderSum.o zigzag.o -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -lR
+installing to /private/tmp/scmega-r-lib/00LOCK-TTR/00new/TTR/libs
+** R
+** data
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (TTR)
+
+The downloaded source packages are in
+	‘/private/var/folders/rg/6bkp4j2s36nd_4x36jzgp1dm0000gn/T/RtmpXMQZBc/downloaded_packages’
+* installing *source* package ‘smoother’ ...
+** this is package ‘smoother’ version ‘1.3’
+** package ‘smoother’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (smoother)

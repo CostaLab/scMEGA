@@ -1,0 +1,19 @@
+                Rcpp                ArchR         SeuratObject
+                TRUE                 TRUE                 TRUE
+               dplyr             optmatch              ggplot2
+                TRUE                 TRUE                 TRUE
+             cowplot               ggpubr              destiny
+                TRUE                 TRUE                 TRUE
+              pracma               igraph                 glue
+                TRUE                 TRUE                 TRUE
+      ComplexHeatmap              IRanges               Matrix
+                TRUE                 TRUE                 TRUE
+            circlize              ggrepel          matrixStats
+                TRUE                 TRUE                 TRUE
+               nabor              stringr            textshape
+                TRUE                 TRUE                 TRUE
+               tidyr        GenomicRanges            S4Vectors
+                TRUE                 TRUE                 TRUE
+SummarizedExperiment               ggraph           factoextra
+                TRUE                 TRUE                 TRUE
+PASS: all declared direct Imports load; duplicate-OpenMP bypass is not enabled.

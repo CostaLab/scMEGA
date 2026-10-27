@@ -1,0 +1,5 @@
+PASS: Assay counts and normalized data.
+PASS: Assay5 counts and normalized data.
+PASS: split layers select only the first match; explicit join recovers all named counts.
+PASS: a counts-only assay has no normalized data layer.
+PASS: ChromatinAssay works with layer access without casting away genomic ranges.

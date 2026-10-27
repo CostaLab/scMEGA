@@ -1,0 +1,2 @@
+CPPFLAGS += -I/tmp/scmega-systemdeps/include
+LDFLAGS += -L/tmp/scmega-systemdeps/lib -Wl,-rpath,/tmp/scmega-systemdeps/lib

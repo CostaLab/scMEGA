@@ -1,0 +1,7 @@
+* checking for file ‘/private/tmp/scmega-validate32-metadata/DESCRIPTION’ ... OK
+* preparing ‘scMEGA’:
+* checking DESCRIPTION meta-information ... OK
+* cleaning src
+* checking for LF line-endings in source and make files and shell scripts
+* checking for empty or unneeded directories
+* building ‘scMEGA_1.1.0.tar.gz’

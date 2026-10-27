@@ -1,0 +1,27 @@
+suppressPackageStartupMessages(library(SeuratObject))
+suppressPackageStartupMessages(library(Signac))
+x <- Matrix::Matrix(matrix(1:8,2,dimnames=list(c('gene1','gene2'),paste0('c',1:4))), sparse=TRUE)
+for (make in list(CreateAssayObject,CreateAssay5Object)) {
+  object <- CreateSeuratObject(make(counts=x),assay='RNA')
+  stopifnot(identical(as.matrix(LayerData(object,assay='RNA',layer='counts')),as.matrix(x)))
+  object <- Seurat::NormalizeData(object,assay='RNA',verbose=FALSE)
+  expected <- log1p(sweep(as.matrix(x),2,Matrix::colSums(x),'/')*10000)
+  stopifnot(isTRUE(all.equal(as.matrix(LayerData(object,assay='RNA',layer='data')),expected)))
+  cat('PASS:',class(object[['RNA']])[1],'counts and normalized data.\n')
+}
+a <- CreateAssay5Object(counts=list(batch1=x[,1:2],batch2=x[,3:4]))
+warning.text <- NULL
+first <- withCallingHandlers(LayerData(a,layer='counts'),warning=function(w){warning.text <<- conditionMessage(w); invokeRestart('muffleWarning')})
+stopifnot(ncol(first)==2L,grepl('multiple layers',warning.text))
+joined <- JoinLayers(a)
+stopifnot(isTRUE(all.equal(as.matrix(LayerData(joined,layer='counts'))[,colnames(x),drop=FALSE],as.matrix(x))))
+cat('PASS: split layers select only the first match; explicit join recovers all named counts.\n')
+stopifnot(!'data' %in% Layers(a,search=NA))
+cat('PASS: a counts-only assay has no normalized data layer.\n')
+peaks <- x
+rownames(peaks) <- c('chr1-100-200','chr1-300-400')
+chromatin <- CreateChromatinAssay(peaks, min.cells=0,min.features=0)
+ranges.before <- GenomicRanges::granges(chromatin)
+counts <- LayerData(chromatin,layer='counts')
+stopifnot(inherits(chromatin,'ChromatinAssay'),identical(GenomicRanges::granges(chromatin),ranges.before),identical(as.matrix(counts),as.matrix(peaks)))
+cat('PASS: ChromatinAssay works with layer access without casting away genomic ranges.\n')

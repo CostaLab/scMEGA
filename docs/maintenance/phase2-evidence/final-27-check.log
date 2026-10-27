@@ -1,0 +1,201 @@
+* using log directory ‘/private/tmp/scmega-phase2-final27/scMEGA.Rcheck’
+* using R version 4.5.3 (2026-03-11)
+* using platform: aarch64-apple-darwin25.3.0
+* R was compiled by
+    Apple clang version 17.0.0 (clang-1700.6.4.2)
+    GNU Fortran (Homebrew GCC 15.2.0_1) 15.2.0
+* running under: macOS Tahoe 26.6.2
+* using session charset: UTF-8
+* using options ‘--no-manual --no-build-vignettes’
+* checking for file ‘scMEGA/DESCRIPTION’ ... OK
+* checking extension type ... Package
+* this is package ‘scMEGA’ version ‘1.1.0’
+* package encoding: UTF-8
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for executable files ... OK
+* checking for hidden files and directories ... OK
+* checking for portable file names ... OK
+* checking for sufficient/correct file permissions ... OK
+* checking whether package ‘scMEGA’ can be installed ... OK
+* used C++ compiler: ‘Apple clang version 21.0.0 (clang-2100.1.1.101)’
+* used SDK: ‘MacOSX26.5.sdk’
+* checking installed package size ... INFO
+  installed size is 13.7Mb
+  sub-directories of 1Mb or more:
+    data  13.1Mb
+* checking package directory ... OK
+* checking DESCRIPTION meta-information ... OK
+* checking top-level files ... OK
+* checking for left-over files ... OK
+* checking index information ... OK
+* checking package subdirectories ... OK
+* checking code files for non-ASCII characters ... OK
+* checking R files for syntax errors ... OK
+* checking whether the package can be loaded ... OK
+* checking whether the package can be loaded with stated dependencies ... OK
+* checking whether the package can be unloaded cleanly ... OK
+* checking whether the namespace can be loaded with stated dependencies ... OK
+* checking whether the namespace can be unloaded cleanly ... OK
+* checking loading without being on the library search path ... OK
+* checking dependencies in R code ... NOTE
+Unexported objects imported by ':::' calls:
+  ‘ArchR:::.ArchRHeatmap’ ‘ArchR:::.centerRollMean’
+  ‘ArchR:::.getQuantiles’ ‘ArchR:::.isDiscrete’
+  See the note in ?`:::` about the use of this operator.
+* checking S3 generic/method consistency ... OK
+* checking replacement functions ... OK
+* checking foreign function calls ... OK
+* checking R code for possible problems ... NOTE
+AddTrajectory: no visible binding for global variable ‘.’
+CellPropPlot: no visible binding for global variable ‘.’
+CompareCellProp: no visible binding for global variable ‘.’
+CorrelationPlot: no visible binding for global variable ‘tfs’
+CorrelationPlot: no visible binding for global variable ‘correlation’
+GetCorrelation: no visible binding for global variable ‘.’
+GetGRN: no visible binding for global variable ‘peak’
+GetGRN: no visible binding for global variable ‘gene’
+GetGRN: no visible binding for global variable ‘tf’
+GetPairList: no visible binding for global variable ‘ATAC’
+GetTFGeneCorrelation: no visible binding for global variable ‘gene’
+GetTFGeneCorrelation: no visible binding for global variable ‘tf’
+GetTFGeneCorrelation: no visible binding for global variable
+  ‘correlation’
+GetTrajectory: no visible binding for global variable ‘.’
+GRNHeatmap: no visible binding for global variable ‘tf’
+GRNHeatmap: no visible binding for global variable ‘gene’
+GRNHeatmap: no visible binding for global variable ‘correlation’
+GRNPlot: no visible binding for global variable ‘tf’
+GRNPlot: no visible binding for global variable ‘gene’
+GRNPlot: no visible binding for global variable ‘importance’
+GRNPlot : <anonymous>: no visible binding for global variable ‘cluster’
+GRNPlot: no visible binding for global variable ‘.’
+GRNPlot: no visible binding for global variable ‘name’
+GRNSpatialPlot: no visible binding for global variable ‘tf’
+NetCentPlot: no visible binding for global variable ‘weights’
+NetCentPlot: no visible binding for global variable ‘type’
+NetCentPlot: no visible binding for global variable ‘name’
+PeakToGene: no visible binding for global variable ‘geneAnnoHg19’
+PeakToGene: no visible binding for global variable ‘geneAnnoHg38’
+PeakToGene: no visible binding for global variable ‘geneAnnoMm9’
+PeakToGene: no visible binding for global variable ‘geneAnnoMm10’
+PseudotimePlot: no visible binding for global variable ‘tf’
+PseudotimePlot: no visible binding for global variable ‘pseudotime’
+PseudotimePlot: no visible binding for global variable ‘value’
+PseudotimePlot: no visible binding for global variable ‘data’
+SelectGenes: no visible binding for global variable ‘Correlation’
+SelectGenes: no visible binding for global variable ‘FDR’
+TopEmbGRN: no visible binding for global variable ‘netobj’
+TrajectoryPlot: no visible binding for global variable ‘.’
+TrajectoryPlot: no visible binding for global variable ‘x’
+TrajectoryPlot: no visible binding for global variable ‘y’
+Undefined global functions or variables:
+  . ATAC cluster correlation Correlation data FDR gene geneAnnoHg19
+  geneAnnoHg38 geneAnnoMm10 geneAnnoMm9 importance name netobj peak
+  pseudotime tf tfs type value weights x y
+Consider adding
+  importFrom("stats", "weights")
+  importFrom("utils", "data")
+to your NAMESPACE file.
+* checking Rd files ... OK
+* checking Rd metadata ... OK
+* checking Rd cross-references ... OK
+* checking for missing documentation entries ... WARNING
+Undocumented code objects:
+  ‘geneAnnoHg19’ ‘geneAnnoHg38’ ‘geneAnnoMm10’ ‘geneAnnoMm9’
+  ‘rowCorCpp’
+Undocumented data sets:
+  ‘geneAnnoHg19’ ‘geneAnnoHg38’ ‘geneAnnoMm10’ ‘geneAnnoMm9’
+All user-level objects in a package should have documentation entries.
+See chapter ‘Writing R documentation files’ in the ‘Writing R
+Extensions’ manual.
+* checking for code/documentation mismatches ... WARNING
+Codoc mismatches from Rd file 'GRNSpatialPlot.Rd':
+GRNSpatialPlot
+  Code: function(object, assay, df.grn, tf.use, vis.option = "B", ...)
+  Docs: function(object, assay, df.grn, tf.use, min.cutoff = "q5",
+                 max.cutoff = "q95", vis.option = "B", crop = TRUE)
+  Argument names in code not in docs:
+    ...
+  Argument names in docs not in code:
+    min.cutoff max.cutoff crop
+  Mismatches in argument names:
+    Position: 5 Code: vis.option Docs: min.cutoff
+    Position: 6 Code: ... Docs: max.cutoff
+
+* checking Rd \usage sections ... WARNING
+Undocumented arguments in Rd file 'AddTargetAssay.Rd'
+  ‘rna.assay’
+
+Undocumented arguments in Rd file 'CreatePairedObject.Rd'
+  ‘obj.coembed’ ‘obj.rna’ ‘obj.atac’ ‘rna.assay’ ‘atac.assay’
+Documented arguments not in \usage in Rd file 'CreatePairedObject.Rd':
+  ‘object’ ‘use.assay1’ ‘use.assay2’
+
+Undocumented arguments in Rd file 'GRNPlot.Rd'
+  ‘tfs.use’ ‘show.tf.labels’ ‘genes.use’ ‘remove.isolated’
+
+Undocumented arguments in Rd file 'GRNSpatialPlot.Rd'
+  ‘crop’
+
+Undocumented arguments in Rd file 'NetCentPlot.Rd'
+  ‘gene’ ‘highlights’
+
+Undocumented arguments in Rd file 'SelectGenes.Rd'
+  ‘genome’
+
+Undocumented arguments in Rd file 'TopEmbGRN.Rd'
+  ‘gene.cluster’ ‘axis’
+Documented arguments not in \usage in Rd file 'TopEmbGRN.Rd':
+  ‘genes.cluster’
+
+Functions with \usage entries need to have the appropriate \alias
+entries, and all their arguments documented.
+The \usage entries must correspond to syntactically valid R code.
+See chapter ‘Writing R documentation files’ in the ‘Writing R
+Extensions’ manual.
+* checking Rd contents ... OK
+* checking for unstated dependencies in examples ... OK
+* checking contents of ‘data’ directory ... OK
+* checking data for non-ASCII characters ... OK
+* checking LazyData ... WARNING
+  LazyData DB of 12.1 MB without LazyDataCompression set
+  See §1.1.6 of 'Writing R Extensions'
+* checking data for ASCII and uncompressed saves ... WARNING
+
+  Note: significantly better compression could be obtained
+        by using R CMD build --resave-data
+                   old_size new_size compress
+  geneAnnoHg19.rda    2.7Mb    1.6Mb       xz
+  geneAnnoHg38.rda    4.6Mb    2.6Mb       xz
+  geneAnnoMm10.rda    2.6Mb    1.5Mb       xz
+  geneAnnoMm9.rda     2.3Mb    1.3Mb       xz
+* checking line endings in C/C++/Fortran sources/headers ... OK
+* checking compiled code ... OK
+* checking files in ‘vignettes’ ... WARNING
+Files in the 'vignettes' directory but no files in 'inst/doc':
+  ‘cardiomyocyte-GRN.Rmd’ ‘install.Rmd’ ‘myofibroblast-GRN.Rmd’
+  ‘pbmc_10x_multiome.Rmd’
+Files named as vignettes but with no recognized vignette engine:
+   ‘vignettes/cardiomyocyte-GRN.Rmd’
+   ‘vignettes/install.Rmd’
+   ‘vignettes/myofibroblast-GRN.Rmd’
+   ‘vignettes/pbmc_10x_multiome.Rmd’
+(Is a VignetteBuilder field missing?)
+* checking examples ... OK
+* checking for unstated dependencies in ‘tests’ ... OK
+* checking tests ...
+  Running ‘testthat.R’
+ OK
+* checking package vignettes ... NOTE
+Package has ‘vignettes’ subdirectory but apparently no vignettes.
+Perhaps the ‘VignetteBuilder’ information is missing from the
+DESCRIPTION file?
+* DONE
+
+Status: 6 WARNINGs, 3 NOTEs
+See
+  ‘/private/tmp/scmega-phase2-final27/scMEGA.Rcheck/00check.log’
+for details.

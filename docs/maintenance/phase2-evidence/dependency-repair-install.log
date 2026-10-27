@@ -1,0 +1,372 @@
+Bioconductor version 3.22 (BiocManager 1.30.27), R 4.5.3 (2026-03-11)
+Installing package(s) 'destiny', 'ggpubr', 'factoextra'
+also installing the dependencies ‘nloptr’, ‘pbkrtest’, ‘lme4’, ‘car’, ‘rstatix’, ‘FactoMineR’
+
+trying URL 'https://cloud.r-project.org/src/contrib/nloptr_2.2.1.tar.gz'
+trying URL 'https://cloud.r-project.org/src/contrib/pbkrtest_0.5.5.tar.gz'
+trying URL 'https://cloud.r-project.org/src/contrib/lme4_2.1-0.tar.gz'
+trying URL 'https://cloud.r-project.org/src/contrib/car_3.1-5.tar.gz'
+trying URL 'https://cloud.r-project.org/src/contrib/rstatix_1.1.0.tar.gz'
+trying URL 'https://cloud.r-project.org/src/contrib/FactoMineR_2.18.tar.gz'
+trying URL 'https://bioconductor.org/packages/3.22/bioc/src/contrib/destiny_3.24.0.tar.gz'
+trying URL 'https://cloud.r-project.org/src/contrib/ggpubr_1.0.0.tar.gz'
+trying URL 'https://cloud.r-project.org/src/contrib/factoextra_2.2.0.tar.gz'
+begin installing package ‘nloptr’
+begin installing package ‘destiny’
+* installing *source* package ‘destiny’ ...
+** this is package ‘destiny’ version ‘3.24.0’
+** package ‘destiny’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C++ compiler: ‘Apple clang version 21.0.0 (clang-2100.1.1.101)’
+using C++11
+using SDK: ‘MacOSX26.5.sdk’
+clang++ -std=gnu++11 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG  -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppEigen/include' -I'/opt/homebrew/Cellar/r/4.5.3/lib/R/library/grDevices/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include   -ggdb -fPIC  -g -O2   -c RcppExports.cpp -o RcppExports.o
+clang++ -std=gnu++11 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG  -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppEigen/include' -I'/opt/homebrew/Cellar/r/4.5.3/lib/R/library/grDevices/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include   -ggdb -fPIC  -g -O2   -c censoring.cpp -o censoring.o
+clang++ -std=gnu++11 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG  -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppEigen/include' -I'/opt/homebrew/Cellar/r/4.5.3/lib/R/library/grDevices/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include   -ggdb -fPIC  -g -O2   -c utils.cpp -o utils.o
+clang++ -std=gnu++11 -dynamiclib -Wl,-headerpad_max_install_names -undefined dynamic_lookup -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -L/opt/homebrew/opt/gettext/lib -L/opt/homebrew/opt/readline/lib -L/opt/homebrew/opt/xz/lib -L/opt/homebrew/lib -o destiny.so RcppExports.o censoring.o utils.o -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -lR
+installing to /private/tmp/scmega-r-lib/00LOCK-destiny/00new/destiny/libs
+** R
+** data
+** demo
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (destiny)
+* installing *source* package ‘nloptr’ ...
+** this is package ‘nloptr’ version ‘2.2.1’
+** package ‘nloptr’ successfully unpacked and MD5 sums checked
+** using staged installation
+checking whether the C++ compiler works... yes
+checking for C++ compiler default output file name... a.out
+checking for suffix of executables...
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether the compiler supports GNU C++... yes
+checking whether clang++ -std=gnu++17 accepts -g... yes
+checking for clang++ -std=gnu++17 option to enable C++11 features... none needed
+checking how to run the C++ preprocessor... clang++ -std=gnu++17 -E
+checking whether the compiler supports GNU C++... (cached) yes
+checking whether clang++ -std=gnu++17 accepts -g... (cached) yes
+checking for clang++ -std=gnu++17 option to enable C++11 features... (cached) none needed
+checking for pkg-config... /opt/homebrew/bin/pkg-config
+checking if pkg-config knows NLopt... no
+checking for cmake... /tmp/scmega-build-tools/bin/cmake
+using cmake via /tmp/scmega-build-tools/bin/cmake
+using NLopt via local cmake build on arm64
+set CC=clang -std=gnu23
+set CFLAGS=-I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -fPIC -g -O2
+set CXX=clang++
+set CXXFLAGS=-std=gnu++11 -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -fPIC -g -O2
+set LDFLAGS=-L/opt/homebrew/opt/gettext/lib -L/opt/homebrew/opt/readline/lib -L/opt/homebrew/opt/xz/lib -L/opt/homebrew/lib
+-- The C compiler identification is AppleClang 21.0.0.21000101
+-- The CXX compiler identification is AppleClang 21.0.0.21000101
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /Library/Developer/CommandLineTools/usr/bin/clang - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /Library/Developer/CommandLineTools/usr/bin/clang++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- NLopt version 2.10.0
+-- Looking for getopt.h
+-- Looking for getopt.h - found
+-- Looking for unistd.h
+-- Looking for unistd.h - found
+-- Looking for stdint.h
+-- Looking for stdint.h - found
+-- Looking for time.h
+-- Looking for time.h - found
+-- Looking for sys/time.h
+-- Looking for sys/time.h - found
+-- Looking for getpid
+-- Looking for getpid - found
+-- Looking for syscall
+-- Looking for syscall - found
+-- Looking for isinf
+-- Looking for isinf - found
+-- Looking for isnan
+-- Looking for isnan - found
+-- Looking for gettimeofday
+-- Looking for gettimeofday - found
+-- Looking for qsort_r
+-- Looking for qsort_r - found
+-- Looking for time
+-- Looking for time - found
+-- Looking for copysign
+-- Looking for copysign - found
+-- Looking for getopt
+-- Looking for getopt - found
+-- Looking for sys/types.h
+-- Looking for sys/types.h - found
+-- Looking for stddef.h
+-- Looking for stddef.h - found
+-- Check size of uint32_t
+-- Check size of uint32_t - done
+-- Check size of unsigned int
+-- Check size of unsigned int - done
+-- Check size of unsigned long
+-- Check size of unsigned long - done
+-- Looking for sqrt in m
+-- Looking for sqrt in m - found
+-- Looking for fpclassify
+-- Looking for fpclassify - TRUE
+-- Performing Test HAVE_THREAD_LOCAL_STORAGE
+-- Performing Test HAVE_THREAD_LOCAL_STORAGE - Success
+-- Performing Test HAVE_THREAD_LOCAL_STORAGE
+-- Performing Test HAVE_THREAD_LOCAL_STORAGE - Failed
+-- Looking for __cplusplus
+-- Looking for __cplusplus - found
+-- Could NOT find JNI (missing: JAVA_INCLUDE_PATH JAVA_INCLUDE_PATH2)
+-- Java version check failed: /usr/bin/java -version returned an error: "The operation couldn’t be completed. Unable to locate a Java Runtime.
+Please visit http://www.java.com for information on installing Java."
+-- Could NOT find Java (missing: Java_JAVA_EXECUTABLE Java_JAVAH_EXECUTABLE) (Required is at least version "1.5")
+-- Configuring done (2.8s)
+-- Generating done (0.0s)
+-- Build files have been written to: /private/var/folders/rg/6bkp4j2s36nd_4x36jzgp1dm0000gn/T/Rtmplz0yjF/R.INSTALL4e833e34d0e4/nloptr/src/nlopt-build
+[  2%] Generating nlopt.hpp
+[  2%] Built target generate-cpp
+[  6%] Building C object CMakeFiles/nlopt.dir/src/algs/direct/DIRect.c.o
+[  6%] Building C object CMakeFiles/nlopt.dir/src/algs/direct/direct_wrap.c.o
+[  8%] Building C object CMakeFiles/nlopt.dir/src/algs/direct/DIRserial.c.o
+[ 10%] Building C object CMakeFiles/nlopt.dir/src/algs/direct/DIRsubrout.c.o
+[ 12%] Building C object CMakeFiles/nlopt.dir/src/algs/cdirect/cdirect.c.o
+[ 14%] Building C object CMakeFiles/nlopt.dir/src/algs/cdirect/hybrid.c.o
+[ 16%] Building C object CMakeFiles/nlopt.dir/src/algs/praxis/praxis.c.o
+[ 18%] Building C object CMakeFiles/nlopt.dir/src/algs/crs/crs.c.o
+[ 20%] Building C object CMakeFiles/nlopt.dir/src/algs/mlsl/mlsl.c.o
+[ 22%] Building C object CMakeFiles/nlopt.dir/src/algs/mma/mma.c.o
+[ 24%] Building C object CMakeFiles/nlopt.dir/src/algs/mma/ccsa_quadratic.c.o
+[ 26%] Building C object CMakeFiles/nlopt.dir/src/algs/cobyla/cobyla.c.o
+[ 28%] Building C object CMakeFiles/nlopt.dir/src/algs/newuoa/newuoa.c.o
+[ 30%] Building C object CMakeFiles/nlopt.dir/src/algs/neldermead/nldrmd.c.o
+[ 32%] Building C object CMakeFiles/nlopt.dir/src/algs/neldermead/sbplx.c.o
+[ 34%] Building C object CMakeFiles/nlopt.dir/src/algs/auglag/auglag.c.o
+[ 36%] Building C object CMakeFiles/nlopt.dir/src/algs/bobyqa/bobyqa.c.o
+[ 38%] Building C object CMakeFiles/nlopt.dir/src/algs/isres/isres.c.o
+[ 40%] Building C object CMakeFiles/nlopt.dir/src/algs/slsqp/slsqp.c.o
+[ 42%] Building C object CMakeFiles/nlopt.dir/src/algs/esch/esch.c.o
+[ 44%] Building C object CMakeFiles/nlopt.dir/src/api/general.c.o
+[ 46%] Building C object CMakeFiles/nlopt.dir/src/api/options.c.o
+[ 48%] Building C object CMakeFiles/nlopt.dir/src/api/optimize.c.o
+[ 51%] Building C object CMakeFiles/nlopt.dir/src/api/deprecated.c.o
+[ 53%] Building C object CMakeFiles/nlopt.dir/src/api/f77api.c.o
+[ 55%] Building C object CMakeFiles/nlopt.dir/src/util/mt19937ar.c.o
+[ 57%] Building C object CMakeFiles/nlopt.dir/src/util/sobolseq.c.o
+[ 59%] Building C object CMakeFiles/nlopt.dir/src/util/timer.c.o
+[ 61%] Building C object CMakeFiles/nlopt.dir/src/util/stop.c.o
+[ 63%] Building C object CMakeFiles/nlopt.dir/src/util/redblack.c.o
+[ 65%] Building C object CMakeFiles/nlopt.dir/src/util/qsort_r.c.o
+[ 67%] Building C object CMakeFiles/nlopt.dir/src/util/rescale.c.o
+[ 69%] Building C object CMakeFiles/nlopt.dir/src/algs/luksan/plis.c.o
+[ 71%] Building C object CMakeFiles/nlopt.dir/src/algs/luksan/plip.c.o
+[ 75%] Building C object CMakeFiles/nlopt.dir/src/algs/luksan/pnet.c.o
+[ 75%] Building C object CMakeFiles/nlopt.dir/src/algs/luksan/mssubs.c.o
+[ 77%] Building C object CMakeFiles/nlopt.dir/src/algs/luksan/pssubs.c.o
+[ 79%] Building CXX object CMakeFiles/nlopt.dir/src/algs/stogo/global.cc.o
+[ 81%] Building CXX object CMakeFiles/nlopt.dir/src/algs/stogo/linalg.cc.o
+[ 83%] Building CXX object CMakeFiles/nlopt.dir/src/algs/stogo/local.cc.o
+[ 85%] Building CXX object CMakeFiles/nlopt.dir/src/algs/stogo/stogo.cc.o
+[ 87%] Building CXX object CMakeFiles/nlopt.dir/src/algs/stogo/tools.cc.o
+[ 89%] Building CXX object CMakeFiles/nlopt.dir/src/algs/ags/evolvent.cc.o
+[ 91%] Building CXX object CMakeFiles/nlopt.dir/src/algs/ags/solver.cc.o
+[ 93%] Building CXX object CMakeFiles/nlopt.dir/src/algs/ags/local_optimizer.cc.o
+[ 95%] Building CXX object CMakeFiles/nlopt.dir/src/algs/ags/ags.cc.o
+[ 97%] Linking CXX static library libnlopt.a
+[100%] Built target nlopt
+[  2%] Built target generate-cpp
+[100%] Built target nlopt
+Install the project...
+-- Install configuration: "Release"
+-- Installing: /private/var/folders/rg/6bkp4j2s36nd_4x36jzgp1dm0000gn/T/Rtmplz0yjF/R.INSTALL4e833e34d0e4/nloptr/src/nlopt/lib/pkgconfig/nlopt.pc
+-- Installing: /private/var/folders/rg/6bkp4j2s36nd_4x36jzgp1dm0000gn/T/Rtmplz0yjF/R.INSTALL4e833e34d0e4/nloptr/src/nlopt/include/nlopt.h
+-- Installing: /private/var/folders/rg/6bkp4j2s36nd_4x36jzgp1dm0000gn/T/Rtmplz0yjF/R.INSTALL4e833e34d0e4/nloptr/src/nlopt/include/nlopt.hpp
+-- Installing: /private/var/folders/rg/6bkp4j2s36nd_4x36jzgp1dm0000gn/T/Rtmplz0yjF/R.INSTALL4e833e34d0e4/nloptr/src/nlopt/lib/libnlopt.a
+-- Installing: /private/var/folders/rg/6bkp4j2s36nd_4x36jzgp1dm0000gn/T/Rtmplz0yjF/R.INSTALL4e833e34d0e4/nloptr/src/nlopt/share/man/man3/nlopt.3
+-- Installing: /private/var/folders/rg/6bkp4j2s36nd_4x36jzgp1dm0000gn/T/Rtmplz0yjF/R.INSTALL4e833e34d0e4/nloptr/src/nlopt/share/man/man3/nlopt_minimize.3
+-- Installing: /private/var/folders/rg/6bkp4j2s36nd_4x36jzgp1dm0000gn/T/Rtmplz0yjF/R.INSTALL4e833e34d0e4/nloptr/src/nlopt/share/man/man3/nlopt_minimize_constrained.3
+-- Installing: /private/var/folders/rg/6bkp4j2s36nd_4x36jzgp1dm0000gn/T/Rtmplz0yjF/R.INSTALL4e833e34d0e4/nloptr/src/nlopt/lib/cmake/nlopt/NLoptLibraryDepends.cmake
+-- Installing: /private/var/folders/rg/6bkp4j2s36nd_4x36jzgp1dm0000gn/T/Rtmplz0yjF/R.INSTALL4e833e34d0e4/nloptr/src/nlopt/lib/cmake/nlopt/NLoptLibraryDepends-release.cmake
+-- Installing: /private/var/folders/rg/6bkp4j2s36nd_4x36jzgp1dm0000gn/T/Rtmplz0yjF/R.INSTALL4e833e34d0e4/nloptr/src/nlopt/lib/cmake/nlopt/NLoptConfig.cmake
+-- Installing: /private/var/folders/rg/6bkp4j2s36nd_4x36jzgp1dm0000gn/T/Rtmplz0yjF/R.INSTALL4e833e34d0e4/nloptr/src/nlopt/lib/cmake/nlopt/NLoptConfigVersion.cmake
+Moving nlopt/lib to nlopt/lib
+mv: rename nlopt/lib to nlopt/lib/lib: Invalid argument
+Copying headers found in src/nlopt/include into inst/include
+configure: creating ./config.status
+config.status: creating src/Makevars
+** libs
+using C compiler: ‘Apple clang version 21.0.0 (clang-2100.1.1.101)’
+using C++ compiler: ‘Apple clang version 21.0.0 (clang-2100.1.1.101)’
+using SDK: ‘MacOSX26.5.sdk’
+clang++ -std=gnu++17 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -Inlopt/include  -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2   -c dummy.cpp -o dummy.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -Inlopt/include  -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c init_nloptr.c -o init_nloptr.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -Inlopt/include  -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c nloptr.c -o nloptr.o
+clang++ -std=gnu++17 -dynamiclib -Wl,-headerpad_max_install_names -undefined dynamic_lookup -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -L/opt/homebrew/opt/gettext/lib -L/opt/homebrew/opt/readline/lib -L/opt/homebrew/opt/xz/lib -L/opt/homebrew/lib -o nloptr.so dummy.o init_nloptr.o nloptr.o -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -lRlapack -L/opt/homebrew/opt/openblas/lib -lopenblas -L/opt/homebrew/opt/gcc/lib/gcc/current/gcc/aarch64-apple-darwin25/15 -L/opt/homebrew/opt/gcc/lib/gcc/current/gcc -L/opt/homebrew/opt/gcc/lib/gcc/current -lemutls_w -lheapt_w -lgfortran -lquadmath nlopt/lib/libnlopt.a -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -lR
+installing to /private/tmp/scmega-r-lib/00LOCK-nloptr/00new/nloptr/libs
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (nloptr)
+begin installing package ‘lme4’
+* installing *source* package ‘lme4’ ...
+** this is package ‘lme4’ version ‘2.1-0’
+** package ‘lme4’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C++ compiler: ‘Apple clang version 21.0.0 (clang-2100.1.1.101)’
+using SDK: ‘MacOSX26.5.sdk’
+clang++ -std=gnu++17 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG  -I'/opt/homebrew/Cellar/r/4.5.3/lib/R/library/Matrix/include' -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppEigen/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include   -DNDEBUG -DEIGEN_DONT_VECTORIZE -fPIC  -g -O2   -c external.cpp -o external.o
+clang++ -std=gnu++17 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG  -I'/opt/homebrew/Cellar/r/4.5.3/lib/R/library/Matrix/include' -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppEigen/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include   -DNDEBUG -DEIGEN_DONT_VECTORIZE -fPIC  -g -O2   -c glmFamily.cpp -o glmFamily.o
+clang++ -std=gnu++17 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG  -I'/opt/homebrew/Cellar/r/4.5.3/lib/R/library/Matrix/include' -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppEigen/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include   -DNDEBUG -DEIGEN_DONT_VECTORIZE -fPIC  -g -O2   -c optimizer.cpp -o optimizer.o
+clang++ -std=gnu++17 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG  -I'/opt/homebrew/Cellar/r/4.5.3/lib/R/library/Matrix/include' -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppEigen/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include   -DNDEBUG -DEIGEN_DONT_VECTORIZE -fPIC  -g -O2   -c predModule.cpp -o predModule.o
+clang++ -std=gnu++17 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG  -I'/opt/homebrew/Cellar/r/4.5.3/lib/R/library/Matrix/include' -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppEigen/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include   -DNDEBUG -DEIGEN_DONT_VECTORIZE -fPIC  -g -O2   -c respModule.cpp -o respModule.o
+clang++ -std=gnu++17 -dynamiclib -Wl,-headerpad_max_install_names -undefined dynamic_lookup -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -L/opt/homebrew/opt/gettext/lib -L/opt/homebrew/opt/readline/lib -L/opt/homebrew/opt/xz/lib -L/opt/homebrew/lib -o lme4.so external.o glmFamily.o optimizer.o predModule.o respModule.o -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -lR
+installing to /private/tmp/scmega-r-lib/00LOCK-lme4/00new/lme4/libs
+** R
+** data
+*** moving datasets to lazyload DB
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (lme4)
+begin installing package ‘pbkrtest’
+* installing *source* package ‘pbkrtest’ ...
+** this is package ‘pbkrtest’ version ‘0.5.5’
+** package ‘pbkrtest’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** data
+*** moving datasets to lazyload DB
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (pbkrtest)
+begin installing package ‘car’
+* installing *source* package ‘car’ ...
+** this is package ‘car’ version ‘3.1-5’
+** package ‘car’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (car)
+begin installing package ‘rstatix’
+begin installing package ‘FactoMineR’
+* installing *source* package ‘rstatix’ ...
+** this is package ‘rstatix’ version ‘1.1.0’
+** package ‘rstatix’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (rstatix)
+begin installing package ‘ggpubr’
+* installing *source* package ‘ggpubr’ ...
+** this is package ‘ggpubr’ version ‘1.0.0’
+** package ‘ggpubr’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** data
+*** moving datasets to lazyload DB
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (ggpubr)
+* installing *source* package ‘FactoMineR’ ...
+** this is package ‘FactoMineR’ version ‘2.18’
+** package ‘FactoMineR’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘Apple clang version 21.0.0 (clang-2100.1.1.101)’
+using SDK: ‘MacOSX26.5.sdk’
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG   -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c disjonctif.c -o disjonctif.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG   -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2  -c init.c -o init.o
+clang -std=gnu23 -dynamiclib -Wl,-headerpad_max_install_names -undefined dynamic_lookup -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -L/opt/homebrew/opt/gettext/lib -L/opt/homebrew/opt/readline/lib -L/opt/homebrew/opt/xz/lib -L/opt/homebrew/lib -o FactoMineR.so disjonctif.o init.o -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -lR
+installing to /private/tmp/scmega-r-lib/00LOCK-FactoMineR/00new/FactoMineR/libs
+** R
+** data
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (FactoMineR)
+begin installing package ‘factoextra’
+* installing *source* package ‘factoextra’ ...
+** this is package ‘factoextra’ version ‘2.2.0’
+** package ‘factoextra’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** data
+*** moving datasets to lazyload DB
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (factoextra)
+
+The downloaded source packages are in
+	‘/private/var/folders/rg/6bkp4j2s36nd_4x36jzgp1dm0000gn/T/RtmpWnKtC4/downloaded_packages’

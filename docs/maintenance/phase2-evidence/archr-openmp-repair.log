@@ -1,0 +1,367 @@
+Bioconductor version 3.22 (BiocManager 1.30.27), R 4.5.3 (2026-03-11)
+Installing package(s) 'chromVAR', 'motifmatchr'
+also installing the dependencies ‘DirichletMultinomial’, ‘TFBSTools’
+
+trying URL 'https://bioconductor.org/packages/3.22/bioc/src/contrib/DirichletMultinomial_1.52.0.tar.gz'
+trying URL 'https://bioconductor.org/packages/3.22/bioc/src/contrib/TFBSTools_1.48.0.tar.gz'
+trying URL 'https://bioconductor.org/packages/3.22/bioc/src/contrib/chromVAR_1.32.0.tar.gz'
+trying URL 'https://bioconductor.org/packages/3.22/bioc/src/contrib/motifmatchr_1.32.0.tar.gz'
+begin installing package ‘DirichletMultinomial’
+* installing *source* package ‘DirichletMultinomial’ ...
+** this is package ‘DirichletMultinomial’ version ‘1.52.0’
+** package ‘DirichletMultinomial’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘Apple clang version 21.0.0 (clang-2100.1.1.101)’
+using SDK: ‘MacOSX26.5.sdk’
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG   -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include   `gsl-config --cflags` -DR_DIRICHLETMULTINOMIAL -fPIC  -g -O2  -c R_init_DirichletMultinomial.c -o R_init_DirichletMultinomial.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG   -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include   `gsl-config --cflags` -DR_DIRICHLETMULTINOMIAL -fPIC  -g -O2  -c dirichlet_fit.c -o dirichlet_fit.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG   -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include   `gsl-config --cflags` -DR_DIRICHLETMULTINOMIAL -fPIC  -g -O2  -c dirichlet_fit_main.c -o dirichlet_fit_main.o
+clang -std=gnu23 -dynamiclib -Wl,-headerpad_max_install_names -undefined dynamic_lookup -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -L/opt/homebrew/opt/gettext/lib -L/opt/homebrew/opt/readline/lib -L/opt/homebrew/opt/xz/lib -L/opt/homebrew/lib -L/tmp/scmega-systemdeps/lib -Wl,-rpath,/tmp/scmega-systemdeps/lib -o DirichletMultinomial.so R_init_DirichletMultinomial.o dirichlet_fit.o dirichlet_fit_main.o -L/tmp/scmega-systemdeps/lib -lgsl -lgslcblas -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -lR
+installing to /private/tmp/scmega-r-lib/00LOCK-DirichletMultinomial/00new/DirichletMultinomial/libs
+** R
+** data
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (DirichletMultinomial)
+begin installing package ‘TFBSTools’
+* installing *source* package ‘TFBSTools’ ...
+** this is package ‘TFBSTools’ version ‘1.48.0’
+** package ‘TFBSTools’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C compiler: ‘Apple clang version 21.0.0 (clang-2100.1.1.101)’
+using SDK: ‘MacOSX26.5.sdk’
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG   -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include    -fPIC  -g -O2  -c matrixAlignerDynamic.c -o matrixAlignerDynamic.o
+clang -std=gnu23 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG   -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include    -fPIC  -g -O2  -c R_init_TFBSTools.c -o R_init_TFBSTools.o
+clang -std=gnu23 -dynamiclib -Wl,-headerpad_max_install_names -undefined dynamic_lookup -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -L/opt/homebrew/opt/gettext/lib -L/opt/homebrew/opt/readline/lib -L/opt/homebrew/opt/xz/lib -L/opt/homebrew/lib -L/tmp/scmega-systemdeps/lib -Wl,-rpath,/tmp/scmega-systemdeps/lib -o TFBSTools.so matrixAlignerDynamic.o R_init_TFBSTools.o -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -lR
+installing to /private/tmp/scmega-r-lib/00LOCK-TFBSTools/00new/TFBSTools/libs
+** R
+** data
+*** moving datasets to lazyload DB
+** inst
+** byte-compile and prepare package for lazy loading
+Creating a new generic function for ‘seqLogo’ in package ‘TFBSTools’
+Creating a new generic function for ‘pattern’ in package ‘TFBSTools’
+Creating a generic function for ‘colSums’ from package ‘base’ in package ‘TFBSTools’
+Creating a generic function for ‘rowSums’ from package ‘base’ in package ‘TFBSTools’
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (TFBSTools)
+begin installing package ‘chromVAR’
+begin installing package ‘motifmatchr’
+make: *** [chromVAR.ts] Error 1
+make: *** [motifmatchr.ts] Error 1
+make: Target `all' not remade because of errors.
+* installing *source* package ‘chromVAR’ ...
+** this is package ‘chromVAR’ version ‘1.32.0’
+** package ‘chromVAR’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C++ compiler: ‘Apple clang version 21.0.0 (clang-2100.1.1.101)’
+using C++11
+using SDK: ‘MacOSX26.5.sdk’
+clang++ -std=gnu++11 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG  -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include    -fPIC  -g -O2   -c RcppExports.cpp -o RcppExports.o
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:27:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/compiler_check.hpp:82:4: error: "*** C++14 compiler required; enable C++14 mode in your compiler, or use an earlier version of Armadillo"
+   82 |   #error "*** C++14 compiler required; enable C++14 mode in your compiler, or use an earlier version of Armadillo"
+      |    ^
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:157:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/constants.hpp:33:7: warning: use of this statement in a constexpr function is a C++14 extension [-Wc++14-extensions]
+   33 |       arma_ignore(junk);
+      |       ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/compiler_setup.hpp:38:32: note: expanded from macro 'arma_ignore'
+   38 | #define arma_ignore(variable)  ((void)(variable))
+      |                                ^
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:157:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/constants.hpp:45:7: warning: use of this statement in a constexpr function is a C++14 extension [-Wc++14-extensions]
+   45 |       arma_ignore(junk);
+      |       ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/compiler_setup.hpp:38:32: note: expanded from macro 'arma_ignore'
+   38 | #define arma_ignore(variable)  ((void)(variable))
+      |                                ^
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:157:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/constants.hpp:59:7: warning: use of this statement in a constexpr function is a C++14 extension [-Wc++14-extensions]
+   59 |       arma_ignore(junk);
+      |       ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/compiler_setup.hpp:38:32: note: expanded from macro 'arma_ignore'
+   38 | #define arma_ignore(variable)  ((void)(variable))
+      |                                ^
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:157:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/constants.hpp:74:7: warning: use of this statement in a constexpr function is a C++14 extension [-Wc++14-extensions]
+   74 |       arma_ignore(junk);
+      |       ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/compiler_setup.hpp:38:32: note: expanded from macro 'arma_ignore'
+   38 | #define arma_ignore(variable)  ((void)(variable))
+      |                                ^
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:157:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/constants.hpp:86:7: warning: use of this statement in a constexpr function is a C++14 extension [-Wc++14-extensions]
+   86 |       arma_ignore(junk);
+      |       ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/compiler_setup.hpp:38:32: note: expanded from macro 'arma_ignore'
+   38 | #define arma_ignore(variable)  ((void)(variable))
+      |                                ^
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:157:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/constants.hpp:100:7: warning: use of this statement in a constexpr function is a C++14 extension [-Wc++14-extensions]
+  100 |       arma_ignore(junk);
+      |       ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/compiler_setup.hpp:38:32: note: expanded from macro 'arma_ignore'
+   38 | #define arma_ignore(variable)  ((void)(variable))
+      |                                ^
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:157:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/constants.hpp:115:7: warning: use of this statement in a constexpr function is a C++14 extension [-Wc++14-extensions]
+  115 |       arma_ignore(junk);
+      |       ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/compiler_setup.hpp:38:32: note: expanded from macro 'arma_ignore'
+   38 | #define arma_ignore(variable)  ((void)(variable))
+      |                                ^
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:157:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/constants.hpp:127:7: warning: use of this statement in a constexpr function is a C++14 extension [-Wc++14-extensions]
+  127 |       arma_ignore(junk);
+      |       ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/compiler_setup.hpp:38:32: note: expanded from macro 'arma_ignore'
+   38 | #define arma_ignore(variable)  ((void)(variable))
+      |                                ^
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:157:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/constants.hpp:141:7: warning: use of this statement in a constexpr function is a C++14 extension [-Wc++14-extensions]
+  141 |       arma_ignore(junk);
+      |       ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/compiler_setup.hpp:38:32: note: expanded from macro 'arma_ignore'
+   38 | #define arma_ignore(variable)  ((void)(variable))
+      |                                ^
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:441:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/arma_cmath.hpp:225:16: warning: variable declaration in a constexpr function is a C++14 extension [-Wc++14-extensions]
+  225 |   constexpr eT eT_zero = eT(0);
+      |                ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/arma_cmath.hpp:237:16: warning: variable declaration in a constexpr function is a C++14 extension [-Wc++14-extensions]
+  237 |   constexpr eT eT_zero = eT(0);
+      |                ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/arma_cmath.hpp:249:16: warning: variable declaration in a constexpr function is a C++14 extension [-Wc++14-extensions]
+  249 |   constexpr eT eT_zero = eT(0);
+      |                ^
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:501:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/fn_accu.hpp:27:1: error: 'auto' return without trailing return type; deduced return types are a C++14 extension
+   27 | auto
+      | ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/fn_accu.hpp:42:1: error: 'auto' return without trailing return type; deduced return types are a C++14 extension
+   42 | auto
+      | ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/fn_accu.hpp:57:1: error: 'auto' return without trailing return type; deduced return types are a C++14 extension
+   57 | auto
+      | ^
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:724:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/diskio_meat.hpp:708:16: warning: variable declaration in a constexpr function is a C++14 extension [-Wc++14-extensions]
+  708 |   constexpr eT eT_int_accuracy_lower_limit = -( (is_fp16<eT>::value) ? eT(0x800) : ( (is_float<eT>::value) ? eT(0x1000000) : eT(0x20000000000000) ) );
+      |                ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/diskio_meat.hpp:721:16: warning: variable declaration in a constexpr function is a C++14 extension [-Wc++14-extensions]
+  721 |   constexpr eT eT_int_accuracy_upper_limit = (is_fp16<eT>::value) ? eT(0x800) : ( (is_float<eT>::value) ? eT(0x1000000) : eT(0x20000000000000) );
+      |                ^
+14 warnings and 4 errors generated.
+make[1]: *** [RcppExports.o] Error 1
+ERROR: compilation failed for package ‘chromVAR’
+* removing ‘/private/tmp/scmega-r-lib/chromVAR’
+* installing *source* package ‘motifmatchr’ ...
+** this is package ‘motifmatchr’ version ‘1.32.0’
+** package ‘motifmatchr’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C++ compiler: ‘Apple clang version 21.0.0 (clang-2100.1.1.101)’
+using C++11
+using SDK: ‘MacOSX26.5.sdk’
+clang++ -std=gnu++11 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I. -I./MOODS/ -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include -I/tmp/scmega-systemdeps/include    -fPIC  -g -O2   -c RcppExports.cpp -o RcppExports.o
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:27:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/compiler_check.hpp:82:4: error: "*** C++14 compiler required; enable C++14 mode in your compiler, or use an earlier version of Armadillo"
+   82 |   #error "*** C++14 compiler required; enable C++14 mode in your compiler, or use an earlier version of Armadillo"
+      |    ^
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:157:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/constants.hpp:33:7: warning: use of this statement in a constexpr function is a C++14 extension [-Wc++14-extensions]
+   33 |       arma_ignore(junk);
+      |       ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/compiler_setup.hpp:38:32: note: expanded from macro 'arma_ignore'
+   38 | #define arma_ignore(variable)  ((void)(variable))
+      |                                ^
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:157:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/constants.hpp:45:7: warning: use of this statement in a constexpr function is a C++14 extension [-Wc++14-extensions]
+   45 |       arma_ignore(junk);
+      |       ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/compiler_setup.hpp:38:32: note: expanded from macro 'arma_ignore'
+   38 | #define arma_ignore(variable)  ((void)(variable))
+      |                                ^
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:157:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/constants.hpp:59:7: warning: use of this statement in a constexpr function is a C++14 extension [-Wc++14-extensions]
+   59 |       arma_ignore(junk);
+      |       ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/compiler_setup.hpp:38:32: note: expanded from macro 'arma_ignore'
+   38 | #define arma_ignore(variable)  ((void)(variable))
+      |                                ^
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:157:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/constants.hpp:74:7: warning: use of this statement in a constexpr function is a C++14 extension [-Wc++14-extensions]
+   74 |       arma_ignore(junk);
+      |       ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/compiler_setup.hpp:38:32: note: expanded from macro 'arma_ignore'
+   38 | #define arma_ignore(variable)  ((void)(variable))
+      |                                ^
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:157:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/constants.hpp:86:7: warning: use of this statement in a constexpr function is a C++14 extension [-Wc++14-extensions]
+   86 |       arma_ignore(junk);
+      |       ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/compiler_setup.hpp:38:32: note: expanded from macro 'arma_ignore'
+   38 | #define arma_ignore(variable)  ((void)(variable))
+      |                                ^
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:157:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/constants.hpp:100:7: warning: use of this statement in a constexpr function is a C++14 extension [-Wc++14-extensions]
+  100 |       arma_ignore(junk);
+      |       ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/compiler_setup.hpp:38:32: note: expanded from macro 'arma_ignore'
+   38 | #define arma_ignore(variable)  ((void)(variable))
+      |                                ^
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:157:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/constants.hpp:115:7: warning: use of this statement in a constexpr function is a C++14 extension [-Wc++14-extensions]
+  115 |       arma_ignore(junk);
+      |       ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/compiler_setup.hpp:38:32: note: expanded from macro 'arma_ignore'
+   38 | #define arma_ignore(variable)  ((void)(variable))
+      |                                ^
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:157:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/constants.hpp:127:7: warning: use of this statement in a constexpr function is a C++14 extension [-Wc++14-extensions]
+  127 |       arma_ignore(junk);
+      |       ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/compiler_setup.hpp:38:32: note: expanded from macro 'arma_ignore'
+   38 | #define arma_ignore(variable)  ((void)(variable))
+      |                                ^
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:157:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/constants.hpp:141:7: warning: use of this statement in a constexpr function is a C++14 extension [-Wc++14-extensions]
+  141 |       arma_ignore(junk);
+      |       ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/compiler_setup.hpp:38:32: note: expanded from macro 'arma_ignore'
+   38 | #define arma_ignore(variable)  ((void)(variable))
+      |                                ^
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:441:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/arma_cmath.hpp:225:16: warning: variable declaration in a constexpr function is a C++14 extension [-Wc++14-extensions]
+  225 |   constexpr eT eT_zero = eT(0);
+      |                ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/arma_cmath.hpp:237:16: warning: variable declaration in a constexpr function is a C++14 extension [-Wc++14-extensions]
+  237 |   constexpr eT eT_zero = eT(0);
+      |                ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/arma_cmath.hpp:249:16: warning: variable declaration in a constexpr function is a C++14 extension [-Wc++14-extensions]
+  249 |   constexpr eT eT_zero = eT(0);
+      |                ^
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:501:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/fn_accu.hpp:27:1: error: 'auto' return without trailing return type; deduced return types are a C++14 extension
+   27 | auto
+      | ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/fn_accu.hpp:42:1: error: 'auto' return without trailing return type; deduced return types are a C++14 extension
+   42 | auto
+      | ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/fn_accu.hpp:57:1: error: 'auto' return without trailing return type; deduced return types are a C++14 extension
+   57 | auto
+      | ^
+In file included from RcppExports.cpp:4:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:51:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo:724:
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/diskio_meat.hpp:708:16: warning: variable declaration in a constexpr function is a C++14 extension [-Wc++14-extensions]
+  708 |   constexpr eT eT_int_accuracy_lower_limit = -( (is_fp16<eT>::value) ? eT(0x800) : ( (is_float<eT>::value) ? eT(0x1000000) : eT(0x20000000000000) ) );
+      |                ^
+/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/armadillo_bits/diskio_meat.hpp:721:16: warning: variable declaration in a constexpr function is a C++14 extension [-Wc++14-extensions]
+  721 |   constexpr eT eT_int_accuracy_upper_limit = (is_fp16<eT>::value) ? eT(0x800) : ( (is_float<eT>::value) ? eT(0x1000000) : eT(0x20000000000000) );
+      |                ^
+14 warnings and 4 errors generated.
+make[1]: *** [RcppExports.o] Error 1
+ERROR: compilation failed for package ‘motifmatchr’
+* removing ‘/private/tmp/scmega-r-lib/motifmatchr’
+
+The downloaded source packages are in
+	‘/private/var/folders/rg/6bkp4j2s36nd_4x36jzgp1dm0000gn/T/RtmplYfmCU/downloaded_packages’
+Warning message:
+In install.packages(...) :
+  installation of 2 packages failed:  ‘chromVAR’, ‘motifmatchr’

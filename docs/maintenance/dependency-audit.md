@@ -1,0 +1,49 @@
+# Phase II dependency audit
+
+Baseline: upstream main e6ce4f9; reports branch starts from dde1d7c and preserves all Phase I work. Dates: 2026-10-27–28. No remote mutation is authorized.
+
+## Initial findings
+
+The 12 missing declared Imports are ArchR, optmatch, ggpubr, destiny, pracma, ComplexHeatmap, circlize, nabor, textshape, SummarizedExperiment, ggraph and factoextra. These are runtime dependencies of public scMEGA functions, even when only some workflows use them. No current conditional namespace checks justify silently demoting them to Suggests.
+
+Seurat is imported in NAMESPACE and extensively called but absent from DESCRIPTION. Signac::CreateChromatinAssay, FNN::get.knnx and data.table::frollmean are real runtime uses missing from Imports. Unqualified calls also need audited namespace imports; attaching packages in tutorials masks these defects. A separate dependency-metadata branch will contain the proposed metadata/import correction; issue fixes will not include that branch.
+
+Rcpp/Matrix, genomic ranges, SummarizedExperiment and plotting dependencies are required by package code. irlba is used by the upstream Signac/Seurat workflow, not directly by scMEGA. SingleCellExperiment is transitive, not a direct scMEGA source dependency. harmony, Nebulosa, JASPAR2020, TFBSTools, BSgenome.Hsapiens.UCSC.hg38, GenomeInfoDb, EnsDb.Hsapiens.v86 and MOJITOO are explicitly loaded in vignettes, and devtools is used by the install vignette. They are candidates for Suggests or separately declared optional integration environments; no large reference packages are needed for unit tests.
+
+## Environment strategy
+
+Reuse /tmp/scmega-r-lib for missing packages; do not change the existing site library. One BiocManager installation pass uses update=FALSE and only missing direct dependencies (ArchR assessed separately because it has GitHub-only transitive packages). R 4.5.3, Seurat 5.5.0, SeuratObject 5.4.0, Signac 1.17.1, Matrix 1.7-5, irlba 2.3.7 and testthat 3.3.2 were already available. Loaded package versions/library paths and source checksums will be recorded. Existing site-library S4Vectors is a development version, so a passing source test does not certify a coherent Bioconductor release stack.
+
+Current source uses v5 LayerData/JoinLayers; do not promise Seurat v4 package support. Legacy Assay and ChromatinAssay objects can be tested under the v5 stack without converting away their genomic metadata. Modern R/Bioconductor versions must not be mixed arbitrarily. See the [official Bioconductor installation guidance](https://bioconductor.org/install/) and [Seurat v5 commands](https://satijalab.org/seurat/articles/seurat5_essential_commands.html).
+
+Validation and final proposal details will be appended after the bounded installation attempt and investigations.
+
+## Bounded installation outcome
+
+Eleven of the twelve missing direct Imports are now available in the isolated library. The initial installation identified two concrete blockers: CMake for nloptr (and downstream ggpubr/factoextra), and the archived smoother dependency of destiny. Installed CMake 3.31.10 in /tmp/scmega-build-tools, installed TTR and CRAN-archived smoother 1.3 into /tmp/scmega-r-lib, then retried only the affected three direct packages. destiny, ggpubr and factoextra now load. No existing site-library package was upgraded.
+
+At this intermediate stage, ArchR v1.0.3 remained unavailable. Its source metadata was inspected at commit eda96f593dc5b57c9f23fcc00419e6f74cf66e55. One installation pass for its missing CRAN/Bioconductor requirements encountered absent system GSL headers/gsl-config (DirichletMultinomial → TFBSTools → chromVAR/motifmatchr) and absent libgit2 headers (gert → usethis → devtools). chromVARmotifs and presto also require GitHub sources. Do not repeatedly reinstall the same blocked chain or remove ArchR from Imports: scMEGA calls ArchR heatmap, palette and internal helper functions at runtime. That intermediate installation was blocked until the system prerequisites and remaining ArchR chain were deliberately provisioned (see final outcome below). Source tests for the accessible portions continue.
+
+## Separate metadata proposal
+
+Worktree /tmp/scmega-dependency-metadata, branch codex/dependency-metadata, based on upstream main e6ce4f9. Proposed files: DESCRIPTION, NAMESPACE, and R/imports.R (roxygen namespace directives). Add the actual runtime dependencies Seurat, Signac, FNN, data.table and viridis; specify Seurat/SeuratObject >=5.0.0 for the used v5 APIs; replace the historical seurat5 branch remote with a pinned ArchR source. No algorithm, signature/default or installed package version is changed by this proposal.
+
+Add explicit imports for LayerData/JoinLayers, CreateChromatinAssay, SummarizedExperiment construction/accessors, paletteContinuous, Heatmap, elementMetadata, graph/plot helpers and missing stats functions. The SeuratObject imports are essential: Seurat 5.5.0 does not re-export LayerData/JoinLayers even though current scMEGA calls them unqualified. Export membership is checked for all installed providers; ArchR was initially blocked; its paletteContinuous export was also checked in the pinned source, and the provider later installed successfully. Runtime namespace cleanup is not a claim that all existing algorithms pass check.
+
+Vignette-only packages listed above still need a maintainer decision about full Suggests declarations and optional integration/data provisioning, especially GitHub-only MOJITOO and genome reference packages. They have not been installed merely for unit tests. R CMD check --no-build-vignettes cannot certify those tutorials. Stable minimum Signac/Matrix versions beyond API evidence have not been invented; tested versions are recorded instead. The existing mixed Bioconductor site library is an explicit portability limitation.
+
+## Final environment and validation outcome (supersedes intermediate blockers)
+
+All previously missing direct Imports now load, including ArchR 1.0.3. The original reporting-base package now **installs and builds**; its check still stops on undeclared Seurat. The separate metadata proposal removes that error. Metadata alone and scratch copies of each independent #25/#27/#32 fix plus metadata all install/build and complete R CMD check with **0 errors, 6 warnings, 3 notes**. Installed test suites pass: #25 29 expectations/0 warnings; #27 17 expectations/5 warnings; #32 117 expectations/2 warnings, with zero failures or skips. These were real installed-namespace tests, with source-test environment switches removed. No Git branches were merged.
+
+The missing system prerequisites were provisioned in /tmp/scmega-systemdeps using conda-forge, without modifying the system installation. The initial GSL BLAS variant loaded a second OpenMP runtime and the package installation aborted. Linkage inspection identified this; switching only the isolated OpenBLAS variant to pthreads removed the duplicate-runtime dependency. No KMP_DUPLICATE_LIB_OK bypass was enabled. DirichletMultinomial/TFBSTools then loaded. Older chromVAR/motifmatchr source requests C++11, but the installed RcppArmadillo headers explicitly require C++14; a scoped CXX11STD=-std=gnu++14 setting resolved that compile error without changing the package algorithms or downgrading/upgrading the existing headers. GitHub-only chromVARmotifs, presto and ArchR were installed from recorded commit SHAs; archive SHA-256 hashes are retained.
+
+The isolated library is /tmp/scmega-r-lib. The reusable validation snapshot contains 342 package versions, library paths, repository/remote metadata, DESCRIPTION fingerprints and shared-library fingerprints in phase2-evidence/environment-manifest.tsv. `R_LIBS_USER=/tmp/scmega-r-lib Rscript docs/maintenance/examples/check-environment.R` verifies that exact local point, including R 4.5.3. Source pins, exact system-package URLs, and scoped Makevars files are stored alongside it. Native libraries reference their build prefix; relocating the environment requires rebuilding and revalidating. The snapshot detects drift; it is not a certified portable lockfile or proof of every R/Bioconductor combination. Existing development-version S4Vectors and private ArchR API use remain portability risks.
+
+Reconstruction ingredients are explicit: R/platform/compiler from the manifest/session, exact R versions/source pins, CMake 3.31.10 in /tmp/scmega-build-tools, isolated GSL/libgit2 with pthreads BLAS from system-environment-explicit.txt, and the two recorded scoped Makevars files. Only missing packages were installed; existing site-library packages were not upgraded. Reuse this library for the recorded examples rather than reinstalling dependencies per issue. Cross-platform restoration and hosted CI are not verified.
+
+### Remaining package-check findings
+
+The same six warning categories and three note categories occur on the metadata-only baseline, so they are not introduced by the issue fixes. Warnings: undocumented reference datasets/rowCorCpp; stale GRNSpatialPlot usage; undocumented/mismatched Rd arguments; missing LazyDataCompression; inefficient saved-data compression; missing vignette engine/index/build output. Notes: private ArchR `:::` calls; code-analysis globals (some data-mask symbols, others requiring inspection such as netobj); vignette recognition. Do not hide them by suppressing checks, globally declaring every symbol, changing algorithms, or removing references/tests. A separate focused documentation/data-packaging review is needed. Existing CI fails on warnings and remains disabled for automatic publication.
+
+The metadata proposal was regenerated with installed roxygen2 8.1.1 (namespace roclet/source loader); DESCRIPTION records that generator version. Export membership was checked, then actual namespace load/unload and installed tests passed. This is a review proposal on codex/dependency-metadata (ec24fdf), not a merge or remote PR.

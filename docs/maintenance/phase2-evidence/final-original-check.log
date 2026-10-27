@@ -1,0 +1,25 @@
+* using log directory ‘/private/tmp/scmega-phase2-final-original/scMEGA.Rcheck’
+* using R version 4.5.3 (2026-03-11)
+* using platform: aarch64-apple-darwin25.3.0
+* R was compiled by
+    Apple clang version 17.0.0 (clang-1700.6.4.2)
+    GNU Fortran (Homebrew GCC 15.2.0_1) 15.2.0
+* running under: macOS Tahoe 26.6.2
+* using session charset: UTF-8
+* using options ‘--no-manual --no-build-vignettes’
+* checking for file ‘scMEGA/DESCRIPTION’ ... OK
+* checking extension type ... Package
+* this is package ‘scMEGA’ version ‘1.1.0’
+* package encoding: UTF-8
+* checking package namespace information ... OK
+* checking package dependencies ... ERROR
+Namespace dependency missing from DESCRIPTION Imports/Depends entries: ‘Seurat’
+
+See section ‘The DESCRIPTION file’ in the ‘Writing R Extensions’
+manual.
+* DONE
+
+Status: 1 ERROR
+See
+  ‘/private/tmp/scmega-phase2-final-original/scMEGA.Rcheck/00check.log’
+for details.

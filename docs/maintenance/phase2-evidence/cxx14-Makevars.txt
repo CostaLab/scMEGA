@@ -1,0 +1,2 @@
+# Older packages request C++11 but installed RcppArmadillo headers require C++14.
+CXX11STD = -std=gnu++14

@@ -1,0 +1,91 @@
+coembed-layers: Performing TF-IDF normalization
+Running SVD
+Scaling cell embeddings
+Find 100 common genes between ATAC and RNA
+Subset ATAC and RNA data
+Normalize gene activity score for ATAC data
+Performing data integration using Seurat...
+WW1Performing TF-IDF normalization
+Running SVD
+Scaling cell embeddings
+Find 100 common genes between ATAC and RNA
+Subset ATAC and RNA data
+Normalize gene activity score for ATAC data
+Performing data integration using Seurat...
+Finding integration vectors
+Finding integration vector weights
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Transfering 100 features onto reference data
+WCoemebdding the data...
+Centering data matrix
+
+  |
+  |                                                                      |   0%
+  |
+  |======================================================================| 100%
+WW.......Find 100 common genes between ATAC and RNA
+Subset ATAC and RNA data
+Normalize gene activity score for ATAC data
+Performing data integration using Seurat...
+Finding integration vectors
+Finding integration vector weights
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+Transfering 100 features onto reference data
+W2
+
+══ Warnings ════════════════════════════════════════════════════════════════════
+1. split reference layers fail with preparation instructions ('test-coembed-layers.R:31:3') - multiple layers are identified by data.batch1 data.batch2
+ only the first layer is used
+
+2. split reference layers fail with preparation instructions ('test-coembed-layers.R:31:3') - Please provide a matrix that has the same number of columns as the number of reference cells used in anchor finding.
+Number of columns in provided matrix : 60
+Number of columns required           : 120
+Skipping element 1.
+
+3. joined Assay5 and legacy Assay coembeddings retain cells and observed data ('test-coembed-layers.R:40:5') - Layer counts isn't present in the assay object; returning NULL
+
+4. joined Assay5 and legacy Assay coembeddings retain cells and observed data ('test-coembed-layers.R:40:5') - You're computing too large a percentage of total singular values, use a standard svd instead.
+
+5. joined Assay5 and legacy Assay coembeddings retain cells and observed data ('test-coembed-layers.R:40:5') - The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
+To use Python UMAP via reticulate, set umap.method to 'umap-learn' and metric to 'correlation'
+This message will be shown once per session
+
+6. joined Assay5 and legacy Assay coembeddings retain cells and observed data ('test-coembed-layers.R:40:5') - Layer counts isn't present in the assay object; returning NULL
+
+══ Failed ══════════════════════════════════════════════════════════════════════
+── 1. Error ('test-coembed-layers.R:31:3'): split reference layers fail with pre
+Error: None of the provided refdata elements are valid.
+Backtrace:
+    ▆
+ 1. ├─testthat::expect_error(...) at test-coembed-layers.R:31:3
+ 2. │ └─testthat:::expect_condition_matching_(...)
+ 3. │   └─testthat:::quasi_capture(...)
+ 4. │     ├─testthat (local) .capture(...)
+ 5. │     │ └─base::withCallingHandlers(...)
+ 6. │     └─rlang::eval_bare(quo_get_expr(.quo), quo_get_env(.quo))
+ 7. └─CoembedData(...)
+ 8.   └─Seurat::TransferData(...)
+ 9.     └─Seurat:::ValidateParams_TransferData(...)
+
+── 2. Error ('test-coembed-layers.R:40:5'): joined Assay5 and legacy Assay coemb
+Error in `UseMethod(generic = "JoinLayers", object = object)`: no applicable method for 'JoinLayers' applied to an object of class "c('Assay', 'KeyMixin')"
+Backtrace:
+    ▆
+ 1. └─CoembedData(...) at test-coembed-layers.R:40:5
+ 2.   ├─SeuratObject::JoinLayers(coembed)
+ 3.   └─SeuratObject:::JoinLayers.Seurat(coembed)
+ 4.     └─SeuratObject::JoinLayers(...)
+
+══ DONE ════════════════════════════════════════════════════════════════════════
+                                                                       test
+                  split reference layers fail with preparation instructions
+ joined Assay5 and legacy Assay coembeddings retain cells and observed data
+ failed error skipped warning passed
+      0  TRUE   FALSE       2      0
+      0  TRUE   FALSE       4      7
+Error: Coembedding regression failure/skip
+Execution halted

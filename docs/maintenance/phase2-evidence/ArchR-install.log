@@ -1,0 +1,79 @@
+Warning in untar2(tarfile, files, list, exdir, restore_times) :
+  skipping pax global extended headers
+* installing *source* package ‘ArchR’ ...
+** this is package ‘ArchR’ version ‘1.0.3’
+** using staged installation
+** libs
+using C++ compiler: ‘Apple clang version 21.0.0 (clang-2100.1.1.101)’
+using SDK: ‘MacOSX26.5.sdk’
+clang++ -std=gnu++17 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -DARMA_64BIT_WORD=1 -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2   -c Correlation.cpp -o Correlation.o
+clang++ -std=gnu++17 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -DARMA_64BIT_WORD=1 -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2   -c Footprinting_utils.cpp -o Footprinting_utils.o
+clang++ -std=gnu++17 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -DARMA_64BIT_WORD=1 -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2   -c General_Utils.cpp -o General_Utils.o
+clang++ -std=gnu++17 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -DARMA_64BIT_WORD=1 -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2   -c KNN_Utils.cpp -o KNN_Utils.o
+clang++ -std=gnu++17 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -DARMA_64BIT_WORD=1 -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2   -c Kmer_Bias.cpp -o Kmer_Bias.o
+clang++ -std=gnu++17 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -DARMA_64BIT_WORD=1 -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2   -c RcppExports.cpp -o RcppExports.o
+clang++ -std=gnu++17 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -DARMA_64BIT_WORD=1 -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2   -c chromVAR.cpp -o chromVAR.o
+clang++ -std=gnu++17 -dynamiclib -Wl,-headerpad_max_install_names -undefined dynamic_lookup -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -L/opt/homebrew/opt/gettext/lib -L/opt/homebrew/opt/readline/lib -L/opt/homebrew/opt/xz/lib -L/opt/homebrew/lib -o ArchR.so Correlation.o Footprinting_utils.o General_Utils.o KNN_Utils.o Kmer_Bias.o RcppExports.o chromVAR.o -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -lR
+installing to /private/tmp/scmega-r-lib/00LOCK-ArchR-eda96f593dc5b57c9f23fcc00419e6f74cf66e55/00new/ArchR/libs
+** R
+** data
+*** moving datasets to lazyload DB
+** inst
+** byte-compile and prepare package for lazy loading
+Creating a generic function for ‘colnames’ from package ‘base’ in package ‘ArchR’
+Creating a generic function for ‘rownames’ from package ‘base’ in package ‘ArchR’
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** testing if installed package can be loaded from temporary location
+
+                                                   / |
+                                                 /    \
+            .                                  /      |.
+            \\\                              /        |.
+              \\\                          /           `|.
+                \\\                      /              |.
+                  \                    /                |\
+                  \\#####\           /                  ||
+                ==###########>      /                   ||
+                 \\##==......\    /                     ||
+            ______ =       =|__ /__                     ||      \\\
+        ,--' ,----`-,__ ___/'  --,-`-===================##========>
+       \               '        ##_______ _____ ,--,__,=##,__   ///
+        ,    __==    ___,-,__,--'#'  ==='      `-'    | ##,-/
+        -,____,---'       \\####\\________________,--\\_##,/
+           ___      .______        ______  __    __  .______
+          /   \     |   _  \      /      ||  |  |  | |   _  \
+         /  ^  \    |  |_)  |    |  ,----'|  |__|  | |  |_)  |
+        /  /_\  \   |      /     |  |     |   __   | |      /
+       /  _____  \  |  |\  \\___ |  `----.|  |  |  | |  |\  \\___.
+      /__/     \__\ | _| `._____| \______||__|  |__| | _| `._____|
+
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+
+                                                   / |
+                                                 /    \
+            .                                  /      |.
+            \\\                              /        |.
+              \\\                          /           `|.
+                \\\                      /              |.
+                  \                    /                |\
+                  \\#####\           /                  ||
+                ==###########>      /                   ||
+                 \\##==......\    /                     ||
+            ______ =       =|__ /__                     ||      \\\
+        ,--' ,----`-,__ ___/'  --,-`-===================##========>
+       \               '        ##_______ _____ ,--,__,=##,__   ///
+        ,    __==    ___,-,__,--'#'  ==='      `-'    | ##,-/
+        -,____,---'       \\####\\________________,--\\_##,/
+           ___      .______        ______  __    __  .______
+          /   \     |   _  \      /      ||  |  |  | |   _  \
+         /  ^  \    |  |_)  |    |  ,----'|  |__|  | |  |_)  |
+        /  /_\  \   |      /     |  |     |   __   | |      /
+       /  _____  \  |  |\  \\___ |  `----.|  |  |  | |  |\  \\___.
+      /__/     \__\ | _| `._____| \______||__|  |__| | _| `._____|
+
+** testing if installed package keeps a record of temporary installation path
+* DONE (ArchR)

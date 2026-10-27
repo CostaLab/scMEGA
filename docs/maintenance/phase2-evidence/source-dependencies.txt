@@ -1,0 +1,30 @@
+AddTargetAssay : %>%, AddModuleScore, contains, CreateAssayObject, select
+AddTrajectory : %>%
+CellPropPlot : %>%, across, aes_string, all_of, element_text, geom_bar, ggplot, ggtitle, group_by, mutate, n, scale_fill_manual, summarise, theme, xlab, ylab
+centerRollMean :
+CoembedData : %>%, CreateAssayObject, DefaultAssay<-, FindTransferAnchors, JoinLayers, LayerData, NormalizeData, RunPCA, RunUMAP, ScaleData, TransferData
+CompareCellProp : %>%, across, aes_string, all_of, element_blank, facet_wrap, geom_boxplot, geom_jitter, ggplot, group_by, mutate, n, summarise, theme, xlab, ylab
+CorrelationHeatmap : assay, assay<-, paletteContinuous
+CorrelationPlot : aes, element_blank, geom_point, ggplot, ggtitle, theme, theme_cowplot, xlab, ylab
+CreatePairedObject : AddMetaData, CreateChromatinAssay, CreateDimReducObject, CreateSeuratObject, DefaultAssay, Embeddings, LayerData
+GetCorrelation : %>%, assay
+GetGRN : %>%, n
+GetPairList : %>%, arrange
+getQuantiles :
+GetTFGeneCorrelation : %>%, paletteContinuous, select
+GetTrajectory : %>%, Assays, LayerData, SimpleList, SummarizedExperiment
+GRNHeatmap : %>%, Heatmap, select
+GRNPlot : %>%, aes, betweenness, degree, E, element_text, geom_edge_link, geom_node_label, geom_node_point, geom_point, ggplot, ggraph, layout_with_fr, mutate, page_rank, scale_color_manual, scale_size, theme, theme_void, V, V<-, xlab, ylab
+GRNSpatialPlot : AddModuleScore, DefaultAssay<-, ggtitle, labs, scale_fill_viridis
+NetCentPlot : aes, betweenness, coord_fixed, geom_edge_link, geom_node_label, geom_node_point, ggraph, scale_edge_color_viridis, theme, theme_graph, V
+PairCells :
+PeakToGene : assay, elementMetadata, findOverlaps, GRanges, IRanges, resize, rowData, rowRanges, SimpleList, SummarizedExperiment
+PseudotimePlot : aes, assay, element_blank, geom_smooth, ggplot, ggtitle, theme, ylab
+rowCorCpp : .Call
+RunDiffusionMap : CreateDimReducObject, DefaultAssay, DiffusionMap, Embeddings
+SelectGenes : %>%, paletteContinuous
+SelectTFs : paletteContinuous
+splitAndFetch :
+TopEmbGRN : aes, as.directed, betweenness, degree, element_text, fviz_pca_biplot, geom_label_repel, page.rank, theme, tibble, V, xlim, ylim
+TrajectoryHeatmap : assay
+TrajectoryPlot : %>%, aes, arrow, element_blank, geom_path, ggtitle, margin, theme, unit, xlab, ylab

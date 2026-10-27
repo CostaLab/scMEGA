@@ -1,0 +1,9 @@
+Creating Trajectory Group Matrix..
+Warning message:
+Layer ‘data’ is empty
+EXPECTED missing data failure: error in evaluating the argument 'x' in selecting a method for function 'Reduce': error in evaluating the argument 'x' in selecting a method for function 'rowMeans': subscript out of bounds
+Creating Trajectory Group Matrix..
+PASS: intended RNA normalization provides the required data layer, with no assay casting.
+Warning: Layer counts isn't present in the assay object; returning NULL
+Creating Trajectory Group Matrix..
+PASS: a data-only ordinary Assay can hold TF activity; ChromatinAssay casting is unnecessary.

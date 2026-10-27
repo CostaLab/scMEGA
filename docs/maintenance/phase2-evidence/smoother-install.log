@@ -1,0 +1,4 @@
+ERROR: dependency ‘TTR’ is not available for package ‘smoother’
+Perhaps try a variation of:
+install.packages('TTR')
+* removing ‘/private/tmp/scmega-r-lib/smoother’

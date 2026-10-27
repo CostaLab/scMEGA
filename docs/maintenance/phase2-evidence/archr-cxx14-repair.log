@@ -1,0 +1,179 @@
+Bioconductor version 3.22 (BiocManager 1.30.27), R 4.5.3 (2026-03-11)
+Installing package(s) 'motifmatchr', 'chromVAR'
+trying URL 'https://bioconductor.org/packages/3.22/bioc/src/contrib/motifmatchr_1.32.0.tar.gz'
+trying URL 'https://bioconductor.org/packages/3.22/bioc/src/contrib/chromVAR_1.32.0.tar.gz'
+begin installing package ‘motifmatchr’
+begin installing package ‘chromVAR’
+* installing *source* package ‘motifmatchr’ ...
+** this is package ‘motifmatchr’ version ‘1.32.0’
+** package ‘motifmatchr’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C++ compiler: ‘Apple clang version 21.0.0 (clang-2100.1.1.101)’
+using C++11
+using SDK: ‘MacOSX26.5.sdk’
+clang++ -std=gnu++14 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I. -I./MOODS/ -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2   -c RcppExports.cpp -o RcppExports.o
+clang++ -std=gnu++14 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I. -I./MOODS/ -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2   -c r_interface.cpp -o r_interface.o
+In file included from r_interface.cpp:2:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo.h:29:
+In file included from /opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include/RcppArmadillo/interface/RcppArmadilloForward.h:26:
+In file included from /opt/homebrew/lib/R/4.5/site-library/Rcpp/include/RcppCommon.h:30:
+In file included from /opt/homebrew/lib/R/4.5/site-library/Rcpp/include/Rcpp/r/headers.h:67:
+In file included from /opt/homebrew/lib/R/4.5/site-library/Rcpp/include/Rcpp/platform/compiler.h:39:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/unordered_map:595:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__hash_table:29:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:77:5: warning: delete called on 'MOODS::scan::Motif' that is abstract but has non-virtual destructor [-Wdelete-abstract-non-virtual-dtor]
+   77 |     delete __ptr;
+      |     ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:290:7: note: in instantiation of member function 'std::default_delete<MOODS::scan::Motif>::operator()' requested here
+  290 |       __deleter_(__tmp);
+      |       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:259:71: note: in instantiation of member function 'std::unique_ptr<MOODS::scan::Motif>::reset' requested here
+  259 |   _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX23 ~unique_ptr() { reset(); }
+      |                                                                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/allocator.h:156:87: note: in instantiation of member function 'std::unique_ptr<MOODS::scan::Motif>::~unique_ptr' requested here
+  156 |   _LIBCPP_DEPRECATED_IN_CXX17 _LIBCPP_HIDE_FROM_ABI void destroy(pointer __p) { __p->~_Tp(); }
+      |                                                                                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/allocator_traits.h:308:9: note: in instantiation of member function 'std::allocator<std::unique_ptr<MOODS::scan::Motif>>::destroy' requested here
+  308 |     __a.destroy(__p);
+      |         ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__vector/vector.h:763:23: note: in instantiation of function template specialization 'std::allocator_traits<std::allocator<std::unique_ptr<MOODS::scan::Motif>>>::destroy<std::unique_ptr<MOODS::scan::Motif>, 0>' requested here
+  763 |       __alloc_traits::destroy(this->__alloc_, std::__to_address(--__soon_to_be_end));
+      |                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__vector/vector.h:543:5: note: in instantiation of member function 'std::vector<std::unique_ptr<MOODS::scan::Motif>>::__base_destruct_at_end' requested here
+  543 |     __base_destruct_at_end(this->__begin_);
+      |     ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__vector/vector.h:251:16: note: in instantiation of member function 'std::vector<std::unique_ptr<MOODS::scan::Motif>>::clear' requested here
+  251 |         __vec_.clear();
+      |                ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__vector/vector.h:262:67: note: in instantiation of member function 'std::vector<std::unique_ptr<MOODS::scan::Motif>>::__destroy_vector::operator()' requested here
+  262 |   _LIBCPP_CONSTEXPR_SINCE_CXX20 _LIBCPP_HIDE_FROM_ABI ~vector() { __destroy_vector (*this)(); }
+      |                                                                   ^
+./MOODS/scanner.h:31:11: note: in instantiation of member function 'std::vector<std::unique_ptr<MOODS::scan::Motif>>::~vector' requested here
+   31 |     class Scanner {
+      |           ^
+1 warning generated.
+clang++ -std=gnu++14 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I. -I./MOODS/ -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2   -c MOODS/scanner.cpp -o MOODS/scanner.o
+In file included from MOODS/scanner.cpp:12:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:950:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/inout_ptr.h:16:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/shared_ptr.h:36:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:77:5: warning: delete called on 'MOODS::scan::Motif' that is abstract but has non-virtual destructor [-Wdelete-abstract-non-virtual-dtor]
+   77 |     delete __ptr;
+      |     ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:290:7: note: in instantiation of member function 'std::default_delete<MOODS::scan::Motif>::operator()' requested here
+  290 |       __deleter_(__tmp);
+      |       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:259:71: note: in instantiation of member function 'std::unique_ptr<MOODS::scan::Motif>::reset' requested here
+  259 |   _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX23 ~unique_ptr() { reset(); }
+      |                                                                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/allocator.h:156:87: note: in instantiation of member function 'std::unique_ptr<MOODS::scan::Motif>::~unique_ptr' requested here
+  156 |   _LIBCPP_DEPRECATED_IN_CXX17 _LIBCPP_HIDE_FROM_ABI void destroy(pointer __p) { __p->~_Tp(); }
+      |                                                                                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/allocator_traits.h:308:9: note: in instantiation of member function 'std::allocator<std::unique_ptr<MOODS::scan::Motif>>::destroy' requested here
+  308 |     __a.destroy(__p);
+      |         ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__vector/vector.h:763:23: note: in instantiation of function template specialization 'std::allocator_traits<std::allocator<std::unique_ptr<MOODS::scan::Motif>>>::destroy<std::unique_ptr<MOODS::scan::Motif>, 0>' requested here
+  763 |       __alloc_traits::destroy(this->__alloc_, std::__to_address(--__soon_to_be_end));
+      |                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__vector/vector.h:543:5: note: in instantiation of member function 'std::vector<std::unique_ptr<MOODS::scan::Motif>>::__base_destruct_at_end' requested here
+  543 |     __base_destruct_at_end(this->__begin_);
+      |     ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__vector/vector.h:251:16: note: in instantiation of member function 'std::vector<std::unique_ptr<MOODS::scan::Motif>>::clear' requested here
+  251 |         __vec_.clear();
+      |                ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__vector/vector.h:262:67: note: in instantiation of member function 'std::vector<std::unique_ptr<MOODS::scan::Motif>>::__destroy_vector::operator()' requested here
+  262 |   _LIBCPP_CONSTEXPR_SINCE_CXX20 _LIBCPP_HIDE_FROM_ABI ~vector() { __destroy_vector (*this)(); }
+      |                                                                   ^
+MOODS/scanner.cpp:28:14: note: in instantiation of member function 'std::vector<std::unique_ptr<MOODS::scan::Motif>>::~vector' requested here
+   28 |     Scanner::Scanner(unsigned int window_size){
+      |              ^
+1 warning generated.
+clang++ -std=gnu++14 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I. -I./MOODS/ -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2   -c MOODS/motif_h.cpp -o MOODS/motif_h.o
+clang++ -std=gnu++14 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I. -I./MOODS/ -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2   -c MOODS/motif_0.cpp -o MOODS/motif_0.o
+clang++ -std=gnu++14 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I. -I./MOODS/ -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2   -c MOODS/moods_tools.cpp -o MOODS/moods_tools.o
+clang++ -std=gnu++14 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I. -I./MOODS/ -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2   -c MOODS/moods_scan.cpp -o MOODS/moods_scan.o
+In file included from MOODS/moods_scan.cpp:3:
+In file included from MOODS/moods.h:5:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/vector:352:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/algorithm:1865:
+In file included from /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/inplace_merge.h:27:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:77:5: warning: delete called on 'MOODS::scan::Motif' that is abstract but has non-virtual destructor [-Wdelete-abstract-non-virtual-dtor]
+   77 |     delete __ptr;
+      |     ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:290:7: note: in instantiation of member function 'std::default_delete<MOODS::scan::Motif>::operator()' requested here
+  290 |       __deleter_(__tmp);
+      |       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/unique_ptr.h:259:71: note: in instantiation of member function 'std::unique_ptr<MOODS::scan::Motif>::reset' requested here
+  259 |   _LIBCPP_HIDE_FROM_ABI _LIBCPP_CONSTEXPR_SINCE_CXX23 ~unique_ptr() { reset(); }
+      |                                                                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/allocator.h:156:87: note: in instantiation of member function 'std::unique_ptr<MOODS::scan::Motif>::~unique_ptr' requested here
+  156 |   _LIBCPP_DEPRECATED_IN_CXX17 _LIBCPP_HIDE_FROM_ABI void destroy(pointer __p) { __p->~_Tp(); }
+      |                                                                                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__memory/allocator_traits.h:308:9: note: in instantiation of member function 'std::allocator<std::unique_ptr<MOODS::scan::Motif>>::destroy' requested here
+  308 |     __a.destroy(__p);
+      |         ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__vector/vector.h:763:23: note: in instantiation of function template specialization 'std::allocator_traits<std::allocator<std::unique_ptr<MOODS::scan::Motif>>>::destroy<std::unique_ptr<MOODS::scan::Motif>, 0>' requested here
+  763 |       __alloc_traits::destroy(this->__alloc_, std::__to_address(--__soon_to_be_end));
+      |                       ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__vector/vector.h:543:5: note: in instantiation of member function 'std::vector<std::unique_ptr<MOODS::scan::Motif>>::__base_destruct_at_end' requested here
+  543 |     __base_destruct_at_end(this->__begin_);
+      |     ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__vector/vector.h:251:16: note: in instantiation of member function 'std::vector<std::unique_ptr<MOODS::scan::Motif>>::clear' requested here
+  251 |         __vec_.clear();
+      |                ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__vector/vector.h:262:67: note: in instantiation of member function 'std::vector<std::unique_ptr<MOODS::scan::Motif>>::__destroy_vector::operator()' requested here
+  262 |   _LIBCPP_CONSTEXPR_SINCE_CXX20 _LIBCPP_HIDE_FROM_ABI ~vector() { __destroy_vector (*this)(); }
+      |                                                                   ^
+MOODS/scanner.h:31:11: note: in instantiation of member function 'std::vector<std::unique_ptr<MOODS::scan::Motif>>::~vector' requested here
+   31 |     class Scanner {
+      |           ^
+1 warning generated.
+clang++ -std=gnu++14 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I. -I./MOODS/ -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2   -c MOODS/moods_parsers.cpp -o MOODS/moods_parsers.o
+clang++ -std=gnu++14 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I. -I./MOODS/ -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2   -c MOODS/moods_misc.cpp -o MOODS/moods_misc.o
+clang++ -std=gnu++14 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG -I. -I./MOODS/ -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2   -c MOODS/match_types.cpp -o MOODS/match_types.o
+clang++ -std=gnu++14 -dynamiclib -Wl,-headerpad_max_install_names -undefined dynamic_lookup -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -L/opt/homebrew/opt/gettext/lib -L/opt/homebrew/opt/readline/lib -L/opt/homebrew/opt/xz/lib -L/opt/homebrew/lib -o motifmatchr.so ./RcppExports.o ./r_interface.o ./MOODS/scanner.o ./MOODS/motif_h.o ./MOODS/motif_0.o ./MOODS/moods_tools.o ./MOODS/moods_scan.o ./MOODS/moods_parsers.o ./MOODS/moods_misc.o ./MOODS/match_types.o -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -lR
+installing to /private/tmp/scmega-r-lib/00LOCK-motifmatchr/00new/motifmatchr/libs
+** R
+** data
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (motifmatchr)
+* installing *source* package ‘chromVAR’ ...
+** this is package ‘chromVAR’ version ‘1.32.0’
+** package ‘chromVAR’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+using C++ compiler: ‘Apple clang version 21.0.0 (clang-2100.1.1.101)’
+using C++11
+using SDK: ‘MacOSX26.5.sdk’
+clang++ -std=gnu++14 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG  -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2   -c RcppExports.cpp -o RcppExports.o
+clang++ -std=gnu++14 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG  -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2   -c pwm_similarity.cpp -o pwm_similarity.o
+clang++ -std=gnu++14 -I"/opt/homebrew/Cellar/r/4.5.3/lib/R/include" -DNDEBUG  -I'/opt/homebrew/lib/R/4.5/site-library/Rcpp/include' -I'/opt/homebrew/lib/R/4.5/site-library/RcppArmadillo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/readline/include -I/opt/homebrew/opt/xz/include -I/opt/homebrew/include    -fPIC  -g -O2   -c utils.cpp -o utils.o
+clang++ -std=gnu++14 -dynamiclib -Wl,-headerpad_max_install_names -undefined dynamic_lookup -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -L/opt/homebrew/opt/gettext/lib -L/opt/homebrew/opt/readline/lib -L/opt/homebrew/opt/xz/lib -L/opt/homebrew/lib -o chromVAR.so RcppExports.o pwm_similarity.o utils.o -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -lRlapack -L/opt/homebrew/opt/openblas/lib -lopenblas -L/opt/homebrew/opt/gcc/lib/gcc/current/gcc/aarch64-apple-darwin25/15 -L/opt/homebrew/opt/gcc/lib/gcc/current/gcc -L/opt/homebrew/opt/gcc/lib/gcc/current -lemutls_w -lheapt_w -lgfortran -lquadmath -L/opt/homebrew/Cellar/r/4.5.3/lib/R/lib -lR
+installing to /private/tmp/scmega-r-lib/00LOCK-chromVAR/00new/chromVAR/libs
+** R
+** data
+*** moving datasets to lazyload DB
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (chromVAR)
+
+The downloaded source packages are in
+	‘/private/var/folders/rg/6bkp4j2s36nd_4x36jzgp1dm0000gn/T/RtmpBpX7Lm/downloaded_packages’

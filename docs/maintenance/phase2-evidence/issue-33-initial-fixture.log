@@ -1,0 +1,3 @@
+Error in Signac::CreateMotifObject(data = match.matrix, motif.names = as.list(labels)) :
+  Number of motif names supplied does not match the number of motifs
+Execution halted
