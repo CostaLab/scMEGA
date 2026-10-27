@@ -1,0 +1,474 @@
+{
+  "retrieved_at": "2026-10-27",
+  "repository": "CostaLab/scMEGA",
+  "issues": [
+    {
+      "body": "Dear scMEGA team,\n\nThank you for this great package. I am currently going through the tutorial, and am currently facing an issue regarding the naming conventions for the mouse genome. When using ChromVAR with:\n\n```\nseurat_LTHSC <- AddMotifs(\n  object = seurat_obj,\n  genome = BSgenome.Mmusculus.UCSC.mm10,\n  pfm = pfm,\n    assay = \"peaks\"\n)\n```\n\nI get motifs with varying capital and lower case, composite motifs, etc ..\nAnd the gene names in my object follow the mm10 convention with capital letter first letter then small case the rest. \n\nSo when I reach functions like:\n\n```\nsel.tfs <- SelectTFs(object = seurat_obj,\n                     tf.assay = \"chromvar\", \n                     rna.assay = \"RNA\",\n                     atac.assay = \"peaks\",\n                     return.heatmap = TRUE,\n                     p.cutoff = 0.05,\n                     cor.cutoff = 0.1)\n```\n\nIt cannot connect the motifs to the gene RNA names and get almost nothing. \n\nI end up having to do a lot of preprocessing like: break up composite motifs, remove \"duplicates\", convert them to title case, etc ..\nThis process does seem to work but I am worried I might be missing out on important functionality from scMEGA. \nHave you had this issue before? Any tips or recommendations?\n\nThanks in advance. ",
+      "comments": [],
+      "createdAt": "2026-03-14T18:03:08Z",
+      "labels": [],
+      "number": 33,
+      "state": "OPEN",
+      "title": "Error with downstream tasks from genome = BSgenome.Mmusculus.UCSC.mm10",
+      "updatedAt": "2026-03-14T18:03:08Z",
+      "url": "https://github.com/CostaLab/scMEGA/issues/33"
+    },
+    {
+      "body": "When generating paired RNA and ATAC `counts` datasets based on the `df.pair` information, the Initial code did not correctly reorder the data according to the cell IDs provided by `df.pair`, which led to mismatches and disordered pairing.\n\n#### **Initial Code**\n\n```r\nrna.counts <- LayerData(obj.rna, assay = rna.assay, layer = \"counts\", cells = df.pair$RNA)\natac.counts <- LayerData(obj.atac, assay = atac.assay, layer = \"counts\", cells = df.pair$ATAC)\n```\n\n\n#### \u2705 **Proposed Fix**\n\nTo ensure the output matrices are strictly ordered by the pairing information in `df.pair`, we should reindex the columns after extraction:\n\n```r\nrna.counts <- LayerData(obj.rna, assay = rna.assay, layer = \"counts\", cells = df.pair$RNA)[ , df.pair$RNA]\natac.counts <- LayerData(obj.atac, assay = atac.assay, layer = \"counts\", cells = df.pair$ATAC)[ , df.pair$ATAC]\n```\n\n@lzj1769 ",
+      "comments": [
+        {
+          "id": "IC_kwDOHPpw386zJ0hI",
+          "author": {
+            "login": "lzj1769"
+          },
+          "authorAssociation": "MEMBER",
+          "body": "Hi @nh-codem \n\nThanks for pointing this out.  Can you make a pull request?",
+          "createdAt": "2025-06-25T18:07:17Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/CostaLab/scMEGA/issues/32#issuecomment-3005696072",
+          "viewerDidAuthor": true
+        }
+      ],
+      "createdAt": "2025-06-20T05:27:02Z",
+      "labels": [],
+      "number": 32,
+      "state": "OPEN",
+      "title": "The `CreatePairedObject` function contains a logic error that leads to mismatched `counts` matrices between ATAC and RNA modalities.",
+      "updatedAt": "2025-06-25T18:07:17Z",
+      "url": "https://github.com/CostaLab/scMEGA/issues/32"
+    },
+    {
+      "body": "Runing\nobj.atac <- obj.atac %>%\n  RunTFIDF() %>%\n  FindTopFeatures() %>%\n  RunSVD() %>%\n  RunUMAP(reduction = 'lsi', dims = 2:30, verbose = FALSE)\n\nERROR:\nPerforming TF-IDF normalization\nRunning SVD\nError in irlba(A = t(x = object), nv = n, work = irlba.work, tol = tol) : \n  function 'as_cholmod_sparse' not provided by package 'Matrix'\n\nHere is some session information\uff1a\n\nR version 4.3.1 (2023-06-16)\nPlatform: x86_64-pc-linux-gnu (64-bit)\nRunning under: Ubuntu 23.10\n\nMatrix products: default\nBLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.11.0 \nLAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.11.0\n\nRandom number generation:\n RNG:     L'Ecuyer-CMRG \n Normal:  Inversion \n Sample:  Rejection \n \nlocale:\n [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C               LC_TIME=en_US.UTF-8       \n [4] LC_COLLATE=en_US.UTF-8     LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   \n [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                  LC_ADDRESS=C              \n[10] LC_TELEPHONE=C             LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       \n\ntime zone: Asia/Shanghai\ntzcode source: system (glibc)\n\nattached base packages:\n[1] stats4    stats     graphics  grDevices utils     datasets  methods   base     \n\nother attached packages:\n [1] magrittr_2.0.3       Seurat_5.2.1         SeuratObject_5.0.2   sp_2.2-0            \n [5] Signac_1.14.0        Matrix_1.6-5         GenomicRanges_1.52.1 GenomeInfoDb_1.38.8 \n [9] IRanges_2.36.0       S4Vectors_0.40.2     BiocGenerics_0.48.1 \n\nloaded via a namespace (and not attached):\n  [1] RColorBrewer_1.1-3      rstudioapi_0.17.1       jsonlite_1.9.1          spatstat.utils_3.1-3   \n  [5] farver_2.1.2            zlibbioc_1.48.2         vctrs_0.6.5             ROCR_1.0-11            \n  [9] spatstat.explore_3.4-2  Rsamtools_2.16.0        RCurl_1.98-1.17         RcppRoll_0.3.1         \n [13] htmltools_0.5.8.1       sctransform_0.4.1       parallelly_1.43.0       KernSmooth_2.23-26     \n [17] htmlwidgets_1.6.4       ica_1.0-3               plyr_1.8.9              plotly_4.10.4          \n [21] zoo_1.8-13              igraph_2.1.4            mime_0.13               lifecycle_1.0.4        \n [25] pkgconfig_2.0.3         R6_2.6.1                fastmap_1.2.0           GenomeInfoDbData_1.2.11\n [29] fitdistrplus_1.2-2      future_1.34.0           shiny_1.10.0            digest_0.6.37          \n [33] colorspace_2.1-1        patchwork_1.3.0         tensor_1.5              RSpectra_0.16-2        \n [37] irlba_2.3.5.1           labeling_0.4.3          progressr_0.15.1        spatstat.sparse_3.1-0  \n [41] httr_1.4.7              polyclip_1.10-7         abind_1.4-8             compiler_4.3.1         \n [45] withr_3.0.2             BiocParallel_1.36.0     fastDummies_1.7.5       MASS_7.3-60            \n [49] tools_4.3.1             lmtest_0.9-40           httpuv_1.6.15           future.apply_1.11.3    \n [53] goftest_1.2-3           glue_1.8.0              nlme_3.1-167            promises_1.3.2         \n [57] grid_4.3.1              Rtsne_0.17              cluster_2.1.8.1         reshape2_1.4.4         \n [61] generics_0.1.3          gtable_0.3.6            spatstat.data_3.1-6     tidyr_1.3.1            \n [65] data.table_1.17.0       XVector_0.42.0          spatstat.geom_3.3-6     RcppAnnoy_0.0.22       \n [69] ggrepel_0.9.6           RANN_2.6.2              pillar_1.10.1           stringr_1.5.1          \n [73] spam_2.11-1             RcppHNSW_0.6.0          later_1.4.1             splines_4.3.1          \n [77] dplyr_1.1.4             lattice_0.22-6          survival_3.8-3          deldir_2.0-4           \n [81] tidyselect_1.2.1        Biostrings_2.70.3       miniUI_0.1.1.1          pbapply_1.7-2          \n [85] gridExtra_2.3           scattermore_1.2         matrixStats_1.5.0       stringi_1.8.4          \n [89] lazyeval_0.2.2          codetools_0.2-20        tibble_3.2.1            cli_3.6.4              \n [93] uwot_0.2.3              xtable_1.8-4            reticulate_1.42.0       munsell_0.5.1          \n [97] Rcpp_1.0.14             globals_0.16.3          spatstat.random_3.3-3   png_0.1-8              \n[101] spatstat.univar_3.1-2   parallel_4.3.1          ggplot2_3.5.1           dotCall64_1.2          \n[105] bitops_1.0-9            listenv_0.9.1           viridisLite_0.4.2       scales_1.3.0           \n[109] ggridges_0.5.6          purrr_1.0.4             crayon_1.5.3            rlang_1.1.5            \n[113] cowplot_1.1.3           fastmatch_1.1-6        \n",
+      "comments": [],
+      "createdAt": "2025-03-27T10:16:11Z",
+      "labels": [],
+      "number": 31,
+      "state": "OPEN",
+      "title": "Error in irlba(A = t(x = object), nv = n, work = irlba.work, tol = tol) :    function 'as_cholmod_sparse' not provided by package 'Matrix'",
+      "updatedAt": "2025-03-27T10:16:11Z",
+      "url": "https://github.com/CostaLab/scMEGA/issues/31"
+    },
+    {
+      "body": "Dear,\r\nThank you for developed the scMEGA.I would like to ask you about the GRN inferred from the na\u00efve CD4 T cells to memory CD4 T cells trajectory in the \"Gene-regulatory network of CD4 T cells activaction\" can be characterized as the GRN of all cells on the pbmc dataset\uff1f\r\nthanks",
+      "comments": [
+        {
+          "id": "IC_kwDOHPpw386Ujnml",
+          "author": {
+            "login": "lzj1769"
+          },
+          "authorAssociation": "MEMBER",
+          "body": "Hi,\r\n\r\nTo you question, I dont think so. \r\nTo infer a GRN for all cells in PBMC, you need to use all of them.",
+          "createdAt": "2024-11-21T21:23:07Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/CostaLab/scMEGA/issues/30#issuecomment-2492365221",
+          "viewerDidAuthor": true
+        },
+        {
+          "id": "IC_kwDOHPpw386Uk2aY",
+          "author": {
+            "login": "watermelon-flower"
+          },
+          "authorAssociation": "NONE",
+          "body": "Thank you, can I ignore the Trajectory analysis step and use all cells for TF and gene selection\uff1f\r\n```\r\n# Get a list of motif position frequency matrices from the JASPAR database\r\npfm <- getMatrixSet(\r\n  x = JASPAR2020,\r\n  opts = list(collection = \"CORE\", tax_group = 'vertebrates', all_versions = FALSE)\r\n)\r\n\r\n# add motif information\r\npbmc.all.cells <- AddMotifs(\r\n  object = pbmc.all.cells,\r\n  genome = BSgenome.Hsapiens.UCSC.hg38,\r\n  pfm = pfm,\r\n    assay = \"ATAC\"\r\n)\r\n# run chromVAR\r\npbmc.all.cells <- RunChromVAR(\r\n  object = pbmc.all.cells,\r\n  genome = BSgenome.Hsapiens.UCSC.hg38,\r\n    assay = \"ATAC\"\r\n)\r\nsel.tfs <- SelectTFs(object = pbmc.all.cells, \r\n                 return.heatmap = TRUE,\r\n                cor.cutoff = 0.4)\r\nsel.genes <- SelectGenes(object = pbmc.all.cells,\r\n                  labelTop1 = 0,\r\n                  labelTop2 = 0)\r\n```\r\nCould you kindly advise me on how to modify the following code if I were to proceed without performing trajectory analysis?\r\n```\r\ntf.gene.cor <- GetTFGeneCorrelation(object = pbmc.all.cells, \r\n                                    tf.use = df.cor$tfs, \r\n                                    gene.use = unique(df.p2g$gene),\r\n                                    tf.assay = \"chromvar\", \r\n                                    gene.assay = \"RNA\",\r\n                                    trajectory.name = \"Trajectory\")\r\n```\r\nCould you kindly advise me on how to modify trajectory.name = \"Trajectory\" appropriately?\r\nThanks",
+          "createdAt": "2024-11-22T01:30:27Z",
+          "includesCreatedEdit": true,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/CostaLab/scMEGA/issues/30#issuecomment-2492688024",
+          "viewerDidAuthor": false
+        }
+      ],
+      "createdAt": "2024-11-19T06:32:21Z",
+      "labels": [],
+      "number": 30,
+      "state": "OPEN",
+      "title": "Gene-regulatory network of pbmc",
+      "updatedAt": "2024-11-22T01:38:08Z",
+      "url": "https://github.com/CostaLab/scMEGA/issues/30"
+    },
+    {
+      "body": "I'm trying to use `CreatePairedObject` using both RNA and ATAC assays, and I have an Error like the following:\r\n\r\n<img width=\"1050\" alt=\"Screenshot 2024-05-08 at 16 09 58\" src=\"https://github.com/CostaLab/scMEGA/assets/11817153/fcfe6bd0-f8c5-4b2f-b724-dab435973d3a\">\r\n\r\nWhat could be the issue here?\r\n",
+      "comments": [],
+      "createdAt": "2024-04-25T12:24:57Z",
+      "labels": [],
+      "number": 29,
+      "state": "OPEN",
+      "title": "Why CreatePairedObject is not working?",
+      "updatedAt": "2024-05-08T14:11:36Z",
+      "url": "https://github.com/CostaLab/scMEGA/issues/29"
+    },
+    {
+      "body": "Hi, \r\n\r\nThanks for maintaining a really nice R package. I am trying to use the CoembedData function as follows:\r\n\r\n```\r\nobj.coembed <- CoembedData(\r\n  RNA,\r\n  ATAC, \r\n  gene.activities, \r\n  weight.reduction = \"umap\", \r\n  verbose = T\r\n)\r\n```\r\n\r\nwith the following Seurat objects:\r\n\r\n```\r\nRNA\r\nAn object of class Seurat \r\n29875 features across 4224 samples within 2 assays \r\nActive assay: integrated (2000 features, 2000 variable features)\r\n 2 layers present: data, scale.data\r\n 1 other assay present: RNA\r\n 2 dimensional reductions calculated: pca, umap\r\n\r\n\r\nATAC\r\nAn object of class Seurat \r\n149666 features across 5309 samples within 2 assays \r\nActive assay: peaks (110042 features, 110041 variable features)\r\n 2 layers present: counts, data\r\n 1 other assay present: RNA\r\n 2 dimensional reductions calculated: lsi, umap\r\n\r\n```\r\n\r\nbut I get the following error messages:\r\n```\r\nPerforming data integration using Seurat...\r\nPerforming log-normalization\r\n0%   10   20   30   40   50   60   70   80   90   100%\r\n[----|----|----|----|----|----|----|----|----|----|\r\n**************************************************|\r\nCalculating gene variances\r\n0%   10   20   30   40   50   60   70   80   90   100%\r\n[----|----|----|----|----|----|----|----|----|----|\r\n**************************************************|\r\nCalculating feature variances of standardized and clipped values\r\n0%   10   20   30   40   50   60   70   80   90   100%\r\n[----|----|----|----|----|----|----|----|----|----|\r\n**************************************************|\r\nCentering and scaling data matrix\r\n  |====================================================================================================| 100%\r\nRunning CCA\r\nMerging objects\r\nFinding neighborhoods\r\nFinding anchors\r\n\tFound 10350 anchors\r\nFiltering anchors\r\n\tRetained 2825 anchors\r\nWarning: Please provide a matrix that has the same number of columns as the number of reference cells used in anchor finding.\r\nNumber of columns in provided matrix : 2976\r\nNumber of columns required           : 4224\r\nSkipping element 1.\r\nError: None of the provided refdata elements are valid.\r\nIn addition: Warning messages:\r\n1: In LayerData.Assay5(object = assays[[i]], layer = lyr, fast = TRUE) :\r\n  multiple layers are identified by counts.1 counts.2\r\n only the first layer is used\r\n2: In LayerData.Assay5(object = object[[assay]], layer = layer, ...) :\r\n  multiple layers are identified by data.1 data.2\r\n only the first layer is used\r\n```\r\n\r\nI think this error likely stems from some missing metadata processing step shown in the pre-processing script. However, I am unable to follow along with the data processing script because I am processing my ATAC data with Signac, not ArchR (I am working with plant datasets and have been unsuccessful generating the input genome objects required by ArchR). Do you think this is the most likely cause of this error - or am I missing some other crucial component. Thank you very much for your help, please let me know if you need additional info, I'll include my sessionInfo below.\r\n\r\n```\r\nR version 4.3.1 (2023-06-16)\r\nPlatform: x86_64-pc-linux-gnu (64-bit)\r\nRunning under: Ubuntu 18.04.6 LTS\r\n\r\nMatrix products: default\r\nBLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.7.1 \r\nLAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.7.1\r\n\r\nlocale:\r\n [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C               LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    \r\n [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8    LC_PAPER=en_US.UTF-8       LC_NAME=C                 \r\n [9] LC_ADDRESS=C               LC_TELEPHONE=C             LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       \r\n\r\ntime zone: America/New_York\r\ntzcode source: system (glibc)\r\n\r\nattached base packages:\r\n[1] stats4    stats     graphics  grDevices utils     datasets  methods   base     \r\n\r\nother attached packages:\r\n [1] scMEGA_1.0.2            rtracklayer_1.60.1      hdf5r_1.3.8             GenomicFeatures_1.52.2  AnnotationDbi_1.62.2   \r\n [6] Biobase_2.60.0          GenomicRanges_1.52.1    GenomeInfoDb_1.36.4     IRanges_2.34.1          S4Vectors_0.38.2       \r\n[11] BiocGenerics_0.46.0     patchwork_1.1.3         readr_2.1.4             readxl_1.4.3            tidyr_1.3.0            \r\n[16] ggplot2_3.4.4           dplyr_1.1.3             magrittr_2.0.3          Signac_1.11.0           Seurat_4.9.9.9081      \r\n[21] SeuratObject_4.9.9.9093 sp_2.1-1               \r\n\r\nloaded via a namespace (and not attached):\r\n  [1] destiny_3.14.0              matrixStats_1.0.0           spatstat.sparse_3.0-2       bitops_1.0-7               \r\n  [5] httr_1.4.7                  RColorBrewer_1.1-3          doParallel_1.0.17           tools_4.3.1                \r\n  [9] sctransform_0.4.1           utf8_1.2.3                  R6_2.5.1                    lazyeval_0.2.2             \r\n [13] uwot_0.1.16                 withr_2.5.1                 prettyunits_1.2.0           gridExtra_2.3              \r\n [17] progressr_0.14.0            factoextra_1.0.7            cli_3.6.1                   spatstat.explore_3.2-3     \r\n [21] fastDummies_1.7.3           labeling_0.4.3              robustbase_0.99-0           spatstat.data_3.0-1        \r\n [25] proxy_0.4-27                ggridges_0.5.4              pbapply_1.7-2               Rsamtools_2.16.0           \r\n [29] R.utils_2.12.2              parallelly_1.36.0           TTR_0.24.3                  rstudioapi_0.15.0          \r\n [33] RSQLite_2.3.1               generics_0.1.3              BiocIO_1.10.0               ica_1.0-3                  \r\n [37] spatstat.random_3.1-6       vroom_1.6.4                 car_3.1-2                   Matrix_1.6-1.1             \r\n [41] fansi_1.0.5                 abind_1.4-5                 R.methodsS3_1.8.2           lifecycle_1.0.3            \r\n [45] scatterplot3d_0.3-44        yaml_2.3.7                  carData_3.0-5               SummarizedExperiment_1.30.2\r\n [49] BiocFileCache_2.8.0         Rtsne_0.16                  grid_4.3.1                  blob_1.2.4                 \r\n [53] promises_1.2.1              crayon_1.5.2                miniUI_0.1.1.1              lattice_0.20-41            \r\n [57] cowplot_1.1.1               KEGGREST_1.40.1             pillar_1.9.0                boot_1.3-28                \r\n [61] rjson_0.2.21                future.apply_1.11.0         codetools_0.2-18            fastmatch_1.1-4            \r\n [65] leiden_0.4.3                glue_1.6.2                  pcaMethods_1.92.0           data.table_1.14.8          \r\n [69] remotes_2.4.2.1             vcd_1.4-11                  vctrs_0.6.4                 png_0.1-8                  \r\n [73] spam_2.9-1                  cellranger_1.1.0            gtable_0.3.4                cachem_1.0.8               \r\n [77] S4Arrays_1.0.6              mime_0.12                   tidygraph_1.2.3             RcppEigen_0.3.3.9.3        \r\n [81] survival_3.5-5              SingleCellExperiment_1.22.0 RcppRoll_0.3.0              pheatmap_1.0.12            \r\n [85] iterators_1.0.14            ellipsis_0.3.2              fitdistrplus_1.1-11         ROCR_1.0-11                \r\n [89] nlme_3.1-162                xts_0.13.1                  bit64_4.0.5                 progress_1.2.2             \r\n [93] filelock_1.0.2              RcppAnnoy_0.0.21            rprojroot_2.0.3             irlba_2.3.5.1              \r\n [97] KernSmooth_2.23-20          colorspace_2.1-0            DBI_1.1.3                   nnet_7.3-18                \r\n[101] smoother_1.1                tidyselect_1.2.0            processx_3.8.2              bit_4.0.5                  \r\n[105] compiler_4.3.1              curl_5.1.0                  xml2_1.3.5                  desc_1.4.2                 \r\n[109] DelayedArray_0.26.7         plotly_4.10.2               scales_1.2.1                hexbin_1.28.3              \r\n[113] DEoptimR_1.1-3              lmtest_0.9-40               callr_3.7.3                 rappdirs_0.3.3             \r\n[117] stringr_1.5.0               digest_0.6.33               goftest_1.2-3               spatstat.utils_3.0-3       \r\n[121] XVector_0.40.0              htmltools_0.5.6.1           pkgconfig_2.0.3             MatrixGenerics_1.12.3      \r\n[125] dbplyr_2.3.4                fastmap_1.1.1               ggthemes_4.2.4              rlang_1.1.1                \r\n[129] htmlwidgets_1.6.2           shiny_1.7.5.1               farver_2.1.1                zoo_1.8-12                 \r\n[133] jsonlite_1.8.7              BiocParallel_1.34.2         R.oo_1.25.0                 RCurl_1.98-1.12            \r\n[137] GenomeInfoDbData_1.2.10     dotCall64_1.1-0             munsell_0.5.0               Rcpp_1.0.11                \r\n[141] viridis_0.6.4               reticulate_1.34.0           stringi_1.7.12              ggraph_2.1.0               \r\n[145] zlibbioc_1.46.0             MASS_7.3-58.3               plyr_1.8.9                  pkgbuild_1.4.2             \r\n[149] parallel_4.3.1              listenv_0.9.0               ggrepel_0.9.4               deldir_1.0-9               \r\n[153] graphlayouts_1.0.1          Biostrings_2.68.1           splines_4.3.1               tensor_1.5                 \r\n[157] hms_1.1.3                   ps_1.7.5                    ranger_0.15.1               igraph_1.5.1               \r\n[161] spatstat.geom_3.2-7         RcppHNSW_0.5.0              reshape2_1.4.4              biomaRt_2.56.1             \r\n[165] XML_3.99-0.14               laeken_0.5.2                tweenr_2.0.2                tzdb_0.4.0                 \r\n[169] foreach_1.5.2               httpuv_1.6.11               VIM_6.2.2                   RANN_2.6.1                 \r\n[173] purrr_1.0.2                 polyclip_1.10-6             future_1.33.0               scattermore_1.2            \r\n[177] ggforce_0.4.1               xtable_1.8-4                restfulr_0.0.15             e1071_1.7-13               \r\n[181] RSpectra_0.16-1             later_1.3.1                 viridisLite_0.4.2           class_7.3-21               \r\n[185] tibble_3.2.1                memoise_2.0.1               GenomicAlignments_1.36.0    cluster_2.1.4              \r\n[189] ggplot.multistats_1.0.0     globals_0.16.2 \r\n```",
+      "comments": [],
+      "createdAt": "2023-10-22T18:14:44Z",
+      "labels": [],
+      "number": 27,
+      "state": "OPEN",
+      "title": "CoembedData - Error: None of the provided refdata elements are valid.",
+      "updatedAt": "2023-10-22T18:14:44Z",
+      "url": "https://github.com/CostaLab/scMEGA/issues/27"
+    },
+    {
+      "body": "Dear scMEGA team,\r\n\r\nThank you for developing this useful package.\r\nI am working with Arabidopsis datasets - GSE173834 for the scATAC data and my own scRNA-seq data. When I integrated them, at the step of SelectTFs I got this error\r\n\r\nCreating Trajectory Group Matrix..\r\nError in base::rowMeans(x, na.rm = na.rm, dims = dims, ...) : \r\n  'x' must be an array of at least two dimensions\r\n\r\nWhen I try to debug, it looks like, under GetTrajectory, Matrix::rowMeans fails. However, the cell_names has multiple cell names, so this should not be a vector. I will be grateful if you could help me on that. Please let me know what details you need, I will share.\r\n\r\nRegards,\r\nRahul",
+      "comments": [
+        {
+          "id": "IC_kwDOHPpw385nPNPG",
+          "author": {
+            "login": "lzj1769"
+          },
+          "authorAssociation": "MEMBER",
+          "body": "Hi,\r\n\r\nAre you using Seurat v5? It seems that the Seurat team has changed the API to get assay data.\r\nI am still working on this issue to update scMEGA functions.\r\n\r\nBest,\r\nZhijian",
+          "createdAt": "2023-09-22T21:14:14Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/CostaLab/scMEGA/issues/25#issuecomment-1732039622",
+          "viewerDidAuthor": true
+        }
+      ],
+      "createdAt": "2023-09-11T05:50:57Z",
+      "labels": [],
+      "number": 25,
+      "state": "OPEN",
+      "title": "error in SelectTFs or GetTrajectory",
+      "updatedAt": "2023-09-22T21:14:14Z",
+      "url": "https://github.com/CostaLab/scMEGA/issues/25"
+    },
+    {
+      "body": "With the new version of Seurat, some functions are no longer working as expected. For example GetTrajectory\r\n\r\n\r\n",
+      "comments": [],
+      "createdAt": "2023-07-28T18:11:47Z",
+      "labels": [],
+      "number": 24,
+      "state": "OPEN",
+      "title": "Incompability with Seurat v5",
+      "updatedAt": "2024-02-27T05:16:53Z",
+      "url": "https://github.com/CostaLab/scMEGA/issues/24"
+    },
+    {
+      "body": "Hello there\r\nI'm tryingto run ScMega on 10X multiome RNA+ATAC data obtained in Rats tissus. When I run the :\r\nres <- SelectTFs(object = objG, \r\n                 tf.assay = \"chromvar\",\r\n                 rna.assay = \"RNA\",\r\n                 atac.assay = \"ATAC\",\r\n                 trajectory.name = \"Trajectory\",\r\n                 return.heatmap = TRUE,\r\n                 cor.cutoff = 0.1)\r\nI get \r\nAvis : No layers found matching search pattern provided\r\nError in `GetAssayData()`:\r\n! No layers are found\r\nHere are the backtrace : \r\nBacktrace:\r\n    \u2586\r\n 1. \u2514\u2500scMEGA::SelectTFs(...)\r\n 2.   \u251c\u2500base::suppressMessages(...)\r\n 3.   \u2502 \u2514\u2500base::withCallingHandlers(...)\r\n 4.   \u2514\u2500scMEGA::GetTrajectory(...)\r\n 5.     \u251c\u2500SeuratObject::GetAssayData(object, assay = assay, slot = slot)\r\n 6.     \u2514\u2500SeuratObject:::GetAssayData.Seurat(object, assay = assay, slot = slot)\r\n 7.       \u251c\u2500SeuratObject::GetAssayData(object = object[[assay]], layer = layer)\r\n 8.       \u2514\u2500SeuratObject:::GetAssayData.StdAssay(object = object[[assay]], layer = layer)\r\n 9.         \u2514\u2500rlang::abort(\"No layers are found\")\r\n \r\nCan you help me, please ? Is it because I'm working with the rat genome? Or is it something else entirely?\r\nBest\r\nDavid\r\n",
+      "comments": [
+        {
+          "id": "IC_kwDOHPpw385idn7c",
+          "author": {
+            "login": "Dalhte"
+          },
+          "authorAssociation": "NONE",
+          "body": "Hi again\r\nI tried several things randomly:\r\nit seems that \"getAssaData\" is deprecated in Seurat5 and to be replaced with LayerData, so could my problem come from incompatibility between Seurat5 and ScMega ?\r\nI try to run LayerData for each assay (chromvar, RNA and ATAC), if I run them alone, I got nothing different, if I run for each something like : \r\n\r\nobjG[['RNA']] <- as(objG[['RNA']], Class = 'Assay5')\r\nLayerData(object = objG[['RNA']])\r\n\r\nI have a different error message: no motifs name in this Assay5 object. The problem arises only when I transform the ATAC assay in Assay5, not when I keep a \"ChromatinAssay\" class, but sadly then I have the \"GetAssayData()`:\r\n! No layers are found\" again.\r\nDon't know if that help ?",
+          "createdAt": "2023-07-26T14:33:39Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/CostaLab/scMEGA/issues/23#issuecomment-1651932892",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOHPpw385iqZEJ",
+          "author": {
+            "login": "Dalhte"
+          },
+          "authorAssociation": "NONE",
+          "body": "If ever it can help someone, here is what I did : \r\nI bypassaded the getassayy using layerdata function:\r\n\r\nobjG[['SoupXRNA']] <- as(objG[['SoupXRNA']], Class = 'Assay5')\r\nLayerData(object = objG[['SoupXRNA']])\r\n\r\nobjG[['ATAC']] <- as(objG[['ATAC']], Class = 'ChromatinAssay')\r\nLayerData(object = objG[['ATAC']])\r\n\r\nobjG[['chromvar']] <- as(objG[['chromvar']], Class = 'ChromatinAssay')\r\nLayerData(object = objG[['chromvar']])\r\n\r\nClass = 'ChromatinAssay is necessary to keep the motif names \r\n\r\n\r\nthen I copied the selectTFs function to run if in the rstudio interface directly with some modifications:\r\n- replace RNA assay with SoupXRNA as I had to run soupX to clean my data\r\n- and increment the motif names call solution proposed by @AmandaKedaigle in the issue \" Motif matching when using mouse data #18 \"\r\n\r\nand It seems to work fine\r\n\r\n",
+          "createdAt": "2023-07-28T08:36:51Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/CostaLab/scMEGA/issues/23#issuecomment-1655279881",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOHPpw385ito1u",
+          "author": {
+            "login": "lzj1769"
+          },
+          "authorAssociation": "MEMBER",
+          "body": "Hi @Dalhte \r\n\r\nSorry for my late reply and glad that you found a solution.\r\n\r\nIndeed, the Seurat v5 has uplated many APIs, and I need some time to update scMEGA to keep them compatible.\r\n\r\n\r\n\r\n",
+          "createdAt": "2023-07-28T18:10:04Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/CostaLab/scMEGA/issues/23#issuecomment-1656130926",
+          "viewerDidAuthor": true
+        },
+        {
+          "id": "IC_kwDOHPpw385ivxHm",
+          "author": {
+            "login": "Dalhte"
+          },
+          "authorAssociation": "NONE",
+          "body": "Hi @lzj1769 \r\nDon't worry, it was nice to find a solution by myself :) Even if the solution is quite tedious :DDD\r\n\r\nBest\r\nDavid",
+          "createdAt": "2023-07-29T09:32:30Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/CostaLab/scMEGA/issues/23#issuecomment-1656689126",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOHPpw385ljuJU",
+          "author": {
+            "login": "evaham1"
+          },
+          "authorAssociation": "NONE",
+          "body": "Hello! \r\n\r\nMany thanks for the tool,\r\nI am also encountering this same error with the issue seeming to be with `GetAssayData()` in `GetTrajectory`. I have had a go at trying to bypass this issue as @Dalhte suggested but this is just creating more errors. Could you please suggest a workaround for this or perhaps a suggestion of which Seurat version is best used with scMEGA? I followed the installation instructions which says `devtools::install_github(\"satijalab/seurat\", \"seurat5\", upgrade='always')`, should I try re-running the scMEGA steps but with an older version of seurat? Any suggestions are greatly appreciated, I have managed to follow the steps of the tutorial up to `SelectTFs` so I'm very keen to get this final bit working to build the GRN!\r\nEva",
+          "createdAt": "2023-09-02T15:26:23Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/CostaLab/scMEGA/issues/23#issuecomment-1703862868",
+          "viewerDidAuthor": false
+        }
+      ],
+      "createdAt": "2023-07-26T12:17:14Z",
+      "labels": [],
+      "number": 23,
+      "state": "OPEN",
+      "title": "problem with SelectTFs",
+      "updatedAt": "2023-09-02T15:26:23Z",
+      "url": "https://github.com/CostaLab/scMEGA/issues/23"
+    },
+    {
+      "body": "Hi! thanks for the jobs\r\nI've got the object to build the network on\r\n> head(df.grn2)\r\n      tf      gene   weights\r\n77  ATF4 GABARAPL1 0.8221601\r\n85  ATF4     GRIK3 0.8021985\r\n100 ATF4       KIT 0.8130254\r\n102 ATF4      KRAS 0.8125377\r\n166 ATF4    SEC22B 0.8518962\r\n223 ATF6     ACAP3 0.8103851\r\n> V(netobj)$type <- ifelse(V(V(netobj)$type <- ifelse(V(netobj)$name %in% dfgrn$tf,\"TF/Gene\",\"Gene\"))$name %in% df.grn2$tf,\"TF/Gene\",\"Gene\")\r\n> netobj <- graph_from_data_frame(df.grn2,directed = TRUE)\r\n\r\nLooking at the object, it looks normal\r\n> netobj\r\nIGRAPH 54cba5f DN-B 355 788 --\r\n+ attr: name (v/c), type (v/c), weights (e/n)\r\n+ edges from 54cba5f (vertex names):\r\n [1] ATF4 ->GABARAPL1 ATF4 ->GRIK3     ATF4 ->KIT       ATF4 ->KRAS\r\n [5] ATF4 ->SEC22B    ATF6 ->ACAP3     BACH2->ALX1      BACH2->ANKH\r\n [9] BACH2->CDKN1C    BACH2->CRISPLD1  BACH2->EBF2      BACH2->ETV6\r\n[13] BACH2->GLIPR1    BACH2->HECTD2    BACH2->IGFBP7    BACH2->ITGB8\r\n+ ... omitted several edges\r\nHowever, when I run\r\n> p <- NetCentPlot(netobj, \"RUNX1\")\r\nError in layout_with_focus(graph, v = focus, weights = weights, iter = niter,  :\r\n  g must be a connected graph.\r\n\r\nI checked netobj\r\n> is_connected(netobj, mode = \"weak\")\r\n[1] FALSE\r\n\r\nI don't know how do I get the final NetCentPlot, Can you offer any help?\r\nthanks a lot!\r\n",
+      "comments": [
+        {
+          "id": "IC_kwDOHPpw385cgRlZ",
+          "author": {
+            "login": "lzj1769"
+          },
+          "authorAssociation": "MEMBER",
+          "body": "Hi @liyang24 \r\n\r\nAre you able to generate the network plot?\r\n\r\nThe function NetCentPlot is going to plot the network but with different layout, so in theory, it should be working if you can generate the network plot.\r\n\r\n@jsnagai Do you have any ideas?\r\n\r\n",
+          "createdAt": "2023-05-17T19:53:22Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/CostaLab/scMEGA/issues/21#issuecomment-1551964505",
+          "viewerDidAuthor": true
+        },
+        {
+          "id": "IC_kwDOHPpw385chnYm",
+          "author": {
+            "login": "liyang24"
+          },
+          "authorAssociation": "NONE",
+          "body": "Yes, I got the network plot,so i don't know what went wrong",
+          "createdAt": "2023-05-18T02:20:20Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/CostaLab/scMEGA/issues/21#issuecomment-1552315942",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOHPpw385ds0zO",
+          "author": {
+            "login": "jsnagai"
+          },
+          "authorAssociation": "MEMBER",
+          "body": "@liyang24 sorry for the late reply, would it be possible for to you check the number of components that your graph has? On that you possibly can you is subset the connected component related to the TF/Target that you are selecting.\r\n\r\nBest",
+          "createdAt": "2023-06-01T13:13:02Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/CostaLab/scMEGA/issues/21#issuecomment-1572031694",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOHPpw385dx49M",
+          "author": {
+            "login": "liyang24"
+          },
+          "authorAssociation": "NONE",
+          "body": "thanks\uff01\r\nI did what you said\r\n> tf_vertices <- c(\"RUNX1\")\r\n> V(netobj)$type <- ifelse(1:vcount(netobj) %in% tf_vertices, \"TF\", \"Gene\")\r\n> cc <- components(netobj)\r\n> tf_cc <- induced_subgraph(netobj, which(cc$membership == cc$membership[tf_vertices[1]]))\r\n> p <- NetCentPlot(tf_cc,\"RUNX1\")\r\n\r\nand I got this picture\r\n![image](https://github.com/CostaLab/scMEGA/assets/116328108/75086c8a-7e5a-49a1-a9d3-5779418dec7d)\r\n\r\nWhat should I do if I want to display the TF name of the node\uff1f",
+          "createdAt": "2023-06-02T08:30:41Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/CostaLab/scMEGA/issues/21#issuecomment-1573359436",
+          "viewerDidAuthor": false
+        }
+      ],
+      "createdAt": "2023-05-17T09:33:10Z",
+      "labels": [],
+      "number": 21,
+      "state": "OPEN",
+      "title": "NetCentPlot error",
+      "updatedAt": "2023-06-02T08:30:42Z",
+      "url": "https://github.com/CostaLab/scMEGA/issues/21"
+    },
+    {
+      "body": "Hi! I was running into an issue when selecting TFs in my mouse data, because the motif names did not match many genes in the gene exp data. I ended up altering the SelectTFs and GetTFGeneCorrelation code to \r\n\r\n`rownames(trajMM) <- stringr::str_to_title(object@assays[[atac.assay]]@motifs@motif.names)`\r\n\r\n(although maybe a biomaRt matching or something would be more accurate) and am getting better results, so I thought I'd note it!",
+      "comments": [
+        {
+          "id": "IC_kwDOHPpw385YNL9x",
+          "author": {
+            "login": "lzj1769"
+          },
+          "authorAssociation": "MEMBER",
+          "body": "Hi @AmandaKedaigle \r\n\r\nThanks for reporting this point. Indeed, we only tested the function using human data, where the gene names are all capitalized.\r\n\r\nUsing biomatRt is absolutely better and I will add it to our TODO.\r\n\r\nThanks,\r\nZhijian\r\n ",
+          "createdAt": "2023-03-22T16:05:08Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [
+            {
+              "content": "THUMBS_UP",
+              "users": {
+                "totalCount": 1
+              }
+            }
+          ],
+          "url": "https://github.com/CostaLab/scMEGA/issues/18#issuecomment-1479851889",
+          "viewerDidAuthor": true
+        },
+        {
+          "id": "IC_kwDOHPpw385idW4h",
+          "author": {
+            "login": "Dalhte"
+          },
+          "authorAssociation": "NONE",
+          "body": "> Hi! I was running into an issue when selecting TFs in my mouse data, because the motif names did not match many genes in the gene exp data. I ended up altering the SelectTFs and GetTFGeneCorrelation code to\r\n> \r\n> `rownames(trajMM) <- stringr::str_to_title(object@assays[[atac.assay]]@motifs@motif.names)`\r\n> \r\n> (although maybe a biomaRt matching or something would be more accurate) and am getting better results, so I thought I'd note it!\r\n\r\nDear @AmandaKedaigle\r\n\r\nI'm trying to make scMega works and I encounter the same problem as you did: the matrix names are not recognized. I would like to do the same modification you did (modifying the rownames(trajMM) code but I'm truly lost about how to do it, I can't find the file containing the selectTFs function in my ScMega R libs. Can you help me ?\r\n\r\nBest regards\r\n\r\nDavid ",
+          "createdAt": "2023-07-26T13:56:58Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/CostaLab/scMEGA/issues/18#issuecomment-1651863073",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOHPpw385idicM",
+          "author": {
+            "login": "AmandaKedaigle"
+          },
+          "authorAssociation": "NONE",
+          "body": "Hi David! If you're using RStudio you can write `View(function_name)` to see code for a function in a loaded package (or `View(package_name::function_name)`. I believe that outside of RStudio you can still see the code with just the function name, no parentheses. I just copied the code for those functions into a new script, altered that line, and then loaded my new functions overtop of the package ones. Hope this helps!",
+          "createdAt": "2023-07-26T14:22:39Z",
+          "includesCreatedEdit": true,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/CostaLab/scMEGA/issues/18#issuecomment-1651910412",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOHPpw385idsc6",
+          "author": {
+            "login": "Dalhte"
+          },
+          "authorAssociation": "NONE",
+          "body": "Hi Amanda\r\nThanks a lot ! It's working :) \r\nJust to know, did you had incompatibility problems between ScMEGA and seurat V5 (if you use seurat that is ?) I have this error poping up : Error in `GetAssayData()`:\r\n! No layers are found\r\nBest and thanks again :)\r\nDavid\r\n",
+          "createdAt": "2023-07-26T14:41:35Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/CostaLab/scMEGA/issues/18#issuecomment-1651951418",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOHPpw385ieSEq",
+          "author": {
+            "login": "AmandaKedaigle"
+          },
+          "authorAssociation": "NONE",
+          "body": "I was using Seurat, but was still on v4 - didn't run into that one!",
+          "createdAt": "2023-07-26T16:02:01Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/CostaLab/scMEGA/issues/18#issuecomment-1652105514",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOHPpw385ieUgP",
+          "author": {
+            "login": "Dalhte"
+          },
+          "authorAssociation": "NONE",
+          "body": "the V5 is a bit annoying with lots of incompatibility !\r\nThanks a lot for your help !\r\nBest\r\nDavid",
+          "createdAt": "2023-07-26T16:08:25Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/CostaLab/scMEGA/issues/18#issuecomment-1652115471",
+          "viewerDidAuthor": false
+        }
+      ],
+      "createdAt": "2023-03-15T16:06:22Z",
+      "labels": [
+        {
+          "id": "LA_kwDOHPpw387y9BPG",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        }
+      ],
+      "number": 18,
+      "state": "OPEN",
+      "title": "Motif matching when using mouse data",
+      "updatedAt": "2023-07-26T16:08:26Z",
+      "url": "https://github.com/CostaLab/scMEGA/issues/18"
+    },
+    {
+      "body": "Hi!\r\ni noticed that `SelectGenes` Available genome are: hg19, hg38, mm9, and mm10\r\ncan i use the genomes of other species?\r\nIf so, how exactly should I do it",
+      "comments": [
+        {
+          "id": "IC_kwDOHPpw385iqhBb",
+          "author": {
+            "login": "Dalhte"
+          },
+          "authorAssociation": "NONE",
+          "body": "> \r\n\r\nHello @liyang24 \r\nI am not a specialist but here is what I did to implement the rat genome (rn6)\r\n\r\n#### create a gene annotation for RN6\r\n\r\n#get the library\r\n\r\nlibrary(org.Rn.eg.db)\r\nlibrary(TxDb.Rnorvegicus.UCSC.rn6.refGene)\r\n\r\ngeneAnnotationRN6 <- createGeneAnnotation(TxDb = TxDb.Rnorvegicus.UCSC.rn6.refGene, OrgDb = org.Rn.eg.db)\r\n\r\nI had a \"chr\" prefix problem (chromsome are named \"chr1\" in the annotation but only \"1\" in my data) to remove the \"chr\" and obtain a file with adequate formate, I did, quite laboriously :\r\n\r\n#separation of the gene, exon and tss info\r\ngeneAnno <- geneAnnotationRN6$gene\r\nexonAnno <- geneAnnotationRN6$exon\r\nTSSAnno <- geneAnnotationRN6$TSS\r\n\r\n#cleaning the format\r\n\r\ngeneAnno <- keepStandardChromosomes(geneAnno, pruning.mode=\"coarse\")\r\nexonAnno <- keepStandardChromosomes(exonAnno, pruning.mode=\"coarse\")\r\nTSSAnno <- keepStandardChromosomes(TSSAnno, pruning.mode=\"coarse\")\r\n\r\ngeneAnno <- renameSeqlevels(geneAnno, c(chr1=\"1\", chr2=\"2\", chr3=\"3\", chr4=\"4\", chr5=\"5\", chr6=\"6\", chr7=\"7\", chr8=\"8\", chr9=\"9\", chr10=\"10\", chr11=\"11\", chr12=\"12\", chr13=\"13\", chr14=\"14\", chr15=\"15\", chr16=\"16\", chr17=\"17\", chr18=\"18\", chr19=\"19\", chr20=\"20\", chrX=\"X\", chrY=\"Y\"))\r\nexonAnno <- renameSeqlevels(exonAnno, c(chr1=\"1\", chr2=\"2\", chr3=\"3\", chr4=\"4\", chr5=\"5\", chr6=\"6\", chr7=\"7\", chr8=\"8\", chr9=\"9\", chr10=\"10\", chr11=\"11\", chr12=\"12\", chr13=\"13\", chr14=\"14\", chr15=\"15\", chr16=\"16\", chr17=\"17\", chr18=\"18\", chr19=\"19\", chr20=\"20\", chrX=\"X\", chrY=\"Y\"))\r\nTSSAnno <- renameSeqlevels(TSSAnno, c(chr1=\"1\", chr2=\"2\", chr3=\"3\", chr4=\"4\", chr5=\"5\", chr6=\"6\", chr7=\"7\", chr8=\"8\", chr9=\"9\", chr10=\"10\", chr11=\"11\", chr12=\"12\", chr13=\"13\", chr14=\"14\", chr15=\"15\", chr16=\"16\", chr17=\"17\", chr18=\"18\", chr19=\"19\", chr20=\"20\", chrX=\"X\", chrY=\"Y\"))\r\n\r\n#creation of a new annotation file\r\n\r\ngeneAnnotationRN6.2 <- createGeneAnnotation(\r\n  genome = NULL,\r\n  TxDb = NULL,\r\n  OrgDb = NULL,\r\n  genes = geneAnno,\r\n  exons = exonAnno,\r\n  TSS = TSSAnno,\r\n  annoStyle = NULL\r\n)\r\n\r\nthen i copied the peaktogene to run it locally (because I don't known how to modify it directly) with some modifications:\r\n-I had \"rn6\" to the genome list and the annotation :\r\n if (genome == \"rn6\") {\r\n    gene_anno <- geneAnnotationRN6.2\r\n\r\nthen I run SelectGenes also locally, with some modifications : \r\nI replaced RNA assy with SoupXRNA because I had to run SoupX to clean the data\r\nI added genome = \"rn6\" in the selectgenes function and in the calling of the peaktogene function\r\n\r\nAnd I have to admit that, to my surprise, it did worked :)\r\n\r\nPS I had to implement the motif names call solution proposed by @AmandaKedaigle in the issue \" Motif matching when using mouse data https://github.com/CostaLab/scMEGA/issues/18 \" every time needed (in the GetTFGeneCorrelation function, in the colnames(motif.matching)) if not the different format of the motif names blocked the analysis.\r\n\r\nMoreover, I tried to used the jaspar2022 instead of the Jasper2020 and there is a problem with mofit name redundancy\r\n\r\nI hope it will help and also that I did not do something stupid, but the results seems consistent with my prior knownledge of the biological system so....\r\n\r\nBest\r\nDavid\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n",
+          "createdAt": "2023-07-28T08:54:38Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/CostaLab/scMEGA/issues/17#issuecomment-1655312475",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOHPpw385_bSpH",
+          "author": {
+            "login": "wangb1119"
+          },
+          "authorAssociation": "NONE",
+          "body": "Hello, according to your method, I also created a gene annotation for macaques, and SelectGenes by using the self-defined gene annotation file. However, after that, I don't know how to calculate and define the rest of this function, especially how to use the gene annotation information. Only the selection logic of genome annotation is written, but the operation of selecting genes is not carried out.                                                                                                                                                                                     \r\n                                                                                                                                                                                                      \r\n                sel.tfs <- SelectTFs(object = pbmc.t.cells,\r\n                 return.heatmap = TRUE,\r\n                cor.cutoff = 0.4)\r\n\r\ndf.cor <- sel.tfs$tfs\r\nht <- sel.tfs$heatmap\r\npdf(\"./heatmap_SelectTFs.pdf\")\r\nt = draw(ht)\r\ndev.off()\r\n\r\nannotation <- genes(EDB, return.type = \"GRanges\")\r\nexon_annotation <- exons(EDB, return.type = \"GRanges\")\r\nTSS_annotation <- promoters(EDB, upstream=0, downstream=1, return.type = \"GRanges\")\r\n\r\nannotation <- genes(EDB, return.type = \"GRanges\")\r\nexon_annotation <- exons(EDB, return.type = \"GRanges\")\r\nTSS_annotation <- promoters(EDB, upstream=0, downstream=1, return.type = \"GRanges\")\r\n\r\ngeneAnno <- annotation\r\nexonAnno <- exon_annotation\r\nTSSAnno <- TSS_annotation\r\n\r\nucsc.levels <- str_replace(string = paste(\"chr\", seqlevels(annotation), sep = \"\"), pattern = \"chrMT\", replacement = \"chrM\")\r\nseqlevels(annotation) <- ucsc.levels\r\nseqlevels(geneAnno) <- ucsc.levels\r\nseqlevels(exonAnno) <- ucsc.levels\r\nseqlevels(TSSAnno) <- ucsc.levels\r\n\r\ngeneAnnotationMmu <- createGeneAnnotation(\r\n  genome = NULL,\r\n  TxDb = NULL,\r\n  OrgDb = NULL,\r\n  genes = geneAnno,\r\n  exons = exonAnno,\r\n  TSS = TSSAnno,\r\n  annoStyle = NULL\r\n)\r\n SelectGenes <- function(object,\r\n                        atac.assay = \"ATAC\",\r\n                        rna.assay = \"RNA\",\r\n                        var.cutoff.gene = 0.9,\r\n                        trajectory.name = \"Trajectory\",\r\n                        distance.cutoff = 2000,\r\n                        groupEvery = 1,\r\n                        cor.cutoff = 0,\r\n                        fdr.cutoff = 1e-04,\r\n                        return.heatmap = TRUE,\r\n                        labelTop1 = 10,\r\n                        labelTop2 = 10,\r\n                        genome = \"mihou\") {\r\n         if (is.character(genome)) {\r\n    if (genome == \"mihou\") {\r\n      gene_anno <- geneAnnotationMmu\r\n    } else {\r\n      stop(\"Unsupported genome annotation\")\r\n    }\r\n  } else if (is(genome, \"GRanges\")) {\r\n    gene_anno <- genome\r\n  } else {\r\n    stop(\"Unsupported genome annotation format\")\r\n  }\r\n#Based on the selection logic of genome annotation, I want to calculate something for gene selection. I don't know if it is correct. I want to ask your suggestion. How should I do it?                                                                                                                                                                                                                                                         tfs <- data.frame(\r\n    gene = c(),\r\n    cor = c(0.5, 0.6, 0.7)\r\n  )\r\nheatmap_data <- matrix(rnorm(100), nrow = 10, ncol = 10)\r\n  rownames(heatmap_data) <- paste0(\"Gene\", 1:10)\r\n  colnames(heatmap_data) <- paste0(\"Cell\", 1:10)\r\n\r\n  heatmap <- Heatmap(heatmap_data,\r\n                     name = \"Gene Expression\",\r\n                     show_row_names = TRUE,\r\n                     show_column_names = TRUE)\r\n  return(list(p2g = tfs, heatmap = heatmap))\r\n}\r\n  #Next, I selected the genes, but I didn't get p2g and heatmap.                                                                                                   sel.genes <- SelectGenes(\r\n  object = pbmc.t.cells,\r\n  atac.assay = \"ATAC\",\r\n  rna.assay = \"RNA\",\r\n  var.cutoff.gene = 0.9,\r\n  trajectory.name = \"Trajectory\",\r\n  distance.cutoff = 2000,\r\n  groupEvery = 1,\r\n  cor.cutoff = 0,\r\n  fdr.cutoff = 1e-04,\r\n  return.heatmap = TRUE,\r\n  labelTop1 = 10,\r\n  labelTop2 = 10,\r\n  genome = \"mihou\"  \r\n)\r\n\r\ndf.p2g <- sel.genes$p2g\r\nht <- sel.genes$heatmap\r\nIn addition, I also want to ask, when I am executing GetTFGeneCorrelation:                                                                       \r\n                                    tf.gene.cor <- GetTFGeneCorrelation(object = pbmc.t.cells,\r\n                                    tf.use = df.cor$tfs,\r\n                                    gene.use = unique(df.p2g$gene),\r\n                                    tf.assay = \"chromvar\",\r\n                                    gene.assay = \"RNA\",\r\n                                    trajectory.name = \"Trajectory\")\r\nthere will be an error:                                              \r\nFind 553 shared features!\r\nCreating Trajectory Group Matrix..\r\nSome values are below 0, this could be the Motif activity matrix in which scaleTo should be set = NULL.\r\nContinuing without depth normalization!\r\nSmoothing...\r\nCreating Trajectory Group Matrix..\r\nSmoothing...\r\nError in tf_activity[tf.use, ] : subscript out of bounds\r\nCalls: GetTFGeneCorrelation\r\nMy question may be stupid, and I look forward to your answer.Thank you!                              ",
+          "createdAt": "2024-05-29T16:51:27Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/CostaLab/scMEGA/issues/17#issuecomment-2137860679",
+          "viewerDidAuthor": false
+        }
+      ],
+      "createdAt": "2023-03-13T13:48:04Z",
+      "labels": [],
+      "number": 17,
+      "state": "OPEN",
+      "title": "SelectGenes use other genome",
+      "updatedAt": "2024-05-29T16:51:28Z",
+      "url": "https://github.com/CostaLab/scMEGA/issues/17"
+    }
+  ]
+}

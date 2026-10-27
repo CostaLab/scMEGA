@@ -1,0 +1,244 @@
+name: Codex issue fix
+on:
+  issues:
+    types: [labeled]
+  workflow_dispatch:
+    inputs:
+      issue:
+        description: Open issue number (fix mode also requires codex-fix label)
+        required: true
+        type: string
+      mode:
+        description: Audit is read-only; fix requires repository opt-in
+        default: audit
+        type: choice
+        options: [audit, fix]
+permissions: {}
+concurrency:
+  group: codex-issue-${{ github.event.issue.number || inputs.issue }}
+  cancel-in-progress: false
+
+jobs:
+  authorize:
+    if: >-
+      github.ref == format('refs/heads/{0}', github.event.repository.default_branch) &&
+      (github.event_name == 'workflow_dispatch' || github.event.label.name == 'codex-fix')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: read
+    outputs:
+      base: ${{ steps.gate.outputs.base }}
+      issue: ${{ steps.gate.outputs.issue }}
+      default: ${{ steps.gate.outputs.default }}
+      mode: ${{ steps.gate.outputs.mode }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - id: gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/maintenance/authorize.py
+      - name: Fetch complete issue and paginated comments (read only)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ steps.gate.outputs.issue }}
+          REPOSITORY: ${{ github.repository }}
+        run: python3 scripts/maintenance/fetch_issues.py --repo "$REPOSITORY" --issue "$ISSUE" --output issue.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: issue-${{ github.run_id }}-${{ github.run_attempt }}
+          path: issue.json
+          retention-days: 14
+          if-no-files-found: error
+
+  generate:
+    needs: authorize
+    if: needs.authorize.outputs.mode == 'fix' && vars.CODEX_FIX_ENABLED == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    outputs:
+      result: ${{ steps.codex.outputs.final-message }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ needs.authorize.outputs.base }}
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: issue-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/scmega-issue
+      - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+        with:
+          r-version: '4.5'
+          use-public-rspm: true
+      - name: Install trusted reproduction dependencies before sandboxing
+        uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05
+        with:
+          packages: deps::., any::Seurat, any::Signac, any::FNN, any::data.table, GreenleafLab/ArchR
+          cache: false
+          upgrade: 'FALSE'
+      # Last step: no repository code, git operations, upload actions or tokens
+      # execute after the agent on this runner. A fresh runner packages its output.
+      - id: codex
+        uses: openai/codex-action@bdf19a4a223ec2549a3e2274a0cf61556bc07675 # v1 / v1.13
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          codex-version: '0.164.0'
+          permission-profile: ':workspace'
+          safety-strategy: drop-sudo
+          prompt-file: scripts/maintenance/codex-prompt.md
+          output-schema-file: scripts/maintenance/result-schema.json
+          allow-bots: false
+
+  bundle:
+    needs: [authorize, generate]
+    if: always() && needs.authorize.result == 'success' && needs.generate.result != 'skipped'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      status: ${{ steps.bundle.outputs.status }}
+      artifact: ${{ steps.upload.outputs.artifact-id }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ needs.authorize.outputs.base }}
+          persist-credentials: false
+      - id: bundle
+        env:
+          CODEX_RESULT: ${{ needs.generate.outputs.result }}
+          REPOSITORY: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          WORKFLOW_REF: ${{ github.workflow_ref }}
+          BASE: ${{ needs.authorize.outputs.base }}
+          ISSUE: ${{ needs.authorize.outputs.issue }}
+        run: python3 scripts/maintenance/bundle_result.py
+      - id: upload
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: fix-${{ github.run_id }}-${{ github.run_attempt }}
+          path: bundle/
+          retention-days: 14
+          if-no-files-found: error
+
+  validate:
+    needs: [authorize, bundle]
+    if: needs.bundle.outputs.status == 'fixed'
+    runs-on: ubuntu-24.04
+    env:
+      _R_CHECK_FORCE_SUGGESTS_: 'true'
+      SCMEGA_REQUIRE_INTEGRATION: 'true'
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ needs.authorize.outputs.base }}
+          persist-credentials: false
+          path: control
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ needs.authorize.outputs.base }}
+          persist-credentials: false
+          path: candidate
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          artifact-ids: ${{ needs.bundle.outputs.artifact }}
+          path: bundle
+          merge-multiple: true
+      - name: Verify origin and apply policy to clean candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ needs.bundle.outputs.artifact }}
+          REPOSITORY: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          WORKFLOW_REF: ${{ github.workflow_ref }}
+          BASE: ${{ needs.authorize.outputs.base }}
+          ISSUE: ${{ needs.authorize.outputs.issue }}
+        run: |
+          python3 control/scripts/maintenance/verify_artifact.py
+          python3 control/scripts/maintenance/validate_patch.py --repo candidate --patch bundle/fix.patch --base "$BASE" --output validation.json
+      - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+        with:
+          r-version: '4.5'
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05
+        with:
+          working-directory: control
+          packages: deps::., any::rcmdcheck, any::Seurat, any::Signac, any::FNN, any::data.table, GreenleafLab/ArchR
+          cache: false
+          upgrade: 'FALSE'
+      - name: Independent tests and installation (no secrets or write token)
+        working-directory: candidate
+        run: |
+          Rscript ../control/scripts/maintenance/run_pairing_tests.R . ../control
+          Rscript ../control/scripts/maintenance/run_pairing_tests.R .
+          R CMD INSTALL .
+      - uses: r-lib/actions/check-r-package@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05
+        with:
+          working-directory: candidate
+          build_args: 'c("--no-build-vignettes", "--no-manual")'
+          args: 'c("--no-manual", "--no-build-vignettes")'
+          error-on: '"warning"'
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: validation-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            validation.json
+            candidate/check/
+          retention-days: 14
+
+  publish:
+    needs: [authorize, bundle, validate]
+    if: vars.CODEX_PUBLISH_ENABLED == 'true' && needs.validate.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment: codex-publication
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: read
+      actions: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ needs.authorize.outputs.base }}
+          persist-credentials: false
+          path: control
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ needs.authorize.outputs.base }}
+          persist-credentials: false
+          path: candidate
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          artifact-ids: ${{ needs.bundle.outputs.artifact }}
+          path: bundle
+          merge-multiple: true
+      - name: Repeat static validation and publish through API only
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ needs.bundle.outputs.artifact }}
+          REPOSITORY: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          WORKFLOW_REF: ${{ github.workflow_ref }}
+          BASE: ${{ needs.authorize.outputs.base }}
+          ISSUE: ${{ needs.authorize.outputs.issue }}
+          DEFAULT_BRANCH: ${{ needs.authorize.outputs.default }}
+        run: |
+          python3 control/scripts/maintenance/verify_artifact.py
+          python3 control/scripts/maintenance/validate_patch.py --repo candidate --patch bundle/fix.patch --base "$BASE" --output validation.json
+          python3 control/scripts/maintenance/create_pr.py --checkout candidate --bundle bundle --validation validation.json --default "$DEFAULT_BRANCH"

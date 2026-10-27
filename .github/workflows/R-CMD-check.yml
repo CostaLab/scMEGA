@@ -1,0 +1,54 @@
+name: R-CMD-check
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: r-check-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  maintenance-security:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - run: python3 -m unittest discover -s tests/maintenance -v
+  R-CMD-check:
+    runs-on: ubuntu-24.04
+    env:
+      _R_CHECK_FORCE_SUGGESTS_: 'true'
+      SCMEGA_REQUIRE_INTEGRATION: 'true'
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+        with:
+          r-version: '4.5'
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05
+        with:
+          packages: deps::., any::rcmdcheck, any::Seurat, any::Signac, any::FNN, any::data.table, GreenleafLab/ArchR
+          cache: false
+          upgrade: 'FALSE'
+      - name: Focused scientific regressions
+        run: Rscript scripts/maintenance/run_pairing_tests.R .
+      - name: Package installation
+        run: R CMD INSTALL .
+      - uses: r-lib/actions/check-r-package@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05
+        with:
+          build_args: 'c("--no-build-vignettes", "--no-manual")'
+          args: 'c("--no-manual", "--no-build-vignettes")'
+          error-on: '"warning"'
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: R-check-${{ github.run_id }}
+          path: check/
+          retention-days: 14

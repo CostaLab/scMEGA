@@ -1,0 +1,45 @@
+* using log directory ‘/private/tmp/scmega-baseline/scMEGA.Rcheck’
+* using R version 4.5.3 (2026-03-11)
+* using platform: aarch64-apple-darwin25.3.0
+* R was compiled by
+    Apple clang version 17.0.0 (clang-1700.6.4.2)
+    GNU Fortran (Homebrew GCC 15.2.0_1) 15.2.0
+* running under: macOS Tahoe 26.6.2
+* using session charset: UTF-8
+* using options ‘--no-manual --no-build-vignettes’
+* checking for file ‘scMEGA/DESCRIPTION’ ... OK
+* checking extension type ... Package
+* this is package ‘scMEGA’ version ‘1.1.0’
+* package encoding: UTF-8
+* checking package namespace information ... OK
+* checking package dependencies ...Warning: unable to access index for repository https://CRAN.R-project.org/src/contrib:
+  cannot open URL 'https://CRAN.R-project.org/src/contrib/PACKAGES'
+Warning: unable to access index for repository https://bioconductor.org/packages/3.22/bioc/src/contrib:
+  cannot open URL 'https://bioconductor.org/packages/3.22/bioc/src/contrib/PACKAGES'
+Warning: unable to access index for repository https://bioconductor.org/packages/3.22/data/annotation/src/contrib:
+  cannot open URL 'https://bioconductor.org/packages/3.22/data/annotation/src/contrib/PACKAGES'
+Warning: unable to access index for repository https://bioconductor.org/packages/3.22/data/experiment/src/contrib:
+  cannot open URL 'https://bioconductor.org/packages/3.22/data/experiment/src/contrib/PACKAGES'
+ ERROR
+Packages required but not available:
+  'ArchR', 'optmatch', 'ggpubr', 'destiny', 'pracma', 'ComplexHeatmap',
+  'circlize', 'nabor', 'textshape', 'GenomicRanges',
+  'SummarizedExperiment', 'ggraph', 'factoextra'
+
+Package suggested but not available: ‘testthat’
+
+Namespace dependency missing from DESCRIPTION Imports/Depends entries: ‘Seurat’
+
+The suggested packages are required for a complete check.
+Checking can be attempted without them by setting the environment
+variable _R_CHECK_FORCE_SUGGESTS_ to a false value.
+
+See section ‘The DESCRIPTION file’ in the ‘Writing R Extensions’
+manual.
+* DONE
+
+Status: 1 ERROR
+See
+  ‘/private/tmp/scmega-baseline/scMEGA.Rcheck/00check.log’
+for details.
+
