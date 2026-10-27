@@ -1,0 +1,1 @@
+PASS: actionlint 1.7.12, exit 0, all three workflows; shellcheck and pyflakes disabled. No diagnostics.

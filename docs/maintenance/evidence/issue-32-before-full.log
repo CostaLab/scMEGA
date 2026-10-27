@@ -1,5 +1,6 @@
 Loading required namespace: testthat
 Loading required namespace: SeuratObject
+Loading required namespace: Signac
 paired-counts: Merging objects...
 1.....Merging objects...
 ...2..Merging objects...
@@ -15,9 +16,13 @@ paired-counts: Merging objects...
 ......Merging objects...
 9aMerging objects...
 ..Merging objects...
-b
+bMerging objects...
+c
 paired-object: Merging objects...
-c.....
+d.....Merging objects...
+ef....Merging objects...
+g.....Merging objects...
+h
 
 ══ Warnings ════════════════════════════════════════════════════════════════════
 1. pair identity and feature counts survive assay ordering and representation ('test-paired-counts.R:4:7') - Data is of class matrix. Coercing to dgCMatrix.
@@ -134,12 +139,24 @@ actual vs expected
 - actual[2, ]    108  106  104
 + expected[2, ]  104  106  108
 
-  ... and 2 more
+  ... and 7 more
 
 
 Maximum number of 10 failures reached, some test results may be missing.
 
 ══ DONE ════════════════════════════════════════════════════════════════════════
-Error:
-! Test failures.
+Frustration is a natural part of programming :)
+                                                                            test
+      pair identity and feature counts survive assay ordering and representation
+        declared pair mappings allow distinct barcodes and repeated source cells
+ invalid pair identifiers fail explicitly instead of silently reassigning counts
+                         factor IDs use names and numeric positions are rejected
+    full ChromatinAssay output preserves counts, metadata, ranges and embeddings
+ failed skipped error warning passed
+      8   FALSE FALSE       2     64
+      2   FALSE FALSE       0      2
+      0   FALSE  TRUE       0      0
+      0   FALSE  TRUE       0      0
+      4   FALSE  TRUE       0     14
+Error: Pairing regression tests failed.
 Execution halted

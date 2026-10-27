@@ -1,0 +1,4 @@
+ERROR: dependencies ‘ArchR’, ‘optmatch’, ‘ggpubr’, ‘destiny’, ‘pracma’, ‘ComplexHeatmap’, ‘circlize’, ‘nabor’, ‘textshape’, ‘SummarizedExperiment’, ‘ggraph’, ‘factoextra’ are not available for package ‘scMEGA’
+Perhaps try a variation of:
+install.packages(c('ArchR', 'optmatch', 'ggpubr', 'destiny', 'pracma', 'ComplexHeatmap', 'circlize', 'nabor', 'textshape', 'SummarizedExperiment', 'ggraph', 'factoextra'))
+* removing ‘/private/tmp/scmega-final/lib/scMEGA’

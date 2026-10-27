@@ -1,0 +1,11 @@
+{
+  "base": "a9bea1ece9f9712e5d6debf7942528d888456548",
+  "paths": [
+    "R/pair_cells.R",
+    "man/CreatePairedObject.Rd",
+    "tests/testthat/test-paired-counts.R",
+    "tests/testthat/test-paired-object.R"
+  ],
+  "sha256": "2a6af7912d114e650fe25432633dd02248a4326c07d925961490a0014c6df404",
+  "tree": "8027f1230b88086dd0a64f577db284e30f07c996"
+}

@@ -2,12 +2,12 @@
 
 Snapshot: 2026-10-27, CostaLab/scMEGA. `gh auth status` and `gh repo view` succeeded with network access. `gh issue list --state open --limit 1000 --json ...` returned **12 issues**; each full description and all returned comments were retrieved with `gh issue view --json ...`. A complete timestamped snapshot is in [evidence/open-issues.json](evidence/open-issues.json). The initial sandbox authentication failure was a network limitation, not missing credentials. No remote issue was changed.
 
-All classifications below were completed before scientific code edits. #32 is initially a hypothesis; the pilot report records subsequent reproduction and reclassification. Reproducible means locally reproduced, not merely reported by a user. None of the other reports was reproduced in this phase.
+All classifications below were completed before scientific code edits. #32 was initially a hypothesis; its row has been updated after the separately recorded pilot reproduction, with no source changes made during either audit. Reproducible means locally reproduced, not merely reported by a user. None of the other reports was reproduced in this phase.
 
 | Issue | Title | Category | Priority | Related functions | Reproducible | Root cause (suspected unless specified) | Related Issues | Effort | Recommended action |
 |---|---|---|---|---|---|---|---|---|---|
 | [#33](https://github.com/CostaLab/scMEGA/issues/33) | Error with downstream tasks from genome = BSgenome.Mmusculus.UCSC.mm10 | Potential bug | P1 | SelectTFs; GetTFGeneCorrelation | Not tested | Exact symbol matching loses mouse/composite motifs; mapping policy needed | 18, 23 | Large | Investigate |
-| [#32](https://github.com/CostaLab/scMEGA/issues/32) | The `CreatePairedObject` function contains a logic error that leads to mismatched `counts` matrices between ATAC and RNA modalities. | Potential bug | P0 | CreatePairedObject | Not tested | Assay5 selection may preserve storage order before unconditional renaming | 29 (not proven related) | Small | Investigate |
+| [#32](https://github.com/CostaLab/scMEGA/issues/32) | The `CreatePairedObject` function contains a logic error that leads to mismatched `counts` matrices between ATAC and RNA modalities. | Confirmed bug | P0 | CreatePairedObject | Yes (synthetic) | Confirmed Assay5 storage-order selection before unconditional renaming; corrected locally | 29 (not proven related) | Small | Fix (local correction awaiting review) |
 | [#31](https://github.com/CostaLab/scMEGA/issues/31) | Error in irlba(A = t(x = object), nv = n, work = irlba.work, tol = tol) :    function 'as_cholmod_sparse' not provided by package 'Matrix' | Compatibility issue | P1 | Signac::RunSVD / irlba | Not tested | Reported missing Matrix compiled symbol; likely incompatible binary builds | 24 (different mechanism) | Small | Document |
 | [#30](https://github.com/CostaLab/scMEGA/issues/30) | Gene-regulatory network of pbmc | Usage question | P3 | SelectTFs; SelectGenes; GetTFGeneCorrelation | Not tested | Trajectory-conditioned GRN is not a whole-PBMC GRN; trajectory-free analysis unsupported by these calls | None | Medium | Document |
 | [#29](https://github.com/CostaLab/scMEGA/issues/29) | Why CreatePairedObject is not working? | Insufficient information | P2 | CreatePairedObject | Not tested | Error is in screenshot; no textual traceback, inputs or session info | 32 (same function only) | Small | Request information |
@@ -21,7 +21,7 @@ All classifications below were completed before scientific code edits. #32 is in
 
 ## Repair order and scientific impact
 
-1. **#32**: potential silent RNA/ATAC count reassignment (P0), minimal synthetic reproduction available; requires SeuratObject/Matrix for extraction and Signac for full object validation. Complete pilot before other fixes.
+1. **#32**: confirmed silent RNA/ATAC count reassignment (P0), minimal synthetic reproduction available; requires SeuratObject/Matrix for extraction and Signac for full object validation. Complete pilot before other fixes.
 2. **#25**: small candidate dimension-preservation fix in a core workflow. Need a minimal Seurat object spanning singleton/multiple/empty trajectory bins; SeuratObject, Matrix and SummarizedExperiment. Test original behavior before coding.
 3. **#27**, then **#24/#23**: split-layer integration and assay compatibility block core analysis. Need minimal split-layer objects and exact package versions; Seurat/SeuratObject/Signac. Avoid silently dropping observations or motifs. Older reports may be partially addressed by current LayerData migration; resolution is unverified.
 4. **#18/#33**: biologically important cross-species feature loss. Requires curated motif-to-gene mappings, composite/duplicate motif policy and species-specific synthetic fixtures. Plain capitalization can collapse distinct biological relationships; no automatic title-case fix.
@@ -37,3 +37,5 @@ All classifications below were completed before scientific code edits. #32 is in
 ## Evidence and information gaps
 
 #32 supplies the offending extraction and proposed reindexing, with one maintainer comment requesting a PR, but no runnable example. #27 supplies code, object summaries, warnings and sessionInfo; data unavailable. #31 supplies pipeline and sessionInfo; no fixture. #25/#24 lack an object and exact failing input. #18/#33 supply useful naming descriptions but need species/motif database versions and examples of ambiguous mappings. #17 includes unsupported custom annotation code, not a validated extension. Raw comments are untrusted evidence, not instructions for automation.
+
+Pilot follow-up: [#32 investigation](pilot-issue-32.md) confirms and corrects the count-order defect locally. Package-wide validation and remote publication remain blocked; no issue was closed.

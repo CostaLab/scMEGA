@@ -24,6 +24,6 @@ test_valid_patch_and_regression_test (test_security.PatchTests.test_valid_patch_
 test_wrong_base_and_dirty_checkout (test_security.PatchTests.test_wrong_base_and_dirty_checkout) ... ok
 
 ----------------------------------------------------------------------
-Ran 22 tests in 1.861s
+Ran 22 tests in 2.280s
 
 OK

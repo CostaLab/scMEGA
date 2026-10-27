@@ -54,3 +54,33 @@ test_that("invalid pair identifiers fail explicitly instead of silently reassign
     expect_error(extract_pair_counts(f, pairs), "counts")
   }
 })
+
+
+test_that("factor IDs use names and numeric positions are rejected", {
+  f <- pairing_fixture()
+  pairs <- as.data.frame(lapply(f$pairs, factor))
+  actual <- extract_pair_counts(f, pairs)
+  expected <- f$rna[, as.character(pairs$RNA), drop = FALSE]
+  colnames(expected) <- as.character(pairs$cell_name)
+  expect_equal(as.matrix(actual$rna), as.matrix(expected))
+  pairs <- f$pairs
+  pairs$RNA <- seq_len(nrow(pairs))
+  expect_error(extract_pair_counts(f, pairs), "identifiers")
+})
+
+test_that("aligned and partially overlapping source cell sets preserve declared pairs", {
+  f <- pairing_fixture()
+  for (atac.cells in list(colnames(f$atac), colnames(f$atac)[-1])) {
+    f$obj.atac <- SeuratObject::CreateSeuratObject(
+      SeuratObject::CreateAssay5Object(counts = f$atac[, atac.cells, drop = FALSE]),
+      assay = "ATAC")
+    pairs <- f$pairs[rev(seq_len(nrow(f$pairs))), ]
+    pairs <- pairs[pairs$ATAC %in% atac.cells, ]
+    actual <- extract_pair_counts(f, pairs)
+    for (modality in c("rna", "atac")) {
+      expected <- f[[modality]][, pairs[[toupper(modality)]], drop = FALSE]
+      colnames(expected) <- pairs$cell_name
+      expect_equal(as.matrix(actual[[modality]]), as.matrix(expected))
+    }
+  }
+})

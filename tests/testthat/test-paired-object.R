@@ -12,18 +12,26 @@ test_that("full ChromatinAssay output preserves counts, metadata, ranges and emb
   env <- new.env(parent = environment(fn))
   env$CreateChromatinAssay <- Signac::CreateChromatinAssay
   environment(fn) <- env
-  result <- fn(f$pairs, obj.coembed = coembed, obj.rna = f$obj.rna,
-    obj.atac = f$obj.atac, rna.assay = "RNA", atac.assay = "ATAC")
-  for (modality in c("rna", "atac")) {
-    expected <- f[[modality]][, f$pairs[[toupper(modality)]], drop = FALSE]
-    colnames(expected) <- f$pairs$cell_name
-    expect_equal(as.matrix(SeuratObject::LayerData(result, assay = toupper(modality),
-      layer = "counts")), as.matrix(expected))
+  chromatin <- SeuratObject::CreateSeuratObject(
+    Signac::CreateChromatinAssay(counts = f$atac[, rev(colnames(f$atac))],
+      sep = c("-", "-"), min.cells = 10), assay = "ATAC")
+  for (atac.object in list(f$obj.atac, chromatin)) {
+    for (rows in list(seq_len(12), c(12L, seq_len(9)))) {
+      pairs <- f$pairs[rows, ]
+      result <- fn(pairs, obj.coembed = coembed, obj.rna = f$obj.rna,
+        obj.atac = atac.object, rna.assay = "RNA", atac.assay = "ATAC")
+      for (modality in c("rna", "atac")) {
+        expected <- f[[modality]][, pairs[[toupper(modality)]], drop = FALSE]
+        colnames(expected) <- pairs$cell_name
+        expect_equal(as.matrix(SeuratObject::LayerData(result, assay = toupper(modality),
+          layer = "counts")), as.matrix(expected))
+      }
+      expect_s4_class(result[["ATAC"]], "ChromatinAssay")
+      expect_identical(result$source_id, setNames(pairs$RNA, pairs$cell_name))
+      expected <- embedding[pairs$RNA, , drop = FALSE]
+      rownames(expected) <- pairs$cell_name
+      expect_equal(SeuratObject::Embeddings(result, "pca"), expected)
+      expect_identical(as.integer(GenomicRanges::start(GenomicRanges::granges(result[["ATAC"]]))), c(100L, 300L))
+    }
   }
-  expect_s4_class(result[["ATAC"]], "ChromatinAssay")
-  expect_identical(result$source_id, setNames(f$pairs$RNA, f$pairs$cell_name))
-  expected <- embedding[f$pairs$RNA, , drop = FALSE]
-  rownames(expected) <- f$pairs$cell_name
-  expect_equal(SeuratObject::Embeddings(result, "pca"), expected)
-  expect_identical(as.integer(GenomicRanges::start(GenomicRanges::granges(result[["ATAC"]]))), c(100L, 300L))
 })
