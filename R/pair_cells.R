@@ -6,7 +6,10 @@
 #' The details can be found:
 #' \url{https://satijalab.org/seurat/articles/seurat5_atacseq_integration_vignette}
 #'
-#' @param obj.rna A Seurat object including gene expression data
+#' @param obj.rna A Seurat object including normalized gene expression data and
+#' selected variable features. The reference assay must have one matching data
+#' layer. For split Assay5 inputs, deliberately join the intended RNA layers
+#' before calling this function.
 #' @param obj.atac A Seurat object including chromatin accessibility data
 #' @param gene.activity A sparse matrix containing gene activity score per cell
 #' @param reference.assay The reference assay from gene expression data
@@ -37,6 +40,11 @@ CoembedData <-
            weight.reduction = NULL,
            verbose = TRUE,
            dims = 1:30) {
+    if (length(SeuratObject::Layers(obj.rna[[reference.assay]], search = "data")) != 1L) {
+      stop("Provide one normalized RNA data layer in the reference assay. ",
+           "Inspect the layers and use JoinLayers for intended disjoint RNA batches.")
+    }
+
     ## make sure there are the same number of cells in atac and gene activity data
     if (ncol(obj.atac) != ncol(gene.activity)) {
       stop("The number of cells in ATAC-seq and Gene activity are not the same!")
@@ -94,7 +102,14 @@ CoembedData <-
 
     # merge the objects
     coembed <- merge(x = obj.atac, y = obj.rna)
-    coembed <- JoinLayers(coembed)
+    if (inherits(coembed[[DefaultAssay(coembed)]], "Assay5")) {
+      coembed <- SeuratObject::JoinLayers(coembed)
+    }
+    if (length(SeuratObject::VariableFeatures(coembed)) == 0L) {
+      # Legacy assay merging can discard the reference's supplied feature set.
+      SeuratObject::VariableFeatures(coembed) <-
+        SeuratObject::VariableFeatures(obj.rna[[reference.assay]])
+    }
 
     # Finally, we run PCA and UMAP on this combined object, 
     # to visualize the co-embedding of both datasets
