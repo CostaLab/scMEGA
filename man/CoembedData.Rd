@@ -16,7 +16,10 @@ CoembedData(
 )
 }
 \arguments{
-\item{obj.rna}{A Seurat object including gene expression data}
+\item{obj.rna}{A Seurat object including normalized gene expression data and
+selected variable features. The reference assay must have one matching data
+layer. For split Assay5 inputs, deliberately join the intended RNA layers
+before calling this function.}
 
 \item{obj.atac}{A Seurat object including chromatin accessibility data}
 
