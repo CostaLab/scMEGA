@@ -511,8 +511,9 @@ AddTargetAssay <- function(object,
 #'
 #' This function will generate a graph centrality PCA embedding
 #'
-#' @param df.grn A data frame representing predicted network
-#' @param genes.cluster A data frame containing clustering results of genes
+#' @param df.grn An igraph object representing the predicted network.
+#' @param gene.cluster Reserved argument; currently unused.
+#' @param axis Two principal component indices to display.
 #'
 #' @importFrom igraph layout_with_fr
 #' @importFrom igraph page_rank
@@ -530,11 +531,11 @@ AddTargetAssay <- function(object,
 #' @export
 TopEmbGRN <- function(df.grn,gene.cluster=NULL,axis=c(1,2)){
 	netembb <- tibble("nodes" = V(df.grn)$name,
-			  "outdegree"= degree(as.directed(df.grn),mode = 'out')[V(df.grn)$name],
-			  "indegree"=degree(as.directed(df.grn),mode = 'in')[V(df.grn)$name],
+			  "outdegree"= degree(igraph::as_directed(df.grn),mode = 'out')[V(df.grn)$name],
+			  "indegree"=degree(igraph::as_directed(df.grn),mode = 'in')[V(df.grn)$name],
 			  "mediator"= betweenness(df.grn,normalized = TRUE)[V(df.grn)$name],
-			  "pagerank"=page.rank(df.grn)$vector[V(df.grn)$name],
-			  "type"=V(df.grn)$type[V(netobj)$name])
+			  "pagerank"=igraph::page_rank(df.grn)$vector[V(df.grn)$name],
+			  "type"=V(df.grn)$type[V(df.grn)$name])
 	netembb$indegree <- (netembb$indegree - min(netembb$indegree))/(max(netembb$indegree)-min(netembb$indegree))
 	netembb$outdegree <- (netembb$outdegree - min(netembb$outdegree))/(max(netembb$outdegree)-min(netembb$outdegree))
 	pcaemb <- prcomp(netembb[,c(2,3,4)],center = T)
@@ -548,7 +549,7 @@ TopEmbGRN <- function(df.grn,gene.cluster=NULL,axis=c(1,2)){
 	p<-fviz_pca_biplot(pcaemb,
               axes = axis,
               pointshape = 21, pointsize = 0.5,labelsize = 12,
-              repel = TRUE,max.overlaps=150,label='var',arrowsize = 1.5)+
+	      repel = TRUE,label='var',arrowsize = 1.5)+
 	      geom_label_repel(aes(label=rownames(pcaemb$x)),hjust=0, vjust=0,size = 4)+
               xlim(-(x), (x))+
               ylim(-(y), (y))+
