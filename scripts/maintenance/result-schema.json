@@ -1,0 +1,53 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": [
+        "fixed",
+        "needs-info",
+        "failed"
+      ]
+    },
+    "reproduced": {
+      "type": "boolean"
+    },
+    "problem": {
+      "type": "string"
+    },
+    "root_cause": {
+      "type": "string"
+    },
+    "changes": {
+      "type": "string"
+    },
+    "regression_tests": {
+      "type": "string"
+    },
+    "validation": {
+      "type": "string"
+    },
+    "scientific_impact": {
+      "type": "string"
+    },
+    "limitations": {
+      "type": "string"
+    },
+    "patch": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "status",
+    "reproduced",
+    "problem",
+    "root_cause",
+    "changes",
+    "regression_tests",
+    "validation",
+    "scientific_impact",
+    "limitations",
+    "patch"
+  ]
+}
