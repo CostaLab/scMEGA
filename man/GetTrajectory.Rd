@@ -25,7 +25,9 @@ GetTrajectory(
 \item{slot}{Name of slot used to collect data. Usually set as "counts" or "data".}
 
 \item{groupEvery}{The number of sequential percentiles to group together when generating a trajectory.
-This is similar to smoothing via a non-overlapping sliding window across pseudo-time.}
+This is similar to smoothing via a non-overlapping sliding window across pseudo-time.
+Each resulting bin must contain at least one cell with non-missing trajectory metadata.
+Empty bins are reported as an error rather than assigned an undefined mean.}
 
 \item{log2Norm}{Whether or not the data should be log2 transformed. This can be set to TRUE
 if gene expression or chromatin accessibility data is used,

@@ -18,11 +18,16 @@ Suggests:
 VignetteBuilder: knitr
 LinkingTo: Rcpp
 Remotes:
-    satijalab/seurat@seurat5
+    GreenleafLab/ArchR@eda96f593dc5b57c9f23fcc00419e6f74cf66e55
 Imports: 
     Rcpp,
     ArchR,
-    SeuratObject,
+    Seurat (>= 5.0.0),
+    SeuratObject (>= 5.0.0),
+    Signac,
+    FNN,
+    data.table,
+    viridis,
     dplyr,
     optmatch,
     ggplot2,
@@ -47,5 +52,5 @@ Imports:
     SummarizedExperiment,
     ggraph,
     factoextra
-RoxygenNote: 7.3.1
 Config/testthat/edition: 3
+Config/roxygen2/version: 8.1.1

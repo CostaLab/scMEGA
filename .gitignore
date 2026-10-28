@@ -15,3 +15,8 @@ vignettes/*.pdf
 R/.ipynb_checkpoints/
 run.sh
 build_site.txt
+
+# Local maintenance tooling and R validation products
+__pycache__/
+scMEGA_*.tar.gz
+*.Rcheck/

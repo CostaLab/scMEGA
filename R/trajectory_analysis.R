@@ -218,6 +218,8 @@ AddTrajectory <-
 #' @param slot Name of slot used to collect data. Usually set as "counts" or "data".
 #' @param groupEvery The number of sequential percentiles to group together when generating a trajectory.
 #' This is similar to smoothing via a non-overlapping sliding window across pseudo-time.
+#' Each resulting bin must contain at least one cell with non-missing trajectory metadata.
+#' Empty bins are reported as an error rather than assigned an undefined mean.
 #' @param log2Norm Whether or not the data should be log2 transformed. This can be set to TRUE
 #' if gene expression or chromatin accessibility data is used,
 #' otherwise FALSE if data from TF activity is used.
@@ -282,14 +284,21 @@ GetTrajectory <- function(object = NULL,
   names(groupList) <-
     paste0("T.", breaks[-length(breaks)], "_", breaks[-1])
 
+  empty.groups <- names(groupList)[lengths(groupList) == 0L]
+  if (length(empty.groups) > 0L) {
+    stop("Cannot compute means for empty trajectory bins: ",
+         paste(empty.groups, collapse = ", "),
+         ". Check trajectory metadata and choose an appropriate groupEvery.")
+  }
+
   message("Creating Trajectory Group Matrix..")
   data.use <- LayerData(object, assay = assay, layer = slot)
 
-  groupMat <- lapply(1:length(groupList), function(x) {
+  groupMat <- do.call(cbind, lapply(seq_along(groupList), function(x) {
     cell_names <- groupList[[x]]
-    mat <- Matrix::rowMeans(data.use[, cell_names])
+    mat <- Matrix::rowMeans(data.use[, cell_names, drop = FALSE])
 
-  }) %>% Reduce(cbind, .)
+  }))
 
   colnames(groupMat) <- names(groupList)
 
@@ -374,8 +383,8 @@ GetCorrelation <- function(trajectory1,
     message(glue::glue("Find {length(features.use)} shared features!"))
   }
 
-  mat1 <- mat1[features.use, ]
-  mat2 <- mat2[features.use, ]
+  mat1 <- mat1[features.use, , drop = FALSE]
+  mat2 <- mat2[features.use, , drop = FALSE]
 
   df_cor <- lapply(1:length(features.use), function(x) {
     cor.res <- suppressWarnings(cor.test(mat1[x,], mat2[x,]))

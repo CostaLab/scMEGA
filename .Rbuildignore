@@ -4,3 +4,6 @@
 ^docs$
 ^pkgdown$
 ^\.github$
+^AGENTS\.md$
+^scripts$
+^tests/maintenance$
