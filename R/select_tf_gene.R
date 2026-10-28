@@ -111,6 +111,8 @@ SelectTFs <- function(object,
 #' @param return.heatmap Whether or not return the heatmap for visualization
 #' @param labelTop1 Number of labels for row names
 #' @param labelTop2 Number of labels for row names
+#' @param genome Reference assembly passed to \code{PeakToGene}. Supported values
+#' are \code{hg19}, \code{hg38}, \code{mm9}, and \code{mm10}.
 #'
 #' @return A list containing a dataframe of peak-to-gene links and a heatmap
 #' @export

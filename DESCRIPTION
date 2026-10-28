@@ -1,14 +1,16 @@
 Package: scMEGA
 Type: Package
-Title: Single-cell Multiomic Enhancer-based Gene Regulatory Network Inference
+Title: Single-Cell Multiomic Enhancer-Based Gene Regulatory Network Inference
 Version: 1.1.0
-Author: Zhijian Li
-Maintainer: Zhijian Li <lzj1769@gmail.com>
-Description: Infering gene regulatory network from single-cell multi-omics data.
+Authors@R: person(given = "Zhijian", family = "Li",
+    role = c("aut", "cre"), email = "lzj1769@gmail.com")
+Description: Inferring gene regulatory network from single-cell multi-omics data.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+LazyDataCompression: xz
 URL: https://costalab.github.io/scMEGA/
+BugReports: https://github.com/CostaLab/scMEGA/issues
 Depends:
     R (>= 4.3.0)
 Suggests: 
@@ -54,3 +56,14 @@ Imports:
     factoextra
 Config/testthat/edition: 3
 Config/roxygen2/version: 8.1.1
+Config/Needs/website:
+    pkgdown,
+    harmony,
+    Nebulosa,
+    JASPAR2020,
+    TFBSTools,
+    BSgenome.Hsapiens.UCSC.hg38,
+    GenomeInfoDb,
+    EnsDb.Hsapiens.v86,
+    CostaLab/MOJITOO,
+    devtools

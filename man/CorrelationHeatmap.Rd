@@ -53,5 +53,5 @@ This function will generate a combined heatmap with each one corresponding to
 the TF expression and binding activity as selected by using the function
 \code{\link{GetCorrelation}}. It was modified from the package \code{ArchR}.
 More details can be found:
-\url{https://www.archrproject.com/bookdown/myeloid-trajectory-monocyte-differentiation.html}
+\url{https://www.archrproject.com/bookdown/myeloid-trajectory---monocyte-differentiation.html}
 }

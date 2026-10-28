@@ -1,0 +1,94 @@
+---
+title: "scMEGA: paired-object construction"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{scMEGA: paired-object construction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(scMEGA)
+```
+
+scMEGA constructs gene regulatory network predictions from single-cell multiomic
+data. This short example executes paired-object construction using synthetic
+counts. It checks cell identity and count preservation; it does not infer cell
+matches, establish a biological trajectory, or validate a biological network.
+
+The complete scientific workflows remain available as website articles:
+[myofibroblast differentiation](https://costalab.github.io/scMEGA/articles/myofibroblast-GRN.html),
+[cardiomyocyte remodeling](https://costalab.github.io/scMEGA/articles/cardiomyocyte-GRN.html),
+and [PBMC multiome analysis](https://costalab.github.io/scMEGA/articles/pbmc_10x_multiome.html).
+Those articles require external datasets and additional reference packages; their
+unchanged sources are in `vignettes/articles/` in the repository. Building this
+package vignette does not execute those external analyses.
+
+## Synthetic inputs
+
+Use original RNA and ATAC counts, with meaningful feature and cell identifiers.
+The ATAC object deliberately stores cells in the opposite order. Twelve cells
+ensure that both synthetic peaks meet the existing `min.cells = 10` filter in
+`CreatePairedObject()`.
+
+```{r counts}
+cells <- paste0("cell", seq_len(12))
+rna.counts <- Matrix::Matrix(matrix(seq_len(36), nrow = 3,
+  dimnames = list(c("GeneA", "GeneB", "GeneC"), cells)), sparse = TRUE)
+atac.counts <- Matrix::Matrix(matrix(101:124, nrow = 2,
+  dimnames = list(c("chr1-100-200", "chr2-300-400"), cells)), sparse = TRUE)
+obj.rna <- SeuratObject::CreateSeuratObject(
+  SeuratObject::CreateAssay5Object(counts = rna.counts), assay = "RNA")
+obj.atac <- SeuratObject::CreateSeuratObject(
+  SeuratObject::CreateAssay5Object(counts = atac.counts[, rev(cells)]), assay = "ATAC")
+obj.rna$source_cell <- cells
+```
+
+## Declare the pairs
+
+Each row maps an RNA cell and an ATAC cell to a unique output name. The modalities
+may use different barcode conventions in real data; their correspondence is
+specified by this table, not inferred from matrix position.
+
+```{r construct}
+df.pair <- data.frame(RNA = rev(cells), ATAC = rev(cells),
+  cell_name = paste0("pair", seq_along(cells)))
+paired <- CreatePairedObject(
+  df.pair = df.pair,
+  obj.coembed = obj.rna,
+  obj.rna = obj.rna,
+  obj.atac = obj.atac,
+  rna.assay = "RNA",
+  atac.assay = "ATAC"
+)
+```
+
+Here `obj.rna` also supplies the RNA metadata as a minimal stand-in for the
+coembedding object. In an unpaired-data workflow, supply the actual `CoembedData()`
+result through `obj.coembed`, and retain the original count objects separately.
+
+## Verify correspondence
+
+These checks run when the vignette is built and checked.
+
+```{r invariants}
+expected.rna <- rna.counts[, df.pair$RNA, drop = FALSE]
+expected.atac <- atac.counts[, df.pair$ATAC, drop = FALSE]
+colnames(expected.rna) <- colnames(expected.atac) <- df.pair$cell_name
+stopifnot(
+  identical(colnames(paired), df.pair$cell_name),
+  identical(as.matrix(SeuratObject::LayerData(paired, assay = "RNA", layer = "counts")),
+    as.matrix(expected.rna)),
+  identical(as.matrix(SeuratObject::LayerData(paired, assay = "ATAC", layer = "counts")),
+    as.matrix(expected.atac)),
+  identical(unname(paired$source_cell), df.pair$RNA),
+  inherits(paired[["ATAC"]], "ChromatinAssay")
+)
+paired
+```
+
+For downstream analysis, use the intended reference assembly and consistent gene,
+peak, and motif identifiers. Consult the scientific articles for their assumptions
+and data requirements; a valid paired object alone does not establish regulatory
+relationships.

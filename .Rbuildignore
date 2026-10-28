@@ -7,3 +7,7 @@
 ^AGENTS\.md$
 ^scripts$
 ^tests/maintenance$
+^vignettes/articles$
+^\.git$
+^run\.sh$
+^LICENSE\.md$

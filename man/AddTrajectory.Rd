@@ -56,7 +56,7 @@ Seurat object with inferred trajectory
 }
 \description{
 This function infers a pseudo-time trajectory based on the supervised input.
-It was modified from the package ArchR \code{\link{addTrajectory}}
+It was modified from the package ArchR \code{\link[ArchR]{addTrajectory}}
 to use a Seurat object as input.
 For more details, check here \url{https://www.archrproject.com/reference/addTrajectory.html}. \cr
 Author: Jeffrey Granja

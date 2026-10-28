@@ -14,16 +14,19 @@ AddTargetAssay(
 \arguments{
 \item{object}{A Seurat object used as input}
 
-\item{target.assay}{Name for the new assay. Default: "target"}
+\item{target.assay}{Reserved assay-name argument. The current implementation
+stores scores in the assay named \code{target}.}
+
+\item{rna.assay}{RNA assay used to calculate target gene module scores.}
 
 \item{df.grn}{A data frame containing the predicted gene regulatory network.}
 }
 \value{
-A Seurat object with a new assay named by target.assay
+A Seurat object with target gene module scores in the \code{target} assay.
 }
 \description{
 This function will created a new assay by using the predicted gene
 regulatory network where features are the selected TFs. Each value represents
-the average expression of all targets calculated by using the function
-\code{\link{AddModuleScore}} from Seurat.
+a target gene module score calculated by using the function
+\code{\link[Seurat]{AddModuleScore}} from Seurat.
 }

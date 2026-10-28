@@ -229,6 +229,10 @@ GRNHeatmap <- function(tf.gene.cor,
 #' This function will generate a graph to visualize the predicted gene regulatory network
 #'
 #' @param df.grn A data frame representing predicted network
+#' @param tfs.use Optional TF names used to subset the network.
+#' @param show.tf.labels Whether to display TF labels.
+#' @param genes.use Optional target gene names used to subset the network.
+#' @param remove.isolated Whether to remove graph vertices with degree zero.
 #' @param tfs.timepoint Time points of TFs
 #' @param genes.cluster A data frame containing clustering results of genes
 #' @param genes.highlight A string list to include gene names for plotting
@@ -440,8 +444,8 @@ GRNPlot <- function(df.grn,
 #' @param assay Which assay to plot
 #' @param df.grn A data frame including the inferred gene regulatory network
 #' @param tf.use Which TF to use
-#' @param min.cutoff Minimum cutoff values for each feature
-#' @param max.cutoff Maximum cutoff values for each feature
+#' @param ... Additional arguments passed to \code{Seurat::SpatialFeaturePlot()},
+#' including display cutoffs and cropping.
 #' @param vis.option Options for visualization. Default: "B"
 #'
 #' @return A ggplot object
@@ -472,14 +476,16 @@ GRNSpatialPlot <- function(object, assay,
 #'
 #' This function will created a new assay by using the predicted gene
 #' regulatory network where features are the selected TFs. Each value represents
-#' the average expression of all targets calculated by using the function
-#' \code{\link{AddModuleScore}} from Seurat.
+#' a target gene module score calculated by using the function
+#' \code{\link[Seurat]{AddModuleScore}} from Seurat.
 #'
 #' @param object A Seurat object used as input
 #' @param df.grn A data frame containing the predicted gene regulatory network.
-#' @param target.assay Name for the new assay. Default: "target"
+#' @param target.assay Reserved assay-name argument. The current implementation
+#' stores scores in the assay named \code{target}.
+#' @param rna.assay RNA assay used to calculate target gene module scores.
 #'
-#' @return A Seurat object with a new assay named by target.assay
+#' @return A Seurat object with target gene module scores in the \code{target} assay.
 #' @export
 AddTargetAssay <- function(object,
                            target.assay = "target",
@@ -567,7 +573,11 @@ TopEmbGRN <- function(df.grn,gene.cluster=NULL,axis=c(1,2)){
 #'
 #' This function will generate a plot centered in a specific gene/TF
 #'
-#' @param netobj scMEGA net
+#' @param netobj An igraph network with edge weights stored as \code{weights}.
+#' The focus layout requires a connected graph.
+#' @param gene Name of the gene or TF at the center of the layout.
+#' @param highlights Optional vertex names to label explicitly. Otherwise, labels
+#' are restricted to TF/Gene vertices with above-mean betweenness.
 #' @importFrom ggraph geom_edge_link
 #' @importFrom ggraph geom_node_point
 #' @importFrom ggraph geom_node_label
