@@ -72,8 +72,9 @@ solution.
 
 ## Review recommendation
 
-The API/layer modernization is safe for focused review after the complete package
-suite and hosted checks pass. BPCells and implicit/blockwise CCA require separate
+Draft PR [#47](https://github.com/CostaLab/scMEGA/pull/47) contains this independent
+API/layer modernization. It is safe for focused review after hosted checks pass.
+BPCells and implicit/blockwise CCA require separate
 research PRs only if exact output equivalence can be demonstrated. PR #46 is the
 only current memory-reduction proposal and is green but modest; this PR does not
 claim to solve the tutorial.
