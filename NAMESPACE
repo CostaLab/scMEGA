@@ -31,28 +31,65 @@ import(Seurat)
 import(destiny)
 import(dplyr)
 import(ggplot2)
-importFrom(GenomicRanges,GRanges)
-importFrom(GenomicRanges,findOverlaps)
-importFrom(GenomicRanges,resize)
+importFrom(ArchR,paletteContinuous)
+importFrom(ComplexHeatmap,Heatmap)
+importFrom(GenomicRanges,
+  GRanges,
+  findOverlaps,
+  resize
+)
 importFrom(IRanges,IRanges)
 importFrom(Rcpp,sourceCpp)
-importFrom(S4Vectors,SimpleList)
-importFrom(SeuratObject,GetAssayData)
-importFrom(SummarizedExperiment,assay)
+importFrom(S4Vectors,
+  SimpleList,
+  elementMetadata
+)
+importFrom(SeuratObject,
+  GetAssayData,
+  JoinLayers,
+  LayerData
+)
+importFrom(Signac,CreateChromatinAssay)
+importFrom(SummarizedExperiment,
+  "assay<-",
+  SummarizedExperiment,
+  assay,
+  rowData,
+  rowRanges
+)
+importFrom(cowplot,theme_cowplot)
 importFrom(factoextra,fviz_pca_biplot)
-importFrom(ggraph,geom_edge_link)
-importFrom(ggraph,geom_node_label)
-importFrom(ggraph,geom_node_point)
-importFrom(ggraph,scale_edge_color_viridis)
+importFrom(ggraph,
+  geom_edge_link,
+  geom_node_label,
+  geom_node_point,
+  ggraph,
+  scale_edge_color_viridis,
+  theme_graph
+)
 importFrom(ggrepel,geom_label_repel)
-importFrom(igraph,E)
-importFrom(igraph,V)
-importFrom(igraph,betweenness)
-importFrom(igraph,degree)
-importFrom(igraph,graph_from_data_frame)
-importFrom(igraph,layout_with_fr)
-importFrom(igraph,page_rank)
-importFrom(stats,as.formula)
-importFrom(stats,p.adjust)
+importFrom(igraph,
+  "V<-",
+  E,
+  V,
+  as.directed,
+  betweenness,
+  degree,
+  graph_from_data_frame,
+  layout_with_fr,
+  page.rank,
+  page_rank
+)
+importFrom(stats,
+  as.formula,
+  cor,
+  cor.test,
+  p.adjust,
+  prcomp,
+  pt,
+  quantile,
+  reorder
+)
 importFrom(utils,head)
+importFrom(viridis,scale_fill_viridis)
 useDynLib(scMEGA, .registration = TRUE)
