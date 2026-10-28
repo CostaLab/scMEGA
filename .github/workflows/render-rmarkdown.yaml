@@ -9,45 +9,45 @@ permissions:
 jobs:
   render-rmarkdown:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
-      - uses: r-lib/actions/setup-pandoc@v2
-      - uses: r-lib/actions/setup-r@v2
+      - uses: r-lib/actions/setup-pandoc@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+      - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+        with:
+          r-version: '4.5'
+          use-public-rspm: true
       - name: Install libraries
         run: |
-          sudo apt-get install build-essential libcurl4-gnutls-dev libxml2-dev libssl-dev
+          sudo apt-get update
+          sudo apt-get install --yes build-essential libcurl4-gnutls-dev libxml2-dev libssl-dev libgsl-dev libgit2-dev cmake
           sudo apt-get install libharfbuzz-dev libfribidi-dev libfreetype6-dev libfontconfig1-dev
-      - name: Install dependencies
+      - name: Configure source builds
         run: |
-          install.packages("textshaping")
-          install.packages("curl")
-          install.packages("devtools")
-          install.packages("BiocManager")
-          install.packages("rmarkdown")
-          devtools::install_github("GreenleafLab/ArchR", ref="master", repos = BiocManager::repositories())
-          devtools::install_github("satijalab/seurat", "seurat5")
-          install.packages("Signac")
-          BiocManager::install("destiny")
+          printf '%s\n' 'CXX11STD = -std=gnu++14' > /tmp/scmega-Makevars
+          echo 'R_MAKEVARS_USER=/tmp/scmega-Makevars' >> "$GITHUB_ENV"
+      - name: Install archived destiny dependency
         shell: Rscript {0}
-      # - name: Install packages for tutorial
-      #   run: |
-      #     devtools::install_github("immunogenomics/harmony")
-      #     BiocManager::install("Nebulosa")
-      #     BiocManager::install("JASPAR2020")
-      #     BiocManager::install("BSgenome.Hsapiens.UCSC.hg38")
-      #     BiocManager::install("EnsDb.Hsapiens.v86")
-      #     devtools::install_github("CostaLab/MOJITOO")
-      #     install.packages('ggraph')
-      #     install.packages('igraph')
-      #   shell: Rscript {0}
-      - name: Install scMEGA
         run: |
-          devtools::install_github("CostaLab/scMEGA")
-        shell: Rscript {0}
+          install.packages("TTR")
+          install.packages(
+            "https://cran.r-project.org/src/contrib/Archive/smoother/smoother_1.3.tar.gz",
+            repos = NULL,
+            type = "source"
+          )
+      - uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+        with:
+          needs: website
+          packages: |
+            deps::.
+            github::GreenleafLab/chromVARmotifs@38bed559c1f4770b6c91c80bf3f8ea965da26076
+            github::immunogenomics/presto@b5df6ee6097eb62522f2e557aa93ac21bab2d05f
+            github::GreenleafLab/ArchR@eda96f593dc5b57c9f23fcc00419e6f74cf66e55
+          cache: false
+          upgrade: 'FALSE'
+      - name: Install checked-out scMEGA
+        run: R CMD INSTALL .
       - name: Render Rmarkdown files
         run: |
           pkgdown::build_site()
