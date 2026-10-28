@@ -19,11 +19,13 @@ coembed_fixture <- function() {
   ref <- Seurat::NormalizeData(ref,verbose=FALSE)
   ref <- Seurat::FindVariableFeatures(ref,nfeatures=60,verbose=FALSE)
   ref.joined <- SeuratObject::JoinLayers(ref,assay='RNA')
+  ref.scaled <- Seurat::ScaleData(ref.joined,verbose=FALSE)
   stopifnot(isTRUE(all.equal(as.matrix(SeuratObject::LayerData(ref.joined,assay='RNA',layer='counts'))[,colnames(rna)],as.matrix(rna))))
   ref.legacy <- SeuratObject::CreateSeuratObject(SeuratObject::CreateAssayObject(counts=rna),assay='RNA')
   ref.legacy <- Seurat::NormalizeData(ref.legacy,verbose=FALSE)
   ref.legacy <- Seurat::FindVariableFeatures(ref.legacy,nfeatures=60,verbose=FALSE)
-  list(rna=rna, peaks=peaks, ga=ga, query=query, split=ref, joined=ref.joined, legacy=ref.legacy)
+  list(rna=rna, peaks=peaks, ga=ga, query=query, split=ref,
+    joined=ref.joined, scaled=ref.scaled, legacy=ref.legacy)
 }
 
 test_that("split reference layers fail with preparation instructions", {
@@ -34,10 +36,39 @@ test_that("split reference layers fail with preparation instructions", {
 
 test_that("joined Assay5 and legacy Assay coembeddings retain cells and observed data", {
   f <- coembed_fixture()
-  for (kind in c("joined","legacy")) {
+  for (kind in c("joined","scaled","legacy")) {
     reference <- f[[kind]]
     expected <- SeuratObject::LayerData(reference,assay="RNA",layer="data")
-    result <- CoembedData(reference,f$query,f$ga,weight.reduction="lsi",dims=1:10,verbose=FALSE)
+    coembed.warnings <- character()
+    result <- withCallingHandlers(
+      CoembedData(reference,f$query,f$ga,weight.reduction="lsi",dims=1:10,verbose=FALSE),
+      warning = function(w) {
+        coembed.warnings <<- c(coembed.warnings, conditionMessage(w))
+        invokeRestart("muffleWarning")
+      }
+    )
+    expected.patterns <- c(
+      "Layer counts isn't present in the assay object",
+      "computing too large a percentage of total singular values",
+      "default method for RunUMAP has changed",
+      "Different features in new layer data than already exists for scale.data",
+      "Different cells in new layer data than already exists for scale.data"
+    )
+    expect_true(any(grepl(expected.patterns[[1]], coembed.warnings, fixed = TRUE)))
+    expect_true(
+      all(vapply(
+        coembed.warnings,
+        function(message) any(vapply(
+          expected.patterns,
+          grepl,
+          logical(1),
+          x = message,
+          fixed = TRUE
+        )),
+        logical(1)
+      )),
+      info = paste(coembed.warnings, collapse = " | ")
+    )
     expect_setequal(colnames(result),c(colnames(f$rna),colnames(f$ga)))
     expect_equal(ncol(result),220L)
     expect_identical(SeuratObject::VariableFeatures(result), SeuratObject::VariableFeatures(reference[["RNA"]]))
