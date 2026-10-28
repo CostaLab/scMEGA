@@ -68,9 +68,7 @@ CoembedData <-
     obj.rna <- subset(obj.rna, features = gene.use)
 
     message("Normalize gene activity score for ATAC data")
-    obj.atac <- obj.atac %>%
-      NormalizeData(verbose = verbose) %>%
-      ScaleData(verbose = verbose)
+    obj.atac <- NormalizeData(obj.atac, verbose = verbose)
 
     message("Performing data integration using Seurat...")
     transfer.anchors <- FindTransferAnchors(
@@ -93,6 +91,15 @@ CoembedData <-
       refdata = refdata,
       weight.reduction = obj.atac[[weight.reduction]],
       dims = dims
+    )
+
+    # FindTransferAnchors() scales its diet query internally for CCA. Delay the
+    # scale layer retained in the returned GeneActivity assay so both dense
+    # representations are not live during anchor calculation.
+    obj.atac <- ScaleData(
+      obj.atac,
+      assay = "GeneActivity",
+      verbose = verbose
     )
 
     DefaultAssay(obj.atac) <- "RNA"
