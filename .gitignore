@@ -20,3 +20,8 @@ build_site.txt
 __pycache__/
 scMEGA_*.tar.gz
 *.Rcheck/
+
+# Package vignette build products
+/inst/doc/
+/vignettes/*.html
+/vignettes/*.R

@@ -31,7 +31,7 @@ A data frame containing all peak-to-gene links
 \description{
 This function will link peak to genes based on correlation analysis.
 We here modified the code from the ArchR package of the
-\code{\link{addPeak2GeneLinks}} function to make it compatible with matrix input.
+\code{\link[ArchR]{addPeak2GeneLinks}} function to make it compatible with matrix input.
 For more details, please
 refer to \url{https://www.archrproject.com/reference/addPeak2GeneLinks.html}. \cr
 Author: Jeffrey Granja

@@ -60,6 +60,6 @@ a heatmap
 }
 \description{
 This function generates a heatmap to visualize the data along inferred trajectory.
-It was modified from the package ArchR \code{\link{plotTrajectoryHeatmap}}.
+It was modified from the package ArchR \code{\link[ArchR]{plotTrajectoryHeatmap}}.
 For more details, check here \url{https://www.archrproject.com/reference/plotTrajectoryHeatmap.html}.
 }

@@ -7,7 +7,13 @@
 NetCentPlot(netobj, gene, highlights = NULL)
 }
 \arguments{
-\item{netobj}{scMEGA net}
+\item{netobj}{An igraph network with edge weights stored as \code{weights}.
+The focus layout requires a connected graph.}
+
+\item{gene}{Name of the gene or TF at the center of the layout.}
+
+\item{highlights}{Optional vertex names to label explicitly. Otherwise, labels
+are restricted to TF/Gene vertices with above-mean betweenness.}
 }
 \value{
 a ggraph plot

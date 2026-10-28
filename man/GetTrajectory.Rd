@@ -46,7 +46,7 @@ A SummarizedExperiment object
 \description{
 This function collects and smooths data along the trajectory using Seurat
 object as input.
-It was modified from the package ArchR \code{\link{getTrajectory}}
+It was modified from the package ArchR \code{\link[ArchR]{getTrajectory}}
 to use a Seurat object as input.
 For more details, check here \url{https://www.archrproject.com/reference/getTrajectory.html}.
 }

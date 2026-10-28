@@ -65,7 +65,7 @@ A ggplot object
 }
 \description{
 This function generates a scatter plot to visualize the inferred trajectory.
-It was modified from the package ArchR \code{\link{plotTrajectory}}
+It was modified from the package ArchR \code{\link[ArchR]{plotTrajectory}}
 to use a Seurat object as input.
 For more details, check here \url{https://www.archrproject.com/reference/plotTrajectory.html}.
 }
