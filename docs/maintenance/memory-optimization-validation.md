@@ -87,8 +87,9 @@ Runtime on the representative fixture changes by +1.28%, within ordinary noise.
 - Disk-backed inputs would not prevent Seurat's current dense CCA materialization.
 - A high-memory runner is still required for the complete tutorial.
 
-## H. Review status
+## H. Pull request
 
-The optimization is isolated on `codex/memory-optimization`. It should remain a
-Draft until hosted package checks and maintainer review confirm the modest benefit
-justifies the sequencing change. No release, Issue, or other tutorial was modified.
+Draft PR [#46](https://github.com/CostaLab/scMEGA/pull/46) proposes the isolated
+`codex/memory-optimization` change. It should remain a Draft until hosted package
+checks and maintainer review confirm the modest benefit justifies the sequencing
+change. No release, Issue, or other tutorial was modified.
