@@ -1,7 +1,23 @@
 test_that("pair identity and feature counts survive assay ordering and representation", {
   for (assay5 in c(TRUE, FALSE)) {
     for (sparse in c(TRUE, FALSE)) {
-      f <- pairing_fixture(assay5, sparse)
+      fixture.warnings <- character()
+      f <- withCallingHandlers(
+        pairing_fixture(assay5, sparse),
+        warning = function(w) {
+          fixture.warnings <<- c(fixture.warnings, conditionMessage(w))
+          invokeRestart("muffleWarning")
+        }
+      )
+      expected.warnings <- if (assay5 && !sparse) 2L else 0L
+      expect_length(fixture.warnings, expected.warnings)
+      if (expected.warnings > 0L) {
+        expect_true(all(grepl(
+          "Data is of class matrix. Coercing to dgCMatrix",
+          fixture.warnings,
+          fixed = TRUE
+        )))
+      }
       for (order in list(seq_len(12), rev(seq_len(12)), c(3L, 1L, 7L))) {
         pairs <- f$pairs[order, ]
         actual <- extract_pair_counts(f, pairs)
