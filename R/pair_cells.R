@@ -516,14 +516,14 @@ CreatePairedObject <- function(df.pair,
 
 #' Get list of paired cells
 #'
-#' This function takes in the output of the \code{\link{fullmatch}} function and sort the
+#' This function takes in the output of the \code{\link[optmatch]{fullmatch}} function and sort the
 #' results into a list of ATAC-RNA pairs.
 #' It was modified from \url{https://github.com/buenrostrolab/stimATAC_analyses_code/blob/master/R/optMatching_functions.R} \cr
 #' Author: Vinay Kartha, Yan Hu \cr
 #' Contact: <vinay_kartha@g.harvard.edu> \cr
 #' Affiliation: Buenrostro Lab, Department of Stem Cell and Regenerative Biology, Harvard University \cr
 #'
-#' @param cell_matches The output object of \code{\link{fullmatch}} in the package optmatch
+#' @param cell_matches The output object of \code{\link[optmatch]{fullmatch}} in the package optmatch
 #' @param ATAC_barcodes  Barcode of ATAC cells, must match the order of IDs in cell_matches.
 #' @param RNA_barcodes Barcode of RNA cells, must match the order of IDs in cell_matches.
 #'

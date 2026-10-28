@@ -46,6 +46,9 @@ This is similar to smoothing via a non-overlapping sliding window across pseudo-
 \item{labelTop1}{Number of labels for row names}
 
 \item{labelTop2}{Number of labels for row names}
+
+\item{genome}{Reference assembly passed to \code{PeakToGene}. Supported values
+are \code{hg19}, \code{hg38}, \code{mm9}, and \code{mm10}.}
 }
 \value{
 A list containing a dataframe of peak-to-gene links and a heatmap

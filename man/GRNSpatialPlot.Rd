@@ -4,16 +4,7 @@
 \alias{GRNSpatialPlot}
 \title{Plot the target gene in spatial space}
 \usage{
-GRNSpatialPlot(
-  object,
-  assay,
-  df.grn,
-  tf.use,
-  min.cutoff = "q5",
-  max.cutoff = "q95",
-  vis.option = "B",
-  crop = TRUE
-)
+GRNSpatialPlot(object, assay, df.grn, tf.use, vis.option = "B", ...)
 }
 \arguments{
 \item{object}{A Seurat object of spatial transcriptome data}
@@ -24,11 +15,10 @@ GRNSpatialPlot(
 
 \item{tf.use}{Which TF to use}
 
-\item{min.cutoff}{Minimum cutoff values for each feature}
-
-\item{max.cutoff}{Maximum cutoff values for each feature}
-
 \item{vis.option}{Options for visualization. Default: "B"}
+
+\item{...}{Additional arguments passed to \code{Seurat::SpatialFeaturePlot()},
+including display cutoffs and cropping.}
 }
 \value{
 A ggplot object

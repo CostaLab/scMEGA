@@ -22,9 +22,15 @@ GRNPlot(
 \arguments{
 \item{df.grn}{A data frame representing predicted network}
 
+\item{tfs.use}{Optional TF names used to subset the network.}
+
+\item{show.tf.labels}{Whether to display TF labels.}
+
 \item{tfs.timepoint}{Time points of TFs}
 
 \item{genes.cluster}{A data frame containing clustering results of genes}
+
+\item{genes.use}{Optional target gene names used to subset the network.}
 
 \item{genes.highlight}{A string list to include gene names for plotting}
 
@@ -35,6 +41,8 @@ GRNPlot(
 \item{plot.importance}{Whether or not plot the scatter plot to visualize importance score of each TF}
 
 \item{min.importance}{The minimum importance score for showing the TF labels.}
+
+\item{remove.isolated}{Whether to remove graph vertices with degree zero.}
 }
 \value{
 A ggplot object
