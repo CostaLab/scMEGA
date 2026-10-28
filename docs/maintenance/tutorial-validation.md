@@ -2,6 +2,7 @@
 
 Date: 2026-10-28. Integrated scMEGA commit:
 `3b9e904960982fc189d98bfceaaa313984f43a96` on `main`.
+Tutorial review: Draft PR [#45](https://github.com/CostaLab/scMEGA/pull/45).
 
 | Tutorial | Execution | Figures | Scientific consistency | Status |
 |---|---|---|---|---|
