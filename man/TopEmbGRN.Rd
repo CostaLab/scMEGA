@@ -7,9 +7,11 @@
 TopEmbGRN(df.grn, gene.cluster = NULL, axis = c(1, 2))
 }
 \arguments{
-\item{df.grn}{A data frame representing predicted network}
+\item{df.grn}{An igraph object representing the predicted network.}
 
-\item{genes.cluster}{A data frame containing clustering results of genes}
+\item{gene.cluster}{Reserved argument; currently unused.}
+
+\item{axis}{Two principal component indices to display.}
 }
 \value{
 a prcomp output
