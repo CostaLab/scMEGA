@@ -1,0 +1,72 @@
+name: R-CMD-check
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: r-check-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  maintenance-security:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - run: python3 -m unittest discover -s tests/maintenance -v
+  R-CMD-check:
+    runs-on: ubuntu-24.04
+    env:
+      _R_CHECK_FORCE_SUGGESTS_: 'true'
+      SCMEGA_REQUIRE_INTEGRATION: 'true'
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+        with:
+          r-version: '4.5'
+          use-public-rspm: true
+      - name: Install source-build system requirements
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes libgsl-dev libgit2-dev cmake
+          printf '%s\n' 'CXX11STD = -std=gnu++14' > /tmp/scmega-Makevars
+          echo 'R_MAKEVARS_USER=/tmp/scmega-Makevars' >> "$GITHUB_ENV"
+      - name: Install archived destiny dependency
+        shell: Rscript {0}
+        run: |
+          install.packages("TTR")
+          install.packages(
+            "https://cran.r-project.org/src/contrib/Archive/smoother/smoother_1.3.tar.gz",
+            repos = NULL,
+            type = "source"
+          )
+      - uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05
+        with:
+          packages: |
+            deps::.
+            any::rcmdcheck
+            github::GreenleafLab/chromVARmotifs@38bed559c1f4770b6c91c80bf3f8ea965da26076
+            github::immunogenomics/presto@b5df6ee6097eb62522f2e557aa93ac21bab2d05f
+            github::GreenleafLab/ArchR@eda96f593dc5b57c9f23fcc00419e6f74cf66e55
+          cache: false
+          upgrade: 'FALSE'
+      - name: Package installation
+        run: R CMD INSTALL .
+      - uses: r-lib/actions/check-r-package@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05
+        with:
+          build_args: '"--no-manual"'
+          args: '"--no-manual"'
+          error-on: '"warning"'
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: R-check-${{ github.run_id }}
+          path: check/
+          retention-days: 14
