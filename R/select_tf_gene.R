@@ -36,7 +36,7 @@ SelectTFs <- function(object,
     log2Norm = FALSE
   )
 
-  rownames(trajMM) <- object@assays[[atac.assay]]@motifs@motif.names
+  rownames(trajMM) <- .MotifNames(object, atac.assay, "SelectTFs()")
 
   trajRNA <- GetTrajectory(
     object,

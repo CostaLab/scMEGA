@@ -19,9 +19,11 @@ CoembedData(
 \item{obj.rna}{A Seurat object including normalized gene expression data and
 selected variable features. The reference assay must have one matching data
 layer. For split Assay5 inputs, deliberately join the intended RNA layers
-before calling this function.}
+before calling this function. Legacy Assay objects remain supported under
+Seurat v5.}
 
-\item{obj.atac}{A Seurat object including chromatin accessibility data}
+\item{obj.atac}{A Seurat object including chromatin accessibility data.
+Signac ChromatinAssay objects are supported and retain their genomic metadata.}
 
 \item{gene.activity}{A sparse matrix containing gene activity score per cell}
 

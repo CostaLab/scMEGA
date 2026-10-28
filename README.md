@@ -8,11 +8,12 @@ You can install scMEGA via below commands:
 if (!requireNamespace("devtools", quietly = TRUE))
     install.packages("devtools")
     
-# First install Seurate v5
-devtools::install_github("satijalab/seurat", "seurat5", quiet = TRUE)
-
-# Install Signac
-devtools::install_github("stuart-lab/signac", "seurat5")
+# Install supported Seurat v5 and Signac releases
+install.packages(c("Seurat", "SeuratObject", "Signac"))
+stopifnot(
+    packageVersion("Seurat") >= "5.0.0",
+    packageVersion("SeuratObject") >= "5.0.0"
+)
     
 # Install scMEGA
 devtools::install_github("CostaLab/scMEGA")

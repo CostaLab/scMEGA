@@ -45,7 +45,11 @@ GetTFGeneCorrelation <- function(object,
     log2Norm = TRUE
   )
 
-  rownames(trajMM) <- object@assays[[atac.assay]]@motifs@motif.names
+  rownames(trajMM) <- .MotifNames(
+    object,
+    atac.assay,
+    "GetTFGeneCorrelation()"
+  )
 
   tf_activity <- suppressMessages(
     TrajectoryHeatmap(
@@ -497,7 +501,7 @@ AddTargetAssay <- function(object,
                              assay=rna.assay,
                              name = "tf_target_")
 
-    target_gex <- object@meta.data %>%
+    target_gex <- object[[]] %>%
         as.data.frame() %>%
         select(contains("tf_target_"))
 

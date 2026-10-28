@@ -31,7 +31,7 @@ coembed_fixture <- function() {
 test_that("split reference layers fail with preparation instructions", {
   f <- coembed_fixture()
   expect_error(CoembedData(f$split,f$query,f$ga,weight.reduction="lsi",dims=1:10,verbose=FALSE),
-    "one normalized RNA data layer")
+    "one unambiguous 'data' layer")
 })
 
 test_that("joined Assay5 and legacy Assay coembeddings retain cells and observed data", {
