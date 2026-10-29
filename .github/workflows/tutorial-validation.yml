@@ -1,0 +1,91 @@
+name: tutorial-validation
+
+on:
+  pull_request:
+    paths:
+      - vignettes/articles/**
+      - _pkgdown.yml
+      - DESCRIPTION
+      - scripts/maintenance/tutorial-data.tsv
+      - scripts/maintenance/validate_tutorials.R
+      - scripts/maintenance/download_tutorial_data.R
+      - scripts/maintenance/render_tutorial.R
+      - .github/workflows/tutorial-validation.yml
+  workflow_dispatch:
+    inputs:
+      tutorial:
+        description: Full tutorial to execute
+        required: true
+        type: choice
+        options:
+          - myofibroblast
+          - cardiomyocyte
+          - cd4
+
+permissions:
+  contents: read
+
+jobs:
+  static:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+        with:
+          r-version: '4.5'
+          use-public-rspm: true
+      - name: Install lightweight parser
+        run: install.packages('knitr')
+        shell: Rscript {0}
+      - name: Parse tutorials and verify APIs, data manifest, and navigation
+        run: Rscript scripts/maintenance/validate_tutorials.R
+
+  full:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    env:
+      TUTORIAL_DATA: /tmp/scmega-tutorial-data
+      TUTORIAL_OUTPUT: /tmp/scmega-tutorial-output
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: r-lib/actions/setup-pandoc@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+      - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+        with:
+          r-version: '4.5'
+          use-public-rspm: true
+      - name: Install source-build system requirements
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes libgsl-dev libgit2-dev libhdf5-dev cmake
+      - uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+        with:
+          needs: website
+          dependencies: 'c("Depends", "Imports", "LinkingTo", "Suggests")'
+          packages: |
+            deps::.
+            any::pkgdown
+            any::hdf5r
+          cache: false
+          upgrade: 'FALSE'
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: /tmp/scmega-tutorial-data
+          key: tutorial-${{ runner.os }}-${{ inputs.tutorial }}-${{ hashFiles('scripts/maintenance/tutorial-data.tsv') }}
+      - name: Download and verify immutable inputs
+        run: Rscript scripts/maintenance/download_tutorial_data.R "${{ inputs.tutorial }}" "$TUTORIAL_DATA"
+      - name: Install checked-out scMEGA
+        run: R CMD INSTALL .
+      - name: Render full tutorial without deployment
+        run: Rscript scripts/maintenance/render_tutorial.R "${{ inputs.tutorial }}" "$TUTORIAL_DATA" "$TUTORIAL_OUTPUT"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: tutorial-${{ inputs.tutorial }}-${{ github.run_id }}
+          path: /tmp/scmega-tutorial-output
+          retention-days: 14

@@ -7,6 +7,7 @@ date: 'Compiled: `r format(Sys.Date(), "%B %d, %Y")`'
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+set.seed(1234)
 ```
 In this tutorial, we'll demonstrate how to infer gene regulatory network using single-cell multimodal data which measures gene expression and chromatin accessibility profiles from the same single cells. We will use a publicly available 10x Genomic Multiome data set for [human PBMCs](https://www.10xgenomics.com/resources/datasets/pbmc-from-a-healthy-donor-granulocytes-removed-through-cell-sorting-10-k-1-standard-2-0-0).
 
@@ -18,17 +19,17 @@ if(!dir.exists('./10x_pbmc')){
     dir.create('./10x_pbmc')
 }
 
-download.file(url = 'https://costalab.ukaachen.de/open_data/scMEGA/10x_multiome/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz', 
-              destfile = './10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz', 
-              method = 'wget', extra = '--no-check-certificate')
+if (!file.exists('./10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz'))
+    download.file('https://costalab.ukaachen.de/open_data/scMEGA/10x_multiome/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz',
+                  './10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz', mode = 'wb')
 
-download.file(url = 'https://costalab.ukaachen.de/open_data/scMEGA/10x_multiome/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz.tbi', 
-               destfile = './10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz.tbi', 
-               method = 'wget', extra = '--no-check-certificate')
+if (!file.exists('./10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz.tbi'))
+    download.file('https://costalab.ukaachen.de/open_data/scMEGA/10x_multiome/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz.tbi',
+                  './10x_pbmc/pbmc_granulocyte_sorted_10k_atac_fragments.tsv.gz.tbi', mode = 'wb')
               
-download.file(url = 'https://costalab.ukaachen.de/open_data/scMEGA/10x_multiome/pbmc_granulocyte_sorted_10k_filtered_feature_bc_matrix.h5', 
-              destfile = './10x_pbmc/pbmc_granulocyte_sorted_10k_filtered_feature_bc_matrix.h5', 
-              method = 'wget', extra = '--no-check-certificate')
+if (!file.exists('./10x_pbmc/pbmc_granulocyte_sorted_10k_filtered_feature_bc_matrix.h5'))
+    download.file('https://costalab.ukaachen.de/open_data/scMEGA/10x_multiome/pbmc_granulocyte_sorted_10k_filtered_feature_bc_matrix.h5',
+                  './10x_pbmc/pbmc_granulocyte_sorted_10k_filtered_feature_bc_matrix.h5', mode = 'wb')
 ```
 
 
@@ -147,9 +148,9 @@ We next will annotate the cell types in our multimodal data via label transfer a
 
 Download data
 ```{r}
-download.file(url = 'https://costalab.ukaachen.de/open_data/scMEGA/10x_multiome/seurat.rds', 
-              destfile = './10x_pbmc/seurat.rds', 
-              method = 'wget', extra = '--no-check-certificate')
+if (!file.exists('./10x_pbmc/seurat.rds'))
+    download.file('https://costalab.ukaachen.de/open_data/scMEGA/10x_multiome/seurat.rds',
+                  './10x_pbmc/seurat.rds', mode = 'wb')
 ```
 
 Load data
@@ -329,6 +330,9 @@ We next select candidate TFs and genes for building a meaningful gene regulatory
 ### Select TFs
 To identify potential regulator (i.e., TFs), we first estimate an acitivty score for each TF in each cell. This is done by first performing motif matching and then computing deviation scores using [chromVAR](https://greenleaflab.github.io/chromVAR/index.html).
 
+Signac 1.17 removed its `RunChromVAR()` wrapper. The code below uses the same
+public chromVAR steps directly while retaining the motif and peak identifiers.
+
 ```{r, fig.width=10, fig.height=10, fig.align='center'}
 # Get a list of motif position frequency matrices from the JASPAR database
 pfm <- getMatrixSet(
@@ -345,7 +349,35 @@ pbmc.t.cells <- AddMotifs(
 )
 
 # run chromVAR
-pbmc.t.cells <- RunChromVAR(
+run_chromvar_public <- function(object, genome, assay = "ATAC") {
+  motif.matrix <- Signac::GetMotifData(object[[assay]], slot = "data")
+  peak.matrix <- SeuratObject::LayerData(
+    object = object, assay = assay, layer = "counts"
+  )
+  if (!all(peak.matrix@x == floor(peak.matrix@x)))
+    warning("chromVAR expects integer counts")
+  keep <- Matrix::rowSums(peak.matrix) > 0
+  chromvar.object <- SummarizedExperiment::SummarizedExperiment(
+    assays = list(counts = peak.matrix[keep, , drop = FALSE]),
+    rowRanges = GenomicRanges::granges(object[[assay]])[keep]
+  )
+  chromvar.object <- chromVAR::addGCBias(chromvar.object, genome = genome)
+  row.data <- as.data.frame(SummarizedExperiment::rowData(chromvar.object))
+  row.data[is.na(row.data)] <- 0
+  SummarizedExperiment::rowData(chromvar.object) <- row.data
+  background <- chromVAR::getBackgroundPeaks(chromvar.object)
+  deviations <- chromVAR::computeDeviations(
+    chromvar.object,
+    annotations = motif.matrix[keep, , drop = FALSE],
+    background_peaks = background
+  )
+  z <- SummarizedExperiment::assays(deviations)[[2]]
+  rownames(z) <- colnames(motif.matrix)
+  object[["chromvar"]] <- SeuratObject::CreateAssayObject(data = z)
+  object
+}
+
+pbmc.t.cells <- run_chromvar_public(
   object = pbmc.t.cells,
   genome = BSgenome.Hsapiens.UCSC.hg38,
     assay = "ATAC"

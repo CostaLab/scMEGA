@@ -6,6 +6,16 @@ date: 'Compiled: `r format(Sys.Date(), "%B %d, %Y")`'
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+set.seed(42)
+
+# Fixed release configuration. Set USE_DOWNSAMPLING to FALSE only on a host with
+# enough memory for the complete 63,161-RNA / 19,859-ATAC CCA calculation.
+USE_DOWNSAMPLING <- TRUE
+N_RNA_CELLS <- 40000L
+N_ATAC_CELLS <- 8000L
+SAMPLING_SEED <- 42L
+MAX_PATIENT_FRACTION <- 0.50
+MAX_MODALITY_DEVIATION <- 0.05
 ```
 During this tutorial, we will integrate the snRNA-seq and snATAC-seq data
 generated from the human heart samples after myocardial infarction. The integrated
@@ -13,12 +23,13 @@ data will be used as input for inferring gene regulatory network.
 
 We first download the required data. In this case, we need two Seurat objects 
 with each one corresponding to snRNA-seq and snATAC-seq respectively. 
-The snRNA-seq object includes gene expression data of all fibroblasts and 
-the snATAC-seq includes all chromatin accessibility profiles. 
+The snRNA-seq object includes gene expression data of cardiomyocytes and
+the snATAC-seq object includes their chromatin accessibility profiles.
 Additionally, we also need a gene activity matrix for data integration. 
 This matrix was estimated from the snATAC-seq data by using 
 the [ArchR](https://www.archrproject.com/) package. 
-The script of cleaning the data and preparing these objects is found [here](https://costalab.ukaachen.de/open_data/scMEGA/Fibroblast/01_prepare_data.html).
+The script for cleaning the data and preparing these objects is found
+[here](https://costalab.ukaachen.de/open_data/scMEGA/Cardiomyocyte/01_prepare_data.html).
 
 
 Run the following commands to download the data:
@@ -27,17 +38,17 @@ if(!dir.exists('./Cardiomyocyte')){
     dir.create('./Cardiomyocyte')
 }
 
-download.file(url = 'https://costalab.ukaachen.de/open_data/scMEGA/Cardiomyocyte/snRNA.rds', 
-               destfile = './Cardiomyocyte/snRNA.rds', 
-               method = 'wget', extra = '--no-check-certificate')
+if (!file.exists('./Cardiomyocyte/snRNA.rds'))
+    download.file('https://costalab.ukaachen.de/open_data/scMEGA/Cardiomyocyte/snRNA.rds',
+                  './Cardiomyocyte/snRNA.rds', mode = 'wb')
 
-download.file(url = 'https://costalab.ukaachen.de/open_data/scMEGA/Cardiomyocyte/snATAC.rds', 
-               destfile = './Cardiomyocyte/snATAC.rds', 
-               method = 'wget', extra = '--no-check-certificate')
+if (!file.exists('./Cardiomyocyte/snATAC.rds'))
+    download.file('https://costalab.ukaachen.de/open_data/scMEGA/Cardiomyocyte/snATAC.rds',
+                  './Cardiomyocyte/snATAC.rds', mode = 'wb')
               
-download.file(url = 'https://costalab.ukaachen.de/open_data/scMEGA/Cardiomyocyte/gene.activity.rds', 
-              destfile = './Cardiomyocyte/gene.activity.rds', 
-              method = 'wget', extra = '--no-check-certificate')
+if (!file.exists('./Cardiomyocyte/gene.activity.rds'))
+    download.file('https://costalab.ukaachen.de/open_data/scMEGA/Cardiomyocyte/gene.activity.rds',
+                  './Cardiomyocyte/gene.activity.rds', mode = 'wb')
 ```
 
 Next, we load all necessary packages:
@@ -61,23 +72,94 @@ suppressMessages(library(BSgenome.Hsapiens.UCSC.hg38))
 
 Let's load the data into memory and see how they look like
 
+To reduce computational requirements, this tutorial uses reproducible stratified
+downsampling of the original RNA and ATAC datasets. The resulting analysis
+demonstrates the complete scMEGA workflow, but the inferred trajectories and
+regulatory networks may differ from those obtained using the full dataset.
+
 ```{r}
 obj.rna <- readRDS("./Cardiomyocyte/snRNA.rds")
 obj.atac <- readRDS("./Cardiomyocyte/snATAC.rds")
 gene.activity <- readRDS("./Cardiomyocyte/gene.activity.rds")
+
+stratified_cells <- function(object, n, seed) {
+  cells <- colnames(object)
+  metadata <- object[[]][cells, c("patient_group", "patient_region_id"), drop = FALSE]
+  if (anyNA(metadata))
+    stop("Sampling strata contain missing patient_group or patient_region_id values")
+  if (n >= length(cells))
+    return(cells)
+
+  strata <- paste(metadata$patient_group, metadata$patient_region_id, sep = "::")
+  counts <- table(strata)
+  ideal <- n * as.numeric(counts) / sum(counts)
+  take <- floor(ideal)
+  remainder <- n - sum(take)
+  if (remainder > 0L) {
+    priority <- order(ideal - take, names(counts), decreasing = TRUE)
+    take[priority[seq_len(remainder)]] <- take[priority[seq_len(remainder)]] + 1L
+  }
+  names(take) <- names(counts)
+
+  set.seed(seed)
+  selected <- unlist(lapply(names(take), function(group) {
+    sample(cells[strata == group], take[[group]], replace = FALSE)
+  }), use.names = FALSE)
+  # Keep original object ordering after deterministic selection.
+  cells[cells %in% selected]
+}
+
+original.rna.cells <- colnames(obj.rna)
+original.atac.cells <- colnames(obj.atac)
+if (!identical(colnames(gene.activity), original.atac.cells)) {
+  if (!setequal(colnames(gene.activity), original.atac.cells))
+    stop("GeneActivity columns do not match ATAC cells")
+  gene.activity <- gene.activity[, original.atac.cells, drop = FALSE]
+}
+
+if (USE_DOWNSAMPLING) {
+  selected.rna.cells <- stratified_cells(obj.rna, N_RNA_CELLS, SAMPLING_SEED)
+  selected.atac.cells <- stratified_cells(obj.atac, N_ATAC_CELLS, SAMPLING_SEED + 1L)
+  obj.rna <- subset(obj.rna, cells = selected.rna.cells)
+  obj.atac <- subset(obj.atac, cells = selected.atac.cells)
+  gene.activity <- gene.activity[, selected.atac.cells, drop = FALSE]
+  stopifnot(
+    identical(colnames(obj.rna), selected.rna.cells),
+    identical(colnames(obj.atac), selected.atac.cells),
+    identical(colnames(gene.activity), selected.atac.cells)
+  )
+  writeLines(selected.rna.cells, "./Cardiomyocyte/sampled-rna-cells.txt")
+  writeLines(selected.atac.cells, "./Cardiomyocyte/sampled-atac-cells.txt")
+  gc(full = TRUE)
+}
+
+sampling.summary <- list(
+  original = c(RNA = length(original.rna.cells), ATAC = length(original.atac.cells)),
+  selected = c(RNA = ncol(obj.rna), ATAC = ncol(obj.atac)),
+  rna.by.group = table(obj.rna$patient_group),
+  atac.by.group = table(obj.atac$patient_group)
+)
+sampling.summary
 ```
 
-We need to convert the assays to an Assay5 for Seuratv5
+The current compatibility layer supports the legacy RNA assay while preserving the
+ATAC `ChromatinAssay`, including its genomic ranges and metadata.
 ```{r to_seuratv5}
-obj.rna[["RNA"]] <- as(obj.rna[["RNA"]], "Assay5")
-obj.atac[["ATAC"]] <- as(obj.atac[["ATAC"]], "Assay5")
-
 obj.rna
 obj.atac
 ```
 
 
-We can observe that there are 45,515 and 6,481 cells in our snRNA-seq and snATAC-seq datasets. We now visualize the data as colored by patients. Note that here we used the UMAP embedding generated from batch-corrected low-dimensional space so that no batch effects are observed from the 2D visualization.
+The source objects contain 63,161 RNA and 19,859 ATAC cells. The published
+example uses the fixed stratified sample above so that exact CCA can complete on a
+64 GB workstation while retaining every patient-region stratum and all three
+patient groups. RNA and ATAC are unpaired and are sampled independently;
+GeneActivity always follows the selected ATAC cells in the same order. This
+resource-bounded example is not numerically identical to the full-data analysis.
+
+We now visualize the sampled data as colored by patients. Note that here we used
+the UMAP embedding generated from batch-corrected low-dimensional space so that no
+batch effects are observed from the 2D visualization.
 
 ```{r, fig.height = 5, fig.width = 12, fig.align = "center"}
 p1 <- DimPlot(obj.rna, pt.size = 1, reduction = "umap_harmony") +
@@ -129,7 +211,7 @@ obj.coembed <- RunUMAP(
   dims = 1:30,
   reduction = 'harmony',
   reduction.name = "umap_harmony",
-  reduction.ke = 'umapharmony_',
+  reduction.key = 'umapharmony_',
   verbose = FALSE,
   min.dist = 0.4
 )
@@ -151,13 +233,16 @@ From the new UMAP embedding, we can observe that after batch-correction, cells f
 
 ### Sub-clustering
 
-We next perform sub-clustering to identify different populations in our multi-omic fibroblast data. To further control the data quality, here we will use a two-round approach to remove low-quality cells. We first use a high-resolution to get a large amount of clusters.
+We next perform sub-clustering to identify different populations in our multi-omic
+cardiomyocyte data. To further control the data quality, here we use a two-round
+approach to remove low-quality cells. We first use a high resolution to obtain a
+larger set of clusters.
 
 ```{r, fig.height = 5, fig.width = 6, fig.align = "center"}
 obj.coembed <- FindNeighbors(obj.coembed, reduction = "harmony", dims = 1:30)
 obj.coembed <- FindClusters(obj.coembed, resolution = 1, verbose = FALSE)
 
-cols <- ArchR::paletteDiscrete(obj.coembed@meta.data[, "RNA_snn_res.1"])
+cols <- ArchR::paletteDiscrete(obj.coembed[[]][, "RNA_snn_res.1"])
     
 p <- DimPlot(obj.coembed, group.by = "RNA_snn_res.1", label = TRUE,
              reduction = "umap_harmony", shuffle = TRUE) +
@@ -170,7 +255,7 @@ p
 We can use the function _CellPropPlot_ to visualize the cell propotion across all patients.
 
 ```{r, fig.height = 6, fig.width = 10, fig.align = "center"}
-cols <- ArchR::paletteDiscrete(obj.coembed@meta.data[, "patient_region_id"])
+cols <- ArchR::paletteDiscrete(obj.coembed[[]][, "patient_region_id"])
 
 p1 <- CellPropPlot(obj.coembed, 
                    group.by = "patient_region_id", 
@@ -204,14 +289,37 @@ print(p)
 saveRDS(obj.coembed, "./Cardiomyocyte/coembed.rds")
 ```
 
-We remove the clusters that are either patient-specific or modality-specific.
+We remove high-resolution clusters that are strongly patient-specific or whose
+RNA/ATAC composition differs materially from the global sampled composition. To
+keep this quality-control decision reproducible, a cluster is flagged when at
+least 50% of its cells come from one patient or when either modality fraction
+differs from the global fraction by at least five percentage points. The table
+below records the decision for this fixed sample.
 
 ```{r, fig.height = 5, fig.width = 6, fig.align = "center"}
 Idents(obj.coembed) <- "RNA_snn_res.1"
-coembed.sub <- subset(obj.coembed, idents = c(1, 2, 21, 22, 23, 24, 26), invert = TRUE)
+cluster.id <- as.character(obj.coembed$RNA_snn_res.1)
+global.tech <- prop.table(table(obj.coembed$tech))
+cluster.tech <- prop.table(table(cluster.id, obj.coembed$tech), margin = 1)
+cluster.patient <- prop.table(table(cluster.id, obj.coembed$patient), margin = 1)
+max.patient.fraction <- apply(cluster.patient, 1, max)
+max.modality.deviation <- apply(cluster.tech, 1, function(fraction) {
+  max(abs(fraction[names(global.tech)] - global.tech))
+})
+cluster.qc <- data.frame(
+  cluster = rownames(cluster.tech),
+  cells = as.integer(table(cluster.id)[rownames(cluster.tech)]),
+  max_patient_fraction = max.patient.fraction,
+  max_modality_deviation = max.modality.deviation,
+  exclude = max.patient.fraction >= MAX_PATIENT_FRACTION |
+    max.modality.deviation >= MAX_MODALITY_DEVIATION
+)
+excluded.clusters <- cluster.qc$cluster[cluster.qc$exclude]
+cluster.qc
+coembed.sub <- subset(obj.coembed, idents = excluded.clusters, invert = TRUE)
 coembed.sub
 
-cols.clusters <- ArchR::paletteDiscrete(coembed.sub@meta.data[, "RNA_snn_res.1"])
+cols.clusters <- ArchR::paletteDiscrete(coembed.sub[[]][, "RNA_snn_res.1"])
 
 options(repr.plot.height = 6, repr.plot.width = 6)
 
@@ -237,7 +345,7 @@ coembed.sub <- RunUMAP(coembed.sub,
 coembed.sub <- FindNeighbors(coembed.sub, reduction = "harmony", dims = 1:30)
 coembed.sub <- FindClusters(coembed.sub, resolution = 0.1, verbose = FALSE)
 
-cols <- ArchR::paletteDiscrete(coembed.sub@meta.data[, "RNA_snn_res.0.1"])
+cols <- ArchR::paletteDiscrete(coembed.sub[[]][, "RNA_snn_res.0.1"])
     
 p <- DimPlot(coembed.sub, group.by = "RNA_snn_res.0.1", label = TRUE,
              reduction = "umap_harmony", shuffle = TRUE, cols = cols) +
@@ -287,7 +395,7 @@ p <- CellPropPlot(coembed.sub,
 p
 ```
 
-Since we have annotated all patients into three major groups, i.e., myogenic, ischmeic, and fibrotic.
+We have annotated all patients into three major groups: myogenic, ischemic, and fibrotic.
 we can also perform statistical test to check if any sub-population are enriched in any of the above group. This can be done by the function _CompareCellProp_.
 
 ```{r, fig.height = 5, fig.width = 10, fig.align = "center"}
@@ -316,7 +424,7 @@ Next, we will use the integrated snRNA-seq and snATAC-seq data to infer a gene r
 
 More specifically, we will:  
 
-* Identify the trajectory for myofibroblast differentiation
+* Identify a trajectory for cardiomyocyte remodeling
 * Select the relevant TFs and genes for this process
 * Infer and visualize the gene regulatory network
 
@@ -324,7 +432,7 @@ We first load the integrated data:
 ```{r, fig.height = 5, fig.width = 10, fig.align = "center"}
 coembed.sub <- readRDS("./Cardiomyocyte/coembed.sub.rds")
 
-cols <- ArchR::paletteDiscrete(coembed.sub@meta.data[, "RNA_snn_res.0.1"])
+cols <- ArchR::paletteDiscrete(coembed.sub[[]][, "RNA_snn_res.0.1"])
 
 p <- DimPlot(coembed.sub, group.by = "RNA_snn_res.0.1", label = TRUE,
              reduction = "umap_harmony", shuffle = TRUE, split.by = "tech", 
@@ -363,18 +471,23 @@ multimodal protocol.
 
 ```{r, fig.height = 5, fig.width = 10, fig.align = "center"}
 obj.pair <- CreatePairedObject(df.pair = df.pair, 
-                               object = coembed.sub2,
-                               use.assay1 = "RNA", 
-                               use.assay2 = "ATAC")
+                               obj.coembed = coembed.sub2,
+                               obj.rna = obj.rna,
+                               obj.atac = obj.atac,
+                               rna.assay = "RNA",
+                               atac.assay = "ATAC")
 
+obj.pair <- NormalizeData(obj.pair)
 obj.pair
 ```
 
-Finally, we infer a pseudo-time trajectory from SCARA5+ fibroblasts to myofibroblast using the approach from [ArchR](https://www.archrproject.com/). Here we modified the function to allow to take a Seurat object as input
+Finally, we infer a pseudotime trajectory across the selected cardiomyocyte
+remodeling clusters using the approach from
+[ArchR](https://www.archrproject.com/), adapted here for a Seurat object.
 
 ```{r, fig.height = 5, fig.width = 10, fig.align = "center"}
 obj.pair <- AddTrajectory(object = obj.pair, 
-                          trajectory = c(2, 1, 0, 3),
+                          trajectory = c(2, 1, 0),
                           group.by = "RNA_snn_res.0.1", 
                           reduction = "umap_harmony",
                           dims = 1:2, 
@@ -406,6 +519,9 @@ We next select candidate TFs and genes for building a meaningful gene regulatory
 ### Select TFs
 To identify potential regulator (i.e., TFs), we first estimate an acitivty score for each TF in each cell. This is done by first performing motif matching and then computing deviation scores using [chromVAR](https://greenleaflab.github.io/chromVAR/index.html).
 
+Signac 1.17 removed its `RunChromVAR()` wrapper. The code below uses the same
+public chromVAR steps directly while retaining the motif and peak identifiers.
+
 ```{r}
 # Get a list of motif position frequency matrices from the JASPAR database
 pfm <- getMatrixSet(
@@ -421,7 +537,35 @@ obj <- AddMotifs(
     assay = "ATAC"
 )
 
-obj <- RunChromVAR(
+run_chromvar_public <- function(object, genome, assay = "ATAC") {
+  motif.matrix <- Signac::GetMotifData(object[[assay]], slot = "data")
+  peak.matrix <- SeuratObject::LayerData(
+    object = object, assay = assay, layer = "counts"
+  )
+  if (!all(peak.matrix@x == floor(peak.matrix@x)))
+    warning("chromVAR expects integer counts")
+  keep <- Matrix::rowSums(peak.matrix) > 0
+  chromvar.object <- SummarizedExperiment::SummarizedExperiment(
+    assays = list(counts = peak.matrix[keep, , drop = FALSE]),
+    rowRanges = GenomicRanges::granges(object[[assay]])[keep]
+  )
+  chromvar.object <- chromVAR::addGCBias(chromvar.object, genome = genome)
+  row.data <- as.data.frame(SummarizedExperiment::rowData(chromvar.object))
+  row.data[is.na(row.data)] <- 0
+  SummarizedExperiment::rowData(chromvar.object) <- row.data
+  background <- chromVAR::getBackgroundPeaks(chromvar.object)
+  deviations <- chromVAR::computeDeviations(
+    chromvar.object,
+    annotations = motif.matrix[keep, , drop = FALSE],
+    background_peaks = background
+  )
+  z <- SummarizedExperiment::assays(deviations)[[2]]
+  rownames(z) <- colnames(motif.matrix)
+  object[["chromvar"]] <- SeuratObject::CreateAssayObject(data = z)
+  object
+}
+
+obj <- run_chromvar_public(
   object = obj,
   genome = BSgenome.Hsapiens.UCSC.hg38,
     assay = "ATAC"
@@ -478,8 +622,11 @@ ht
 To associate genes to TFs, we will use the peak-to-gene links and TF binding sites information. Specifically, if a gene is regulated by a peak and this peak is bound by a TF, then we consider this gene to be a target of this TF.
 
 ```{r, fig.height = 6, fig.width = 12, fig.align = "center"}
-motif.matching <- obj@assays$ATAC@motifs@data
-colnames(motif.matching) <- obj@assays$ATAC@motifs@motif.names
+motif.matching <- Signac::GetMotifData(obj[["ATAC"]], slot = "data")
+colnames(motif.matching) <- unname(unlist(
+  Signac::GetMotifData(obj[["ATAC"]], slot = "motif.names"),
+  use.names = FALSE
+))
 motif.matching <-
     motif.matching[unique(df.p2g$peak), unique(tf.gene.cor$tf)]
 
@@ -519,6 +666,7 @@ print(p)
 Save data
 ```{r, fig.height = 5, fig.width = 6, fig.align = "center"}
 saveRDS(obj, "./Cardiomyocyte/coembed.trajectory.rds")
+saveRDS(df.grn2, "./Cardiomyocyte/final_grn.rds")
 ```
 
 ```{r}

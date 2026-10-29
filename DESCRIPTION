@@ -63,7 +63,8 @@ Config/Needs/website:
     JASPAR2020,
     TFBSTools,
     BSgenome.Hsapiens.UCSC.hg38,
+    chromVAR,
     GenomeInfoDb,
     EnsDb.Hsapiens.v86,
-    CostaLab/MOJITOO,
+    CostaLab/MOJITOO@1ee6af174fc8ba31641f82baaec589ec6ebb4576,
     devtools
