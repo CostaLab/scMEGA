@@ -37,6 +37,31 @@ for (name in names(articles)) {
   message(name, ": parse and API checks passed")
 }
 
+cardiomyocyte <- paste(
+  readLines(file.path(root, articles[["cardiomyocyte"]]), warn = FALSE),
+  collapse = "\n"
+)
+sampling.contract <- c(
+  "USE_DOWNSAMPLING <- TRUE",
+  "N_RNA_CELLS <- 40000L",
+  "N_ATAC_CELLS <- 8000L",
+  "SAMPLING_SEED <- 42L",
+  "patient_group",
+  "patient_region_id",
+  "gene.activity <- gene.activity[, selected.atac.cells, drop = FALSE]"
+)
+missing.contract <- sampling.contract[!vapply(
+  sampling.contract,
+  grepl,
+  logical(1),
+  x = cardiomyocyte,
+  fixed = TRUE
+)]
+if (length(missing.contract))
+  stop("Cardiomyocyte sampling contract is incomplete: ",
+       paste(missing.contract, collapse = ", "))
+message("Cardiomyocyte fixed sampling contract passed")
+
 pkgdown <- paste(readLines(file.path(root, "_pkgdown.yml"), warn = FALSE), collapse = "\n")
 for (article in basename(articles)) {
   href <- sub("\\.Rmd$", ".html", article)
