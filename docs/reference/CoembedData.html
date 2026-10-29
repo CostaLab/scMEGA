@@ -7,7 +7,7 @@ https://satijalab.org/seurat/articles/seurat5_atacseq_integration_vignette"><!--
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-reference-topic">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -21,7 +21,7 @@ https://satijalab.org/seurat/articles/seurat5_atacseq_integration_vignette"><!--
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">scMEGA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
       </span>
     </div>
 
@@ -35,7 +35,7 @@ https://satijalab.org/seurat/articles/seurat5_atacseq_integration_vignette"><!--
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Vignettes
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
@@ -54,20 +54,20 @@ https://satijalab.org/seurat/articles/seurat5_atacseq_integration_vignette"><!--
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/CostaLab/scMEGA" class="external-link">
     <span class="fa fa-github"></span>
-     
+
   </a>
 </li>
       </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Integrate data</h1>
-    
+    <small class="dont-index">Source: <a href="https://github.com/CostaLab/scMEGA/blob/HEAD/R/pair_cells.R" class="external-link"><code>R/pair_cells.R</code></a></small>
     <div class="hidden name"><code>CoembedData.Rd</code></div>
     </div>
 
@@ -94,48 +94,53 @@ The details can be found:
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>obj.rna</dt>
-<dd><p>A Seurat object including gene expression data</p></dd>
 
 
-<dt>obj.atac</dt>
-<dd><p>A Seurat object including chromatin accessibility data</p></dd>
+<dl><dt id="arg-obj-rna">obj.rna<a class="anchor" aria-label="anchor" href="#arg-obj-rna"></a></dt>
+<dd><p>A Seurat object including normalized gene expression data and
+selected variable features. The reference assay must have one matching data
+layer. For split Assay5 inputs, deliberately join the intended RNA layers
+before calling this function. Legacy Assay objects remain supported under
+Seurat v5.</p></dd>
 
 
-<dt>gene.activity</dt>
+<dt id="arg-obj-atac">obj.atac<a class="anchor" aria-label="anchor" href="#arg-obj-atac"></a></dt>
+<dd><p>A Seurat object including chromatin accessibility data.
+Signac ChromatinAssay objects are supported and retain their genomic metadata.</p></dd>
+
+
+<dt id="arg-gene-activity">gene.activity<a class="anchor" aria-label="anchor" href="#arg-gene-activity"></a></dt>
 <dd><p>A sparse matrix containing gene activity score per cell</p></dd>
 
 
-<dt>reference.assay</dt>
+<dt id="arg-reference-assay">reference.assay<a class="anchor" aria-label="anchor" href="#arg-reference-assay"></a></dt>
 <dd><p>The reference assay from gene expression data</p></dd>
 
 
-<dt>reduction</dt>
+<dt id="arg-reduction">reduction<a class="anchor" aria-label="anchor" href="#arg-reduction"></a></dt>
 <dd><p>The reduction name used for function FindTransferAnchors.</p></dd>
 
 
-<dt>weight.reduction</dt>
+<dt id="arg-weight-reduction">weight.reduction<a class="anchor" aria-label="anchor" href="#arg-weight-reduction"></a></dt>
 <dd><p>Dimensional reduction to use for the weighting anchors</p></dd>
 
 
-<dt>verbose</dt>
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
 <dd><p>Print progress bars and output</p></dd>
 
 
-<dt>dims</dt>
+<dt id="arg-dims">dims<a class="anchor" aria-label="anchor" href="#arg-dims"></a></dt>
 <dd><p>Set of dimensions to use in the anchor weighting procedure.</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>An integrated Seurat object</p>
+    <p>An integrated Seurat object</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">obj.coembed</span> <span class="op">&lt;-</span> <span class="fu">CoembedData</span><span class="op">(</span></span></span>
 <span class="r-in"><span>   obj.rna <span class="op">=</span> <span class="va">obj.rna</span>,</span></span>
 <span class="r-in"><span>   obj.atac <span class="op">=</span> <span class="va">obj.atac</span>,</span></span>
@@ -143,7 +148,7 @@ The details can be found:
 <span class="r-in"><span>   weight.reduction <span class="op">=</span> <span class="st">"harmony"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -158,15 +163,15 @@ The details can be found:
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
       </footer></div>
 
-  
 
 
-  
+
+
 
   </body></html>
 
