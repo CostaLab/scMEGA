@@ -7,7 +7,7 @@ For more details, check here https://www.archrproject.com/reference/getTrajector
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-reference-topic">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -21,7 +21,7 @@ For more details, check here https://www.archrproject.com/reference/getTrajector
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">scMEGA</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
       </span>
     </div>
 
@@ -35,7 +35,7 @@ For more details, check here https://www.archrproject.com/reference/getTrajector
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Vignettes
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
@@ -54,27 +54,27 @@ For more details, check here https://www.archrproject.com/reference/getTrajector
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/CostaLab/scMEGA" class="external-link">
     <span class="fa fa-github"></span>
-     
+
   </a>
 </li>
       </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Get data along the trajectory</h1>
-    
+    <small class="dont-index">Source: <a href="https://github.com/CostaLab/scMEGA/blob/HEAD/R/trajectory_analysis.R" class="external-link"><code>R/trajectory_analysis.R</code></a></small>
     <div class="hidden name"><code>GetTrajectory.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>This function collects and smooths data along the trajectory using Seurat
 object as input.
-It was modified from the package ArchR <code>getTrajectory</code>
+It was modified from the package ArchR <code><a href="https://www.ArchRProject.com/reference/getTrajectory.html" class="external-link">getTrajectory</a></code>
 to use a Seurat object as input.
 For more details, check here <a href="https://www.archrproject.com/reference/getTrajectory.html" class="external-link">https://www.archrproject.com/reference/getTrajectory.html</a>.</p>
     </div>
@@ -94,39 +94,45 @@ For more details, check here <a href="https://www.archrproject.com/reference/get
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>object</dt>
+
+
+<dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
 <dd><p>Seurat object</p></dd>
 
 
-<dt>trajectory.name</dt>
+<dt id="arg-trajectory-name">trajectory.name<a class="anchor" aria-label="anchor" href="#arg-trajectory-name"></a></dt>
 <dd><p>The name of trajectory inferred by <code><a href="AddTrajectory.html">AddTrajectory</a></code></p></dd>
 
 
-<dt>assay</dt>
+<dt id="arg-assay">assay<a class="anchor" aria-label="anchor" href="#arg-assay"></a></dt>
 <dd><p>Which assay is used for data collection</p></dd>
 
 
-<dt>slot</dt>
-<dd><p>Name of slot used to collect data. Usually set as "counts" or "data".</p></dd>
+<dt id="arg-slot">slot<a class="anchor" aria-label="anchor" href="#arg-slot"></a></dt>
+<dd><p>Name of the Seurat v5 layer used to collect data. Usually set as
+"counts" or "data". The selected assay must contain exactly one matching
+layer; join intended split Assay5 layers explicitly before calling.</p></dd>
 
 
-<dt>groupEvery</dt>
+<dt id="arg-groupevery">groupEvery<a class="anchor" aria-label="anchor" href="#arg-groupevery"></a></dt>
 <dd><p>The number of sequential percentiles to group together when generating a trajectory.
-This is similar to smoothing via a non-overlapping sliding window across pseudo-time.</p></dd>
+This is similar to smoothing via a non-overlapping sliding window across pseudo-time.
+Each resulting bin must contain at least one cell with non-missing trajectory metadata.
+Empty bins are reported as an error rather than assigned an undefined mean.</p></dd>
 
 
-<dt>log2Norm</dt>
+<dt id="arg-log-norm">log2Norm<a class="anchor" aria-label="anchor" href="#arg-log-norm"></a></dt>
 <dd><p>Whether or not the data should be log2 transformed. This can be set to TRUE
 if gene expression or chromatin accessibility data is used,
 otherwise FALSE if data from TF activity is used.</p></dd>
 
 
-<dt>scaleTo</dt>
+<dt id="arg-scaleto">scaleTo<a class="anchor" aria-label="anchor" href="#arg-scaleto"></a></dt>
 <dd><p>Once the sequential trajectory matrix is created,
 each column in that matrix will be normalized to a column sum indicated by scaleTo.</p></dd>
 
 
-<dt>smoothWindow</dt>
+<dt id="arg-smoothwindow">smoothWindow<a class="anchor" aria-label="anchor" href="#arg-smoothwindow"></a></dt>
 <dd><p>An integer value indicating the smoothing window in size
 (relative to groupEvery) for the sequential trajectory matrix to better reveal
 temporal dynamics.</p></dd>
@@ -134,14 +140,12 @@ temporal dynamics.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>A SummarizedExperiment object</p>
+    <p>A SummarizedExperiment object</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">trajRNA</span> <span class="op">&lt;-</span> <span class="fu">GetTrajectory</span><span class="op">(</span></span></span>
 <span class="r-in"><span>   object <span class="op">=</span> <span class="va">obj</span>,</span></span>
 <span class="r-in"><span>   assay <span class="op">=</span> <span class="st">"RNA"</span>,</span></span>
@@ -149,7 +153,7 @@ temporal dynamics.</p></dd>
 <span class="r-in"><span>   smoothWindow <span class="op">=</span> <span class="fl">7</span>,</span></span>
 <span class="r-in"><span>   log2Norm <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -164,15 +168,15 @@ temporal dynamics.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
       </footer></div>
 
-  
 
 
-  
+
+
 
   </body></html>
 
