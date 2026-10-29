@@ -8,7 +8,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 You can install scMEGA via below commands:
-```{r}
+```{r install, eval=FALSE}
 # Install devtools
 if (!requireNamespace("devtools", quietly = TRUE))
     install.packages("devtools")
