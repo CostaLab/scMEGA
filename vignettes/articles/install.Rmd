@@ -13,6 +13,9 @@ You can install scMEGA via below commands:
 if (!requireNamespace("devtools", quietly = TRUE))
     install.packages("devtools")
 
+# scMEGA requires Seurat and SeuratObject 5.0.0 or newer.
+install.packages(c("Seurat", "SeuratObject", "Signac"))
+
 # Install scMEGA
 devtools::install_github("CostaLab/scMEGA", force = TRUE)
 ```

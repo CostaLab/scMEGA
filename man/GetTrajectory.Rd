@@ -22,7 +22,9 @@ GetTrajectory(
 
 \item{assay}{Which assay is used for data collection}
 
-\item{slot}{Name of slot used to collect data. Usually set as "counts" or "data".}
+\item{slot}{Name of the Seurat v5 layer used to collect data. Usually set as
+"counts" or "data". The selected assay must contain exactly one matching
+layer; join intended split Assay5 layers explicitly before calling.}
 
 \item{groupEvery}{The number of sequential percentiles to group together when generating a trajectory.
 This is similar to smoothing via a non-overlapping sliding window across pseudo-time.

@@ -67,8 +67,7 @@ AddTrajectory <-
       stop("Please prodive the dimensional reduction!")
     }
 
-    #    df.group <- DataFrame(object@meta.data[, group.by])
-    df.group <- object@meta.data[, group.by] %>%
+    df.group <- object[[]][, group.by] %>%
       as.data.frame()
     rownames(df.group) <- colnames(object)
     df.group <- df.group[df.group[, 1] %in% trajectory, , drop = F]
@@ -197,7 +196,7 @@ AddTrajectory <-
     nas <- rep(NA, dim(object)[2])
     names(nas) <- colnames(object)
     nas[rownames(dfTrajectory3)] <- dfTrajectory3$Trajectory
-    object@meta.data[, name] <- nas
+    object[[name]] <- nas
 
     return(object)
 
@@ -215,7 +214,9 @@ AddTrajectory <-
 #' @param object Seurat object
 #' @param trajectory.name The name of trajectory inferred by \code{\link{AddTrajectory}}
 #' @param assay Which assay is used for data collection
-#' @param slot Name of slot used to collect data. Usually set as "counts" or "data".
+#' @param slot Name of the Seurat v5 layer used to collect data. Usually set as
+#' "counts" or "data". The selected assay must contain exactly one matching
+#' layer; join intended split Assay5 layers explicitly before calling.
 #' @param groupEvery The number of sequential percentiles to group together when generating a trajectory.
 #' This is similar to smoothing via a non-overlapping sliding window across pseudo-time.
 #' Each resulting bin must contain at least one cell with non-missing trajectory metadata.
@@ -229,7 +230,6 @@ AddTrajectory <-
 #' (relative to groupEvery) for the sequential trajectory matrix to better reveal
 #' temporal dynamics.
 #'
-#' @importFrom SeuratObject GetAssayData
 #' @return A SummarizedExperiment object
 #' @export
 #'
@@ -251,15 +251,18 @@ GetTrajectory <- function(object = NULL,
                           log2Norm = TRUE,
                           scaleTo = 10000,
                           smoothWindow = 11) {
-  if (is.null(assay) | !assay %in% Assays(object)) {
-    stop("Please provide an available assay!")
-  }
-
-  if (!(trajectory.name %in% colnames(object@meta.data))) {
+  resolved.layer <- .ResolveAssayLayer(
+    object,
+    assay = assay,
+    layer = slot,
+    caller = "GetTrajectory()"
+  )
+  metadata <- object[[]]
+  if (!(trajectory.name %in% colnames(metadata))) {
     stop(glue::glue("Cannot find trajecotry {trajectory.name}!"))
   }
 
-  trajectory <- object@meta.data[trajectory.name]
+  trajectory <- metadata[trajectory.name]
 
   trajectory <- trajectory[!is.na(trajectory[, 1]), , drop = FALSE]
   breaks <- seq(0, 100, groupEvery)
@@ -292,7 +295,11 @@ GetTrajectory <- function(object = NULL,
   }
 
   message("Creating Trajectory Group Matrix..")
-  data.use <- LayerData(object, assay = assay, layer = slot)
+  data.use <- SeuratObject::LayerData(
+    object = object,
+    assay = assay,
+    layer = resolved.layer
+  )
 
   groupMat <- do.call(cbind, lapply(seq_along(groupList), function(x) {
     cell_names <- groupList[[x]]

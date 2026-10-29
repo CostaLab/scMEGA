@@ -3,6 +3,7 @@
 pairing_function <- function() {
   if (Sys.getenv("SCMEGA_SOURCE_TESTS") == "true") {
     env <- new.env(parent = asNamespace("SeuratObject"))
+    sys.source(file.path(Sys.getenv("SCMEGA_SOURCE_ROOT"), "R", "layer_utils.R"), env)
     sys.source(file.path(Sys.getenv("SCMEGA_SOURCE_ROOT"), "R", "pair_cells.R"), env)
     env$CreatePairedObject
   } else {

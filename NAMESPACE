@@ -45,7 +45,6 @@ importFrom(S4Vectors,
   elementMetadata
 )
 importFrom(SeuratObject,
-  GetAssayData,
   JoinLayers,
   LayerData
 )

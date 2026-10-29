@@ -35,7 +35,7 @@ PseudotimePlot <- function(object, tf.use,
         log2Norm = FALSE
     )
 
-    rownames(trajMM) <- object@assays[[atac.assay]]@motifs@motif.names
+    rownames(trajMM) <- .MotifNames(object, atac.assay, "PseudotimePlot()")
 
     df.tf.activity <- assay(trajMM)
     df.tf.activity <- t(scale(t(df.tf.activity)))
@@ -139,7 +139,7 @@ CellPropPlot <- function(object,
   }
 
   counts <- NULL
-  df <- object@meta.data %>%
+  df <- object[[]] %>%
     as.data.frame() %>%
     subset(., select = c(prop.in, group.by)) %>%
     group_by(across(all_of(c(prop.in, group.by)))) %>%
@@ -212,14 +212,14 @@ CompareCellProp <-
     }
 
     counts <- NULL
-    df_prop <- object@meta.data %>%
+    df_prop <- object[[]] %>%
       as.data.frame() %>%
       subset(., select = c(prop.in, group.by)) %>%
       group_by(across(all_of(c(prop.in, group.by)))) %>%
       summarise(counts = n()) %>%
       mutate(proportion = counts / sum(counts))
 
-    df_anno <- object@meta.data %>%
+    df_anno <- object[[]] %>%
       as.data.frame() %>%
       subset(., select = c(prop.in, sample.annotation)) %>%
       unique()
@@ -428,12 +428,12 @@ TrajectoryPlot <- function(object = NULL,
                            baseSize = 6,
                            addArrow = FALSE,
                            smoothWindow = 5) {
-  dfT <- object@meta.data[, trajectory] %>%
+  dfT <- object[[]][, trajectory, drop = FALSE] %>%
     as.data.frame()
 
   rownames(dfT) <- colnames(object)
   idxRemove <- which(is.na(dfT[, 1]))
-  df <- object@reductions[[reduction]]@cell.embeddings[, 1:2] %>%
+  df <- SeuratObject::Embeddings(object, reduction)[, 1:2, drop = FALSE] %>%
     as.data.frame()
 
   dfT <- cbind(df, dfT[rownames(df),])
