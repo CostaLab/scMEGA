@@ -72,6 +72,11 @@ suppressMessages(library(BSgenome.Hsapiens.UCSC.hg38))
 
 Let's load the data into memory and see how they look like
 
+To reduce computational requirements, this tutorial uses reproducible stratified
+downsampling of the original RNA and ATAC datasets. The resulting analysis
+demonstrates the complete scMEGA workflow, but the inferred trajectories and
+regulatory networks may differ from those obtained using the full dataset.
+
 ```{r}
 obj.rna <- readRDS("./Cardiomyocyte/snRNA.rds")
 obj.atac <- readRDS("./Cardiomyocyte/snATAC.rds")
