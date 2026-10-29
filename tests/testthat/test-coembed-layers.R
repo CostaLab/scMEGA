@@ -36,6 +36,17 @@ test_that("split reference layers fail with preparation instructions", {
 
 test_that("joined Assay5 and legacy Assay coembeddings retain cells and observed data", {
   f <- coembed_fixture()
+  expected.query <- f$query
+  expected.query[["GeneActivity"]] <-
+    SeuratObject::CreateAssayObject(counts = f$ga)
+  SeuratObject::DefaultAssay(expected.query) <- "GeneActivity"
+  expected.query <- Seurat::NormalizeData(expected.query, verbose = FALSE)
+  expected.query <- Seurat::ScaleData(expected.query, verbose = FALSE)
+  expected.scale <- SeuratObject::LayerData(
+    expected.query,
+    assay = "GeneActivity",
+    layer = "scale.data"
+  )
   for (kind in c("joined","scaled","legacy")) {
     reference <- f[[kind]]
     expected <- SeuratObject::LayerData(reference,assay="RNA",layer="data")
@@ -77,6 +88,10 @@ test_that("joined Assay5 and legacy Assay coembeddings retain cells and observed
     actual <- SeuratObject::LayerData(result,assay="RNA",layer="data")
     expect_equal(as.matrix(actual)[rownames(expected),colnames(expected),drop=FALSE],as.matrix(expected))
     expect_equal(as.matrix(SeuratObject::LayerData(result,assay="ATAC",layer="counts"))[,colnames(f$peaks),drop=FALSE],as.matrix(f$peaks))
+    expect_identical(
+      SeuratObject::LayerData(result, assay = "GeneActivity", layer = "scale.data"),
+      expected.scale
+    )
     expect_identical(rownames(actual),rownames(f$rna))
   }
 })
